@@ -1,0 +1,482 @@
+openapi: 3.1.0
+info:
+  title: fwe_backend
+  version: '0.0.1'
+servers:
+  - url: 'http://localhost:4000'
+paths:
+  /users:
+    get:
+      summary: 'Get Users'
+      operationId: get-users
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: The name to filter users by
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: 'Post User'
+      operationId: post-users
+      requestBody:
+        description: The User Object to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the user to work with
+
+    get:
+      summary: 'Get a User by Id'
+      operationId: get-users-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      summary: 'Put User'
+      operationId: put-users-id
+      requestBody:
+        description: The User Object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Error while Update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      summary: 'Delete User'
+      operationId: delete-users-id
+      responses:
+        '204':
+          description: Deleted
+        '403':
+          description: Invalid Id
+
+  /courses:
+    get:
+      summary: 'Get courses'
+      operationId: get-courses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+    post:
+      summary: 'Post course'
+      operationId: post-courses
+      requestBody:
+        description: The Course Object to create and the newly added Files
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                course:
+                  type:
+                    $ref: '#/components/schemas/Course'
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /courses/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the course to work with
+    get:
+      summary: 'Get an Course by Id'
+      operationId: get-courses-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      summary: 'Put course'
+      operationId: put-courses-id
+      requestBody:
+        description: The Course Object to be updated and the newly added Files
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                course:
+                  type:
+                    $ref: '#/components/schemas/Course'
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Error while Update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      summary: 'Delete course'
+      operationId: delete-courses-id
+      responses:
+        '204':
+          description: Deleted
+        '403':
+          description: Invalid Id
+
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: 'The User Objet'
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the given recipe.
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - firstname
+        - lastname
+        - email
+        - password
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          firstname: Max
+          lastname: Mustermann
+          email: user@learning-corner.de
+          password: supersecret
+    Course:
+      title: Course
+      type: object
+      description: A Course
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          type:
+            $ref: '#/components/schemas/User'
+        participants:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/User'
+        files:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/CourseFile'
+        quizzes:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/Quiz'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - description
+        - owner
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: Web-Development for Dummies
+          description: Learn the 101 of Web-Development
+          owner:
+            $ref: '#/components/schemas/User'
+          participants:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/User'
+          files:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/CourseFile'
+          quizzes:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/Quiz'
+    Quiz:
+      title: Quiz
+      type: object
+      description: A Quiz
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        questions:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/QuizQuestion'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - description
+        - questions
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: HTML Quiz - Beginner
+          description: Check your basic knowledge about HTML
+          questions:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/QuizQuestion'
+    QuizQuestion:
+      title: QuizQuestion
+      type: object
+      description: A QuizQuestion
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        correctAnswer:
+          type: number
+        answers:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/QuizQuestionAnswer'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - text
+        - correctAnswer
+        - answers
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          text: Is HTLM > JS?
+          correctAnswer: 0
+          answers:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/QuizQuestionAnswer'
+    QuizQuestionAnswer:
+      title: QuizQuestionAnswer
+      type: object
+      description: A QuizQuestionAnswer
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - text
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          text: No
+    CourseFile:
+      title: File
+      type: object
+      description: A File
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        course:
+          type:
+            $ref: '#/components/schemas/Course'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - course
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: folien.pdf
+          course:
+            type:
+              $ref: '#/components/schemas/Course'

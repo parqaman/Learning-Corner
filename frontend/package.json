@@ -1,0 +1,12 @@
+{
+  "name": "fwe_fontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "api:generate": "openapi-generator-cli generate -i ../openapispec.yaml -g typescript-axios -o src/adapter/api/__generated --skip-validate-spec"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.2"
+  }
+}
