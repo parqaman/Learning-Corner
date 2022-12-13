@@ -1,13 +1,17 @@
 import { useState } from 'react'
+import { AppRoutes } from './AppRoutes'
 import reactLogo from './assets/react.svg'
+import { AppLayout } from './layout/AppLayout'
+import { ChakraProvider } from '@chakra-ui/react'
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <h1>Learning Corner</h1>
-    </div>
+    <ChakraProvider>
+      <BrowserRouter>
+        <AppRoutes/>
+      </BrowserRouter>
+    </ChakraProvider>
   )
 }
 
