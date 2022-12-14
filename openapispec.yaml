@@ -1,18 +1,23 @@
 openapi: 3.1.0
-
+x-stoplight:
+  id: 0jjsr4x5g10cz
 info:
   title: fwe_backend
-  version: '0.0.1'
-
+  version: 0.0.1
+  contact:
+    name: Nils Heißner
+    email: nils.heissner@stud.h-da.de
+    url: h-da.de
+  description: The API for the Learning Corner project
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
 servers:
   - url: 'http://localhost:4000'
-
 paths:
   /users:
-    security:
-      - Bearer: []
     get:
-      summary: 'Get Users'
+      description: Get Users
       operationId: get-users
       parameters:
         - in: query
@@ -29,10 +34,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-
-  /users/{id}:
-    security:
-      - Bearer: []
+      security:
+        - Bearer: []
+  '/users/{id}':
     parameters:
       - in: path
         name: id
@@ -41,9 +45,8 @@ paths:
           type: string
           format: uuid
         description: The id of the user to work with
-
     get:
-      summary: 'Get a User by Id'
+      description: Get a User by Id
       operationId: get-users-id
       responses:
         '200':
@@ -61,8 +64,11 @@ paths:
                 properties:
                   message:
                     type: string
+      security:
+        - Bearer: []
+      x-internal: false
     put:
-      summary: 'Put User'
+      description: Put User
       operationId: put-users-id
       requestBody:
         description: The User Object to be updated
@@ -98,20 +104,21 @@ paths:
                 properties:
                   message:
                     type: string
+      security:
+        - Bearer: []
     delete:
-      summary: 'Delete User'
+      description: Delete User
       operationId: delete-users-id
       responses:
         '204':
           description: Deleted
         '403':
           description: Invalid Id
-
+      security:
+        - Bearer: []
   /courses:
-    security:
-      - Bearer: []
     get:
-      summary: 'Get courses'
+      description: Get courses
       operationId: get-courses
       responses:
         '200':
@@ -122,8 +129,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Course'
+      security:
+        - Bearer: []
     post:
-      summary: 'Post course'
+      description: Post course
       operationId: post-courses
       requestBody:
         description: The Course Object to create and the newly added Files
@@ -159,9 +168,9 @@ paths:
                     type: array
                     items:
                       type: string
-  /courses/{id}:
-    security:
-      - Bearer: []
+      security:
+        - Bearer: []
+  '/courses/{id}':
     parameters:
       - in: path
         name: id
@@ -171,7 +180,7 @@ paths:
           format: uuid
         description: The id of the course to work with
     get:
-      summary: 'Get an Course by Id'
+      description: Get an Course by Id
       operationId: get-courses-id
       responses:
         '200':
@@ -189,8 +198,10 @@ paths:
                 properties:
                   message:
                     type: string
+      security:
+        - Bearer: []
     put:
-      summary: 'Put course'
+      description: Put course
       operationId: put-courses-id
       requestBody:
         description: The Course Object to be updated and the newly added Files
@@ -235,18 +246,21 @@ paths:
                 properties:
                   message:
                     type: string
+      security:
+        - Bearer: []
     delete:
-      summary: 'Delete course'
+      description: Delete course
       operationId: delete-courses-id
       responses:
         '204':
           description: Deleted
         '403':
           description: Invalid Id
-
+      security:
+        - Bearer: []
   /auth/register:
     post:
-      summary: ''
+      description: Perform registration
       operationId: post-auth-register
       responses:
         '200':
@@ -272,7 +286,7 @@ paths:
                 - lastName
   /auth/login:
     post:
-      summary: ''
+      description: Perform login and return accesstoken
       operationId: post-auth-login
       responses:
         '200':
@@ -301,18 +315,22 @@ paths:
                 password:
                   type: string
         description: ''
-
 components:
   schemas:
     User:
       title: User
       type: object
-      description: 'The User Objet'
+      description: The User Objet
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          firstname: Max
+          lastname: Mustermann
+          email: user@learning-corner.de
       properties:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the given recipe.
+          description: Unique identifier for the given user.
         firstname:
           type: string
         lastname:
@@ -320,9 +338,6 @@ components:
         email:
           type: string
           format: email
-        password:
-          type: string
-          format: password
         createdAt:
           type: string
           format: date-time
@@ -333,58 +348,10 @@ components:
         - firstname
         - lastname
         - email
-        - password
-      examples:
-        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          firstname: Max
-          lastname: Mustermann
-          email: user@learning-corner.de
-          password: supersecret
     Course:
       title: Course
       type: object
       description: A Course
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        owner:
-          type:
-            $ref: '#/components/schemas/User'
-        participants:
-          type: array
-          items:
-            type:
-              $ref: '#/components/schemas/User'
-        sections:
-          type: array
-          items:
-            type:
-              $ref: '#/components/schemas/CourseSection'
-        files:
-          type: array
-          items:
-            type:
-              $ref: '#/components/schemas/CourseFile'
-        quizzes:
-          type: array
-          items:
-            type:
-              $ref: '#/components/schemas/Quiz'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - name
-        - description
-        - owner
       examples:
         - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
           name: Web-Development for Dummies
@@ -406,10 +373,56 @@ components:
             items:
               type:
                 $ref: '#/components/schemas/Quiz'
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          type:
+            $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/User'
+        participants:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/User'
+        sections:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/CourseSection'
+            $ref: '#/components/schemas/CourseSection'
+        quizzes:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/Quiz'
+            $ref: '#/components/schemas/Quiz'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - description
+        - owner
     CourseFile:
       title: File
       type: object
       description: A File
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: folien.pdf
+          course:
+            type:
+              $ref: '#/components/schemas/Course'
       properties:
         id:
           type: string
@@ -419,6 +432,7 @@ components:
         course:
           type:
             $ref: '#/components/schemas/Course'
+          $ref: '#/components/schemas/Course'
         createdAt:
           type: string
           format: date-time
@@ -428,28 +442,35 @@ components:
       required:
         - name
         - course
-      examples:
-        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          name: folien.pdf
-          course:
-            type:
-              $ref: '#/components/schemas/Course'
     CourseSection:
       title: Section
       description: A content section in a course
       type: object
       properties:
-        id: 
+        id:
           type: string
           format: uuid
-        heading: 
+        heading:
           type: string
-        content: 
+        content:
           type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseFile'
     Quiz:
       title: Quiz
       type: object
       description: A Quiz
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: HTML Quiz - Beginner
+          description: Check your basic knowledge about HTML
+          questions:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/QuizQuestion'
       properties:
         id:
           type: string
@@ -463,6 +484,7 @@ components:
           items:
             type:
               $ref: '#/components/schemas/QuizQuestion'
+            $ref: '#/components/schemas/QuizQuestion'
         createdAt:
           type: string
           format: date-time
@@ -473,19 +495,19 @@ components:
         - name
         - description
         - questions
-      examples:
-        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          name: HTML Quiz - Beginner
-          description: Check your basic knowledge about HTML
-          questions:
-            type: array
-            items:
-              type:
-                $ref: '#/components/schemas/QuizQuestion'
     QuizQuestion:
       title: QuizQuestion
       type: object
       description: A QuizQuestion
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          text: Is HTLM > JS?
+          correctAnswer: 0
+          answers:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/QuizQuestionAnswer'
       properties:
         id:
           type: string
@@ -499,6 +521,7 @@ components:
           items:
             type:
               $ref: '#/components/schemas/QuizQuestionAnswer'
+            $ref: '#/components/schemas/QuizQuestionAnswer'
         createdAt:
           type: string
           format: date-time
@@ -509,15 +532,6 @@ components:
         - text
         - correctAnswer
         - answers
-      examples:
-        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          text: Is HTLM > JS?
-          correctAnswer: 0
-          answers:
-            type: array
-            items:
-              type:
-                $ref: '#/components/schemas/QuizQuestionAnswer'
     QuizQuestionAnswer:
       title: QuizQuestionAnswer
       type: object
@@ -538,9 +552,9 @@ components:
         - text
       examples:
         - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          text: No
-
+          text: 'No'
   securitySchemes:
-  'Bearer ':
-    type: http
-    scheme: bearer
+    Bearer:
+      type: http
+      scheme: bearer
+x-internal: true
