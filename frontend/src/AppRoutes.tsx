@@ -37,7 +37,7 @@ export const routes: RouteConfig[] = [
 //TODO: if user is not yet logged, navigate directly to login page, otherwise to index page
 const renderRouteMap = ({ isPrivate, element, ...restRoute }: RouteConfig) => {
     return (
-        <Route key={restRoute.path} {...restRoute} />
+        <Route key={restRoute.path} element={element} {...restRoute} />
     );
 };
   
