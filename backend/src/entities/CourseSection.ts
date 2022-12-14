@@ -8,12 +8,12 @@ import {
 import { object, string } from "yup";
 import { BaseEntity } from "./BaseEntity";
 import { Course } from "./Course";
-import { File } from "./File";
+import { CourseFile } from "./CourseFile";
 
 @Entity()
-export class Section extends BaseEntity {
+export class CourseSection extends BaseEntity {
   @Property()
-  header: string;
+  heading: string;
 
   @Property()
   description: string;
@@ -24,26 +24,26 @@ export class Section extends BaseEntity {
   @ManyToOne(() => Course)
   course: Course;
 
-  @OneToMany(() => File, (e) => e.section)
+  @OneToMany(() => CourseFile, (e) => e.section)
   files = new Collection<File>(this);
 
-  constructor({ header, description, text, course }: CreateSectionDTO) {
+  constructor({ heading, description, text, course }: CreateCourseSectionDTO) {
     super();
-    this.header = header;
+    this.heading = heading;
     this.description = description;
     this.text = text;
     this.course = course;
   }
 }
 
-export const CreateSectionSchema = object({
-  header: string().required(),
+export const CreateCourseSectionSchema = object({
+  heading: string().required(),
   description: string(),
   text: string(),
 });
 
-export type CreateSectionDTO = {
-  header: string;
+export type CreateCourseSectionDTO = {
+  heading: string;
   description: string;
   text: string;
   course: Course;

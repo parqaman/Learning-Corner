@@ -12,7 +12,7 @@ export class Group extends BaseEntity {
   description: string;
 
   @ManyToMany({ entity: () => LearnerInCourse, mappedBy: (e) => e.groups })
-  participants? = new Collection<LearnerInCourse>(this);
+  members = new Collection<LearnerInCourse>(this);
 
   constructor({ name, description }: CreateGroupDTO) {
     super();

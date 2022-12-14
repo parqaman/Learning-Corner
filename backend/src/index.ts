@@ -1,19 +1,14 @@
 import express from "express";
 import http from "http";
-import {
-  EntityManager,
-  EntityRepository,
-  MikroORM,
-  RequestContext,
-} from "@mikro-orm/core";
+import { EntityManager, EntityRepository, MikroORM } from "@mikro-orm/core";
 import { Answer } from "./entities/Answer";
 import { Course } from "./entities/Course";
-import { File } from "./entities/File";
+import { CourseFile } from "./entities/CourseFile";
+import { CourseSection } from "./entities/CourseSection";
 import { Group } from "./entities/Group";
 import { LearnerInCourse } from "./entities/LearnerInCourse";
 import { Question } from "./entities/Question";
 import { Quiz } from "./entities/Quiz";
-import { Section } from "./entities/Section";
 import { User } from "./entities/User";
 
 const PORT = 4000;
@@ -25,12 +20,12 @@ export const DI = {} as {
   em: EntityManager;
   answerRepository: EntityRepository<Answer>;
   courseRepository: EntityRepository<Course>;
-  fileRepository: EntityRepository<File>;
+  courseFileRepository: EntityRepository<CourseFile>;
+  courseSectionRepository: EntityRepository<CourseSection>;
   groupRepository: EntityRepository<Group>;
   learnerInCourseRepository: EntityRepository<LearnerInCourse>;
   questionRepository: EntityRepository<Question>;
   quizRepository: EntityRepository<Quiz>;
-  sectionRepository: EntityRepository<Section>;
   userRepository: EntityRepository<User>;
 };
 
@@ -39,12 +34,12 @@ export const initializeServer = async () => {
   DI.em = DI.orm.em;
   DI.answerRepository = DI.orm.em.getRepository(Answer);
   DI.courseRepository = DI.orm.em.getRepository(Course);
-  DI.fileRepository = DI.orm.em.getRepository(File);
+  DI.courseFileRepository = DI.orm.em.getRepository(CourseFile);
+  DI.courseSectionRepository = DI.orm.em.getRepository(CourseSection);
   DI.groupRepository = DI.orm.em.getRepository(Group);
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
   DI.questionRepository = DI.orm.em.getRepository(Question);
   DI.quizRepository = DI.orm.em.getRepository(Quiz);
-  DI.sectionRepository = DI.orm.em.getRepository(Section);
   DI.userRepository = DI.orm.em.getRepository(User);
 
   DI.server = app.listen(PORT, () => {

@@ -9,6 +9,7 @@ import {
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { Course } from "./Course";
+import { LearnerInCourse } from "./LearnerInCourse";
 
 @Entity()
 export class User extends BaseEntity {
@@ -32,6 +33,7 @@ export class User extends BaseEntity {
 
   @ManyToMany({
     entity: () => Course,
+    pivotEntity: () => LearnerInCourse,
     inversedBy: (e) => e.participants,
     cascade: [Cascade.ALL],
   })

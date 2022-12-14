@@ -9,8 +9,9 @@ import {
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
-import { Section } from "./Section";
+import { CourseSection } from "./CourseSection";
 import { Quiz } from "./Quiz";
+import { LearnerInCourse } from "./LearnerInCourse";
 
 @Entity()
 export class Course extends BaseEntity {
@@ -25,12 +26,13 @@ export class Course extends BaseEntity {
 
   @ManyToMany({
     entity: () => User,
+    pivotEntity: () => LearnerInCourse,
     mappedBy: (e) => e.joinedCourses,
   })
   participants = new Collection<User>(this);
 
-  @OneToMany(() => Section, (e) => e.course)
-  sections? = new Collection<Section>(this);
+  @OneToMany(() => CourseSection, (e) => e.course)
+  sections? = new Collection<CourseSection>(this);
 
   @OneToMany(() => Quiz, (e) => e.course)
   quizzes? = new Collection<Quiz>(this);
