@@ -1,19 +1,18 @@
 import { NavItem, NavLink } from "./Nav";
 import { BaseLayout, BaseLayoutProps } from "./BaseLayout";
 import { Link } from "react-router-dom";
-
 const navigationItems = (
   <>
-      <NavItem>
+      <NavItem isPrivate={true}>
         <Link to={'/home'}>Home</Link>
       </NavItem>
-      <NavItem>
+      <NavItem isPrivate={true}>
           <Link to={'/mycourses'}>My Courses</Link>
       </NavItem>
-      <NavItem>
+      <NavItem isPrivate={true}>
           <Link to={'/mygroups'}>My Groups</Link>
       </NavItem>
-      <NavItem>
+      <NavItem isPrivate={true}>
           <Link to={'/myprofile'}>Profile</Link>
       </NavItem>
   </>
