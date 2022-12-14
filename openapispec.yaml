@@ -360,6 +360,11 @@ components:
           items:
             type:
               $ref: '#/components/schemas/User'
+        sections:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/CourseSection'
         files:
           type: array
           items:
@@ -401,6 +406,46 @@ components:
             items:
               type:
                 $ref: '#/components/schemas/Quiz'
+    CourseFile:
+      title: File
+      type: object
+      description: A File
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        course:
+          type:
+            $ref: '#/components/schemas/Course'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - course
+      examples:
+        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
+          name: folien.pdf
+          course:
+            type:
+              $ref: '#/components/schemas/Course'
+    CourseSection:
+      title: Section
+      description: A content section in a course
+      type: object
+      properties:
+        id: 
+          type: string
+          format: uuid
+        heading: 
+          type: string
+        content: 
+          type: string
     Quiz:
       title: Quiz
       type: object
@@ -494,34 +539,7 @@ components:
       examples:
         - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
           text: No
-    CourseFile:
-      title: File
-      type: object
-      description: A File
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        course:
-          type:
-            $ref: '#/components/schemas/Course'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - name
-        - course
-      examples:
-        - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
-          name: folien.pdf
-          course:
-            type:
-              $ref: '#/components/schemas/Course'
+
   securitySchemes:
   'Bearer ':
     type: http
