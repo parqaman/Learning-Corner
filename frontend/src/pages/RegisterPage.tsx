@@ -2,10 +2,8 @@ import { object, string } from "yup";
 import { AuthCard } from "../components/AuthCard";
 import { AppLayout } from "../layout/AppLayout";
 import { Heading, Box, VStack, FormControl, Button, FormErrorMessage, Input, Text } from '@chakra-ui/react'
-import { Form, Formik, Field, FormikErrors, FormikTouched } from "formik";
+import { Form, Formik } from "formik";
 import { Link } from 'react-router-dom';
-import { NavLink } from "../layout/Nav";
-import { render } from "react-dom";
 
 export const RegisterSchema = object({
     fistname: string().required(),
@@ -13,42 +11,6 @@ export const RegisterSchema = object({
     email: string().email().required(),
     password: string().required(),
 });
-
-const firstRegisterStep = (
-    errors: FormikErrors<{email: string; password: string;}>, 
-    touched: FormikTouched<{email: string; password: string;}>
-    ) => {
-    return (
-        <>
-            <FormControl isInvalid={!!errors.email && touched.email} opacity={'100%'}>
-                <Input isRequired padding={'0.75em'} variant={'unstyled'} placeholder="Email" _placeholder={{color: '#8E8E8E'}} border={'solid 2px'} borderColor={'rgba(0, 0, 0, 30%)'} id="email" name="email" type="email"></Input>
-                <FormErrorMessage>{errors.email}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.password && touched.password} opacity={'100%'}>
-                <Input isRequired padding={'0.75em'} variant={'unstyled'} placeholder="Password" _placeholder={{color: '#8E8E8E'}} border={'solid 2px'} borderColor={'rgba(0, 0, 0, 30%)'} id="password" name="password" type="password"></Input>
-                <FormErrorMessage>{errors.password}</FormErrorMessage>
-            </FormControl>
-        </>
-    )
-};
-
-export const SingleInputField = (
-    input_name: string,
-    errors: FormikErrors<{email: string; password: string;}>, 
-    touched: FormikTouched<{email: string; password: string;}>
-    ) => {
-        input_name.replaceAll(/\s/g,'');
-        return (
-            <>
-                <FormControl isInvalid={!!errors.password && touched.password} opacity={'100%'}>
-                    <Input isRequired padding={'0.75em'} variant={'unstyled'} placeholder={input_name} _placeholder={{color: '#8E8E8E'}} border={'solid 2px'} borderColor={'rgba(0, 0, 0, 30%)'} id={input_name} name={input_name} type={input_name}></Input>
-                    <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
-            </>
-        )
-}
-
 
 export const RegisterPage = () => {
     const numOfFields = 4;
