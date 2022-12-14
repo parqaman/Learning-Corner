@@ -24,6 +24,9 @@ export class User extends BaseEntity {
   @Property()
   lastName: string;
 
+  @Property()
+  photo: string;
+
   @OneToMany(() => Course, (e) => e.lecturer)
   courses = new Collection<Course>(this);
 
@@ -34,12 +37,19 @@ export class User extends BaseEntity {
   })
   joinedCourses = new Collection<Course>(this);
 
-  constructor({ email, password, firstName, lastName }: RegisterUserDTO) {
+  constructor({
+    email,
+    password,
+    firstName,
+    lastName,
+    photo,
+  }: RegisterUserDTO) {
     super();
     this.email = email;
     this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.photo = photo;
   }
 }
 
@@ -48,6 +58,7 @@ export const RegisterUserSchema = object({
   password: string().required(),
   firstName: string().required(),
   lastName: string().required(),
+  photo: string(),
 });
 
 export type RegisterUserDTO = {
@@ -55,6 +66,7 @@ export type RegisterUserDTO = {
   password: string;
   firstName: string;
   lastName: string;
+  photo: string;
 };
 
 export const LoginSchema = object({

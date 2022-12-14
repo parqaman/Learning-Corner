@@ -9,7 +9,8 @@ import {
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
-import { Group } from "./Group";
+import { Section } from "./Section";
+import { Quiz } from "./Quiz";
 
 @Entity()
 export class Course extends BaseEntity {
@@ -28,8 +29,11 @@ export class Course extends BaseEntity {
   })
   participants = new Collection<User>(this);
 
-  @OneToMany(() => Group, (e) => e.course)
-  groups? = new Collection<Group>(this);
+  @OneToMany(() => Section, (e) => e.course)
+  sections? = new Collection<Section>(this);
+
+  @OneToMany(() => Quiz, (e) => e.course)
+  quizzes? = new Collection<Quiz>(this);
 
   constructor({ name, description, lecturer }: CreateCourseDTO) {
     super();

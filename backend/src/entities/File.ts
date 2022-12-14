@@ -1,6 +1,7 @@
-import { Entity, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
 import { object, string } from "yup";
 import { BaseEntity } from "./BaseEntity";
+import { Section } from "./Section";
 
 @Entity()
 export class File extends BaseEntity {
@@ -10,19 +11,24 @@ export class File extends BaseEntity {
   @Property()
   description: string;
 
-  constructor({ name, description }: CreateFileDTO) {
+  @ManyToOne(() => Section)
+  section: Section;
+
+  constructor({ name, description, section }: CreateFileDTO) {
     super();
     this.name = name;
     this.description = description;
+    this.section = section;
   }
 }
 
 export const CreateFileSchema = object({
-    name: string().required(),
-    description: string()
-})
+  name: string().required(),
+  description: string(),
+});
 
 export type CreateFileDTO = {
-    name: string,
-    description: string
-}
+  name: string;
+  description: string;
+  section: Section;
+};
