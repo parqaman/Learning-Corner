@@ -13,7 +13,6 @@ export const RegisterSchema = object({
 });
 
 export const RegisterPage = () => {
-    const numOfFields = 4;
   return (
     <AppLayout>
         <AuthCard>
