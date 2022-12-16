@@ -3,11 +3,10 @@ import http from "http";
 import {
   EntityManager,
   EntityRepository,
-  MikroORM,
-  RequestContext,
+  MikroORM
 } from "@mikro-orm/core";
-import { Course } from "./entities/Course";
-import { User } from "./entities/User";
+import { Course, User } from "./entities";
+import {AuthController} from "./controller/auth.controller";
 
 const PORT = 4000;
 const app = express();
@@ -25,6 +24,8 @@ export const initializeServer = async () => {
   DI.em = DI.orm.em;
   DI.courseRepository = DI.orm.em.getRepository(Course);
   DI.userRepository = DI.orm.em.getRepository(User);
+
+  app.use('/auth', AuthController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
