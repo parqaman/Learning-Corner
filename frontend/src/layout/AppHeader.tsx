@@ -20,7 +20,7 @@ export const AppHeader = (props: AppHeaderProps) => {
     color={'black'}
     >
         <Link to={"/"}><Text fontSize={'xl'} fontWeight={'semibold'}>Learning Corner</Text></Link>
-        <Nav width={'35%'}>{props.headerRightMenu}</Nav>
+        <Nav justifyContent={{base: "flex-end", md: "start"}} width={{base: "auto", md: '40%'}}>{props.headerRightMenu}</Nav>
     </Flex>
     )
 }

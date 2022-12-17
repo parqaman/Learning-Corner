@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { useContext } from "react";
 import { useToast, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/localStorage";
@@ -64,19 +64,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAccessToken(resBody.accessToken);
         navigate("/", { replace: true });
       } else {
-        toast({
-          title: "Error occured.",
-          description: (
-            <>
-              {resBody.errors.map((e: string) => (
-                <Text key={e}>{e}</Text>
-              ))}
-            </>
-          ),
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        if(!toast.isActive("error-password")){
+          toast({
+            id: "error-password",
+            title: "Error occured.",
+            
+            description: (
+              <>
+                {resBody.errors.map((e: string) => (
+                  <Text key={e}>{e}</Text>
+                ))}
+              </>
+            ),
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
       }
     },
     [toast]
