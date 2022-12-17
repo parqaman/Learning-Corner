@@ -4,7 +4,7 @@ export const Nav = (props: HTMLChakraProps<"ul">) => {
     return <List {...props} display="flex" justifyContent={'space-around'}/>;
 };
 
-export const NavItem = (props: HTMLChakraProps<"li"> & { isPrivate?: boolean }) => {
+export const NavItem = (props: HTMLChakraProps<"li">) => {
     return <ListItem {...props} listStyleType={"none"} p={'0.25em'} m={'0.1em'}></ListItem>
 };
 

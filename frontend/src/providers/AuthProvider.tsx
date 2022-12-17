@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           description: (
             <>
               {resBody.errors.map((e: string) => (
-                <Text>{e}</Text>
+                <Text key={e}>{e}</Text>
               ))}
             </>
           ),

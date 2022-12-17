@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Nav } from "./Nav";
 
 export type AppHeaderProps = {
-    headerRightMenu: React.ReactNode & { isPrivate?: boolean };
+    headerRightMenu: React.ReactNode;
 };  
 
 export const AppHeader = (props: AppHeaderProps) => {
@@ -20,10 +20,7 @@ export const AppHeader = (props: AppHeaderProps) => {
     color={'black'}
     >
         <Link to={"/"}><Text fontSize={'xl'} fontWeight={'semibold'}>Learning Corner</Text></Link>
-        {
-            //TODO: show navbar navigations only when user is logged in
-            props.headerRightMenu?.isPrivate && <Nav width={'35%'}>{props.headerRightMenu}</Nav>
-        }
+        <Nav width={'35%'}>{props.headerRightMenu}</Nav>
     </Flex>
     )
 }
