@@ -60,7 +60,7 @@ export const RegisterUserSchema = object({
   password: string().required(),
   firstName: string().required(),
   lastName: string().required(),
-  photo: string(),
+  photo: string().required(),
 });
 
 export type RegisterUserDTO = {

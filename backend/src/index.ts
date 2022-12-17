@@ -3,10 +3,19 @@ import http from "http";
 import {
   EntityManager,
   EntityRepository,
-  MikroORM
+  MikroORM,
+  RequestContext,
 } from "@mikro-orm/core";
-import { Course, CourseFile, CourseSection, Group, LearnerInCourse, User } from "./entities";
-import {AuthController} from "./controller/auth.controller";
+import {
+  Course,
+  CourseFile,
+  CourseSection,
+  Group,
+  LearnerInCourse,
+  User,
+} from "./entities";
+import { AuthController } from "./controller/auth.controller";
+import { Auth } from "./middleware/auth.middleware";
 
 const PORT = 4000;
 const app = express();
@@ -33,9 +42,20 @@ export const initializeServer = async () => {
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
   DI.userRepository = DI.orm.em.getRepository(User);
 
-  app.use('/auth', AuthController);
+  // global middleware
+  app.use(express.json());
+  app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
+  app.use(Auth.prepareAuthentication);
+
+  // routes
+  app.get('/', (req, res) => {
+    res.send('GET request to the homepage')
+  })
+  app.use("/auth", AuthController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
 };
+
+initializeServer()
