@@ -1,0 +1,67 @@
+asyncapi: 2.5.0
+info:
+  title: Chat
+  version: 0.1.0
+channels:
+  /chat:
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/NewMessage'
+    subscribe:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/NewMessageRecieved'
+    bindings:
+      $ref: '#/components/channelBindings/AuthenticatedWsBindings'
+
+components:
+  messages:
+    NewMessage:
+      name: NewMessage
+      description: An event describing a new message
+      payload:
+        type: object
+        properties:
+          room:
+            type: string
+            format: uuid
+          sender:
+            type: string
+            format: uuid
+          content:
+            type: string
+          time:
+            type: string
+            format: date-time
+        required:
+          - room
+          - sender
+          - content
+    NewMessageRecieved:
+      name: NewMessageRecieved
+      description: An event describing a new message was recieved
+      payload:
+        type: object
+        properties:
+          room:
+            type: string
+            format: uuid
+          sender:
+            type: string
+            format: uuid
+          content:
+            type: string
+        required:
+          - room
+          - sender
+          - content
+  channelBindings:
+    AuthenticatedWsBindings:
+      ws:
+        query:
+          type: object
+          properties:
+            token:
+              type: string
+          required: [token]
