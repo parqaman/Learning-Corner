@@ -3,10 +3,12 @@ import {
     Route,
     RouteProps,
     Routes,
+    useLocation,
   } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { useAuth } from "./providers/AuthProvider";
   
 export type RouteConfig = RouteProps & { path: string; isPrivate?: boolean };
 
@@ -34,10 +36,33 @@ export const routes: RouteConfig[] = [
   },
 ];
   
-//TODO: if user is not yet logged, navigate directly to login page, otherwise to index page
+export type AuthRequiredProps = {
+  children: React.ReactNode;
+  to?: string;
+};
+
+export const AuthRequired = ({
+  children,
+  to = "/auth/login",
+}: AuthRequiredProps) => {
+  const { isLoggedIn } = useAuth();
+  const { pathname, search } = useLocation();
+  console.log(pathname);
+  
+  if (!isLoggedIn && pathname !== to) {
+    return <Navigate to={to} state={{ from: search }} replace />;
+  }
+  return <>{children}</>;
+};
+
 const renderRouteMap = ({ isPrivate, element, ...restRoute }: RouteConfig) => {
-    return (
-        <Route key={restRoute.path} element={element} {...restRoute} />
+  const authRequiredElement = isPrivate ? (
+    <AuthRequired>{element}</AuthRequired>
+  ) : (
+    element
+  );  
+  return (
+        <Route key={restRoute.path} element={authRequiredElement} {...restRoute} />
     );
 };
   
