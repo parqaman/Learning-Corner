@@ -12,6 +12,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   const [drawer, setDrawer] = useState('none');
   const profileDisclosure = useDisclosure()
   const hamburgerDisclosure = useDisclosure()
+  const useLogout = useAuth().actions.logout;
 
   const HamburgerMenuItems = () => {
     return (
@@ -86,8 +87,12 @@ export const AppLayout = (props: AppLayoutProps) => {
                   Edit profile
                   </NavItem>
               </Link>
-              <Link to={'/logout'}>
-                <NavItem _hover={{background:"rgba(0, 0, 0, 0.1)"}} fontSize={"sm"}>Logout</NavItem>
+              <Link to={'/'}>
+                <NavItem _hover={{background:"rgba(0, 0, 0, 0.1)"}} fontSize={"sm"}
+                  onClick={useLogout}
+                >
+                  Logout
+                </NavItem>
               </Link>
             </MenuList>
           </Menu>
