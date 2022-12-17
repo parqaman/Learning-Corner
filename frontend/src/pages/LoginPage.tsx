@@ -12,9 +12,7 @@ export const LoginSchema = object({
 });
 
 export const LoginPage = () => {
-    const {
-        actions: { login },
-      } = useAuth();
+    const useLogin = useAuth().actions.login;
     
   return (
     <AppLayout>
@@ -29,7 +27,7 @@ export const LoginPage = () => {
             }}
             validationSchema={LoginSchema}
             onSubmit={(values) => {                
-                login(values)
+                useLogin(values)
             }}
             >
                 {
