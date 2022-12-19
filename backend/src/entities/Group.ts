@@ -1,7 +1,7 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Collection, Entity, ManyToMany, Property } from "@mikro-orm/core";
 import { object, string } from "yup";
 import { BaseEntity } from "./BaseEntity";
-import { Course } from "./Course";
+import { LearnerInCourse } from "./LearnerInCourse";
 
 @Entity()
 export class Group extends BaseEntity {
@@ -11,14 +11,13 @@ export class Group extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToOne(() => Course)
-  course: Course;
+  @ManyToMany({ entity: () => LearnerInCourse, mappedBy: (e) => e.groups })
+  members = new Collection<LearnerInCourse>(this);
 
-  constructor({ name, description, course }: CreateGroupDTO) {
+  constructor({ name, description }: CreateGroupDTO) {
     super();
     this.name = name;
     this.description = description;
-    this.course = course;
   }
 }
 
@@ -30,5 +29,4 @@ export const CreateGroupSchema = object({
 export type CreateGroupDTO = {
   name: string;
   description: string;
-  course: Course;
 };

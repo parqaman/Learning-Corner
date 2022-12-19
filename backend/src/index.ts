@@ -6,8 +6,16 @@ import {
   MikroORM,
   RequestContext,
 } from "@mikro-orm/core";
-import { Course } from "./entities/Course";
-import { User } from "./entities/User";
+import {
+  Course,
+  CourseFile,
+  CourseSection,
+  Group,
+  LearnerInCourse,
+  User,
+} from "./entities";
+import { AuthController } from "./controller/auth.controller";
+import { Auth } from "./middleware/auth.middleware";
 
 const PORT = 4000;
 const app = express();
@@ -17,6 +25,10 @@ export const DI = {} as {
   orm: MikroORM;
   em: EntityManager;
   courseRepository: EntityRepository<Course>;
+  courseFileRepository: EntityRepository<CourseFile>;
+  courseSectionRepository: EntityRepository<CourseSection>;
+  groupRepository: EntityRepository<Group>;
+  learnerInCourseRepository: EntityRepository<LearnerInCourse>;
   userRepository: EntityRepository<User>;
 };
 
@@ -24,9 +36,26 @@ export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
   DI.em = DI.orm.em;
   DI.courseRepository = DI.orm.em.getRepository(Course);
+  DI.courseFileRepository = DI.orm.em.getRepository(CourseFile);
+  DI.courseSectionRepository = DI.orm.em.getRepository(CourseSection);
+  DI.groupRepository = DI.orm.em.getRepository(Group);
+  DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
   DI.userRepository = DI.orm.em.getRepository(User);
+
+  // global middleware
+  app.use(express.json());
+  app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
+  app.use(Auth.prepareAuthentication);
+
+  // routes
+  app.get('/', (req, res) => {
+    res.send('GET request to the homepage')
+  })
+  app.use("/auth", AuthController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
 };
+
+initializeServer()

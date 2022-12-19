@@ -1,15 +1,15 @@
-import { useState } from 'react'
 import { AppRoutes } from './AppRoutes'
-import reactLogo from './assets/react.svg'
-import { AppLayout } from './layout/AppLayout'
 import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from './providers/AuthProvider';
 
 function App() {
   return (
     <ChakraProvider>
       <BrowserRouter>
-        <AppRoutes/>
+        <AuthProvider>
+          <AppRoutes/>
+        </AuthProvider>
       </BrowserRouter>
     </ChakraProvider>
   )

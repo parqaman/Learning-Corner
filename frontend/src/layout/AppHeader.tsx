@@ -17,9 +17,10 @@ export const AppHeader = (props: AppHeaderProps) => {
     borderBottom={'solid 3px'}
     borderBottomColor={'#0194F3'}
     boxShadow={'0 4px 5px 0 rgba(0, 0, 0, 0.15)'}
+    color={'black'}
     >
         <Link to={"/"}><Text fontSize={'xl'} fontWeight={'semibold'}>Learning Corner</Text></Link>
-        <Nav width={'35%'}>{props.headerRightMenu}</Nav>
+        <Nav justifyContent={{base: "flex-end", md: "start"}} width={{base: "auto", md: '40%'}}>{props.headerRightMenu}</Nav>
     </Flex>
     )
 }

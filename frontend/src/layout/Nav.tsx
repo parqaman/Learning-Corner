@@ -1,7 +1,7 @@
 import { Box, chakra, HTMLChakraProps, List, ListItem, Button } from "@chakra-ui/react";
 
 export const Nav = (props: HTMLChakraProps<"ul">) => {
-    return <List {...props} display="flex" justifyContent={'space-around'}/>;
+    return <List {...props} display="flex" justifyContent={'center'}/>;
 };
 
 export const NavItem = (props: HTMLChakraProps<"li">) => {
