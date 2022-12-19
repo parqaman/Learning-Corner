@@ -9,9 +9,10 @@ import { User } from "./entities/User";
 const options: Options = {
   type: "postgresql",
   host: "localhost",
-  dbName: "postgres",
-  user: "postgres",
-  password: "postgres123",
+  port: 5433,
+  dbName: "learningCornerDB",
+  user: "lcUser",
+  password: "lcfwe22",
   debug: true,
   entities: [
     Course,

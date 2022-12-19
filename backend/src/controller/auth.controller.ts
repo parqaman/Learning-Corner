@@ -62,7 +62,10 @@ router.post("/login", async (req, res) => {
     lastName: user.lastName,
   });
 
+  localStorage.setItem("user", JSON.stringify(jwt))
   res.status(200).send({ accessToken: jwt });
 });
+
+
 
 export const AuthController = router;
