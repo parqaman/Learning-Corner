@@ -3,6 +3,14 @@ import { useToast, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/localStorage";
 
+export type RegisterUserData = {
+  firstName: string;
+  lastName: string;
+  password: string;
+  email: string;
+  photo: string;
+};
+
 export type LoginData = {
   password: string;
   email: string;
@@ -22,6 +30,7 @@ export type AuthContext = {
   isLoggedIn: boolean;
   actions: {
     login: (loginData: LoginData) => void;
+    register: (registerData: RegisterUserData) => void;
     logout: () => void;
   };
 };
@@ -52,7 +61,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const onLogin = React.useCallback(
     async (loginData: LoginData) => {
-      console.log("now logging in");
       const res = await fetch("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(loginData),
@@ -85,6 +93,42 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     },
     [toast]
   );
+
+  const onRegister = React.useCallback(
+    async (userData: RegisterUserData) => {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: { "content-type": "application/json" },
+      });
+      if (res.status === 201) {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        const errorBody = await res.json();
+        toast({
+          title: "Error occured.",
+          description: (
+            <>
+              {errorBody.errors.map((e: string) => (
+                <Text>{e}</Text>
+              ))}
+            </>
+          ),
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    },
+    [toast]
+  );
+
   return (
     <authContext.Provider
       value={{
@@ -93,6 +137,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         isLoggedIn: !!user,
         actions: {
           login: onLogin,
+          register: onRegister,
           logout: onLogout,
         },
       }}
