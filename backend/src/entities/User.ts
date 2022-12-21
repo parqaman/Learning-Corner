@@ -75,3 +75,9 @@ export const LoginSchema = object({
   email: string().required(),
   password: string().required(),
 });
+
+export const ResetPasswortSchema = object({
+  id: string().required(),
+  newPassword: string().required().min(8),
+  currentPassword: string().required(),
+});
