@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react'
 import { ProfileCard } from '../components/ProfileCard'
 import { AppLayout } from '../layout/AppLayout'
 import { useAuth, User } from '../providers/AuthProvider'
-import profile_empty from '../assets/profile_empty.png'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { useNavigate } from 'react-router-dom'
 
@@ -45,13 +44,7 @@ const ProfileDetailTile = ({description, data, edit, editDetail, setEditDetail, 
               }
               {
                 description == "Email" &&
-                <>
                   <Input isRequired value={editDetail.email} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: e.target.value, image: editDetail.image})} variant={'unstyled'} type={'email'}/>
-                  {/* <Text color={'rgba(0, 0, 0, 65%)'} fontSize='xs' pb={'0.1rem'} pt={'0.5em'}>
-                    New password:
-                  </Text>
-                  <Input isRequired value={editDetail.newPassword} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: editDetail.email, newPassword: e.target.value, image: editDetail.image})} variant={'unstyled'} type={'password'}/> */}
-                </>
               }
             </form>
           ) :
@@ -103,22 +96,21 @@ export const ProfilePage = () => {
     fetchData();
   }, []);
 
-  const handleEdit = async (e: React.FormEvent) => {
-    setEditDetail({
-      firstName: editDetail.firstName,
-      lastName: editDetail.lastName,
-      email: editDetail.email,
-      image: image
-    })
-
-    setEdit(!edit);
-    
+  const handleEdit = async (e: React.FormEvent) => {    
     if(user){
       user.firstName = editDetail.firstName;
       user.lastName = editDetail.lastName;
       user.email = editDetail.email;
+
+      setEditDetail({
+        firstName: editDetail.firstName,
+        lastName: editDetail.lastName,
+        email: editDetail.email,
+        image: image
+      })
       const data = await apiClient.putUsersId(user.id, user);
     }
+    setEdit(!edit);
   }
 
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,6 +175,7 @@ export const ProfilePage = () => {
                 </Button>
               ) : (
                 <Flex justifyContent={'space-between'} width='100%'>
+                  {/*TODO: done button check if user input is empty or not before sending request*/}
                   <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
                     Done
                   </Button>
@@ -192,7 +185,7 @@ export const ProfilePage = () => {
                 </Flex>
               )
             }
-          {!edit && 
+          {!edit &&
             <Button onClick={(e)=>handleDelete(e)} variant={'link'} color='red' _active={{}} size={'sm'}>
               Delete account
             </Button>}
