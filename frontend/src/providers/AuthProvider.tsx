@@ -109,6 +109,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           duration: 9000,
           isClosable: true,
         });
+
+        //automatically logged in after successful registration
+        onLogin({
+          email: userData.email,
+          password: userData.password
+        })
       } else {
         const errorBody = await res.json();
         toast({
