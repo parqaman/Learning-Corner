@@ -163,7 +163,7 @@ export const ProfilePage = () => {
                   edit ? (
                     <>
                       <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                        <Image src={image} maxH={'6.5rem'} objectFit={'cover'}/>
+                        <Image src={image} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
                         <Input type={'file'} accept='image/png, image/jpeg, image/gif' onChange={handleUploadImage} display={'none'} ref={fileInputRef}/>
                       </Box>
                       <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'light'}>
@@ -172,7 +172,7 @@ export const ProfilePage = () => {
                     </>
                   ) : (
                     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                      <Image src={image} maxH={'6.5rem'} objectFit={'cover'}/>
+                      <Image src={image} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
                     </Box>
                   )
                 }
