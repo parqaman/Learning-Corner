@@ -7,6 +7,7 @@ import {
   } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { useAuth } from "./providers/AuthProvider";
   
@@ -33,6 +34,11 @@ export const routes: RouteConfig[] = [
     path: "/auth/register",
     isPrivate: false,
     element: <RegisterPage />,
+  },
+  {
+    path: "/myprofile",
+    isPrivate: true,
+    element: <ProfilePage />,
   },
 ];
   
