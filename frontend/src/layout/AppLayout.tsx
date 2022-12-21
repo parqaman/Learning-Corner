@@ -41,17 +41,17 @@ export const AppLayout = (props: AppLayoutProps) => {
               Home
             </NavItem>
           </Link>
-          <Link to={'/mycourses'}>
+          <Link to={'/courses'}>
             <NavItem _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
                 My Courses
             </NavItem>
           </Link>
-          <Link to={'/mygroups'}>
+          <Link to={'/groups'}>
             <NavItem  _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
               My Groups
             </NavItem>
           </Link>
-          <Link to={'/myprofile'}>
+          <Link to={'/profile'}>
             <NavItem  _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
               My Profile
             </NavItem>
@@ -79,11 +79,11 @@ export const AppLayout = (props: AppLayoutProps) => {
             </NavItem>
           </Link>
           <Menu isOpen={profileDisclosure.isOpen}>
-            <MenuButton onClick={()=>navigate('/myprofile')} onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose} p={"0.25em"} _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
-                <Link to={'/myprofile'}>Profile</Link>
+            <MenuButton onClick={()=>navigate('/profile')} onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose} p={"0.25em"} _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
+                <Link to={'/profile'}>Profile</Link>
             </MenuButton>
             <MenuList style={{background: "white", marginTop: "-0.5rem", boxShadow: "0 0 1rem 0.1rem rgba(0, 0, 0, 0.1)"}} onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose}>
-              <Link to={'/myprofile'}>
+              <Link to={'/profile'}>
                 <NavItem _hover={{background:"rgba(0, 0, 0, 0.1)"}} fontSize={"sm"}>
                   My profile
                 </NavItem>

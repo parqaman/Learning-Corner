@@ -1,26 +1,26 @@
-import { Box, Button, Heading, Text, Image, Input } from '@chakra-ui/react'
+import { Box, Button, Heading, Text, Image, Input, Flex } from '@chakra-ui/react'
 import React, { useRef, useState } from 'react'
 import { ProfileCard } from '../components/ProfileCard'
 import { AppLayout } from '../layout/AppLayout'
-import { useAuth } from '../providers/AuthProvider'
+import { useAuth, User } from '../providers/AuthProvider'
 import profile_empty from '../assets/profile_empty.png'
+import { useApiClient } from '../adapter/api/useApiClient'
+import { useNavigate } from 'react-router-dom'
 
 interface ProfileProps {
   description: string,
-  data: string,
+  data: string | undefined,
   edit: boolean,
   editDetail: {
     firstName: string;
     lastName: string;
     email: string;
-    newPassword: string;
     image: string;
   },
   setEditDetail: React.Dispatch<React.SetStateAction<{
     firstName: string;
     lastName: string;
     email: string;
-    newPassword: string;
     image: string;
   }>>
   editHandler: (e: React.FormEvent)=>void
@@ -37,16 +37,16 @@ const ProfileDetailTile = ({description, data, edit, editDetail, setEditDetail, 
             <form onSubmit={(e)=>editHandler(e)}>
               {
                 description == "First name" &&
-                <Input autoFocus={true} isRequired value={editDetail.firstName} onChange={(e)=>setEditDetail({firstName: e.target.value, lastName: editDetail.lastName, email: editDetail.email, newPassword: editDetail.newPassword, image: editDetail.image})} variant={'unstyled'}/>
+                <Input autoFocus={true} isRequired value={editDetail.firstName} onChange={(e)=>setEditDetail({firstName: e.target.value, lastName: editDetail.lastName, email: editDetail.email, image: editDetail.image})} variant={'unstyled'}/>
               }
               {
                 description == "Last name" &&
-                <Input isRequired value={editDetail.lastName} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: e.target.value, email: editDetail.email, newPassword: editDetail.newPassword, image: editDetail.image})} variant={'unstyled'}/>
+                <Input isRequired value={editDetail.lastName} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: e.target.value, email: editDetail.email, image: editDetail.image})} variant={'unstyled'}/>
               }
               {
                 description == "Email" &&
                 <>
-                  <Input isRequired value={editDetail.email} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: e.target.value, newPassword: editDetail.newPassword, image: editDetail.image})} variant={'unstyled'} type={'email'}/>
+                  <Input isRequired value={editDetail.email} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: e.target.value, image: editDetail.image})} variant={'unstyled'} type={'email'}/>
                   {/* <Text color={'rgba(0, 0, 0, 65%)'} fontSize='xs' pb={'0.1rem'} pt={'0.5em'}>
                     New password:
                   </Text>
@@ -65,16 +65,12 @@ const ProfileDetailTile = ({description, data, edit, editDetail, setEditDetail, 
 
 export const ProfilePage = () => {
   const useLogout = useAuth().actions.logout;
-  const user = useAuth().user
-
-  //use state for profile attributes
-  const [profileDetails, setProfileDetails] = useState({
-    firstName: "", lastName: "", email: "", image: ""
-  });
+  const apiClient = useApiClient()
+  const navigate = useNavigate()
 
   //use state for input of attributes
   const [editDetail, setEditDetail] = useState({
-    firstName: "", lastName: "", email: "", newPassword: "", image: ""
+    firstName: "", lastName: "", email: "", image: ""
   });  
 
   //state for edit mode
@@ -83,25 +79,21 @@ export const ProfilePage = () => {
   //state for uploading profile image
   const [image, setImage] = useState("");
 
+  const [user, setUser] = useState<User | null>(useAuth().user)
+
   //referencing input type file
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchData = () => {
+  const fetchData = async () => {
     if(user){
-      image == "" ? setImage(profile_empty) : setImage(image)
-      user.image = profile_empty; //later to be changed with image from backend
-      setProfileDetails({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        image: user.image
-      })
+      const fetchedUser = await apiClient.getUsersId(user.id)      
+      
+      setUser(fetchedUser.data);
 
       setEditDetail({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        newPassword: "",
         image: user.image
       })
     }
@@ -111,43 +103,43 @@ export const ProfilePage = () => {
     fetchData();
   }, []);
 
-  const handleEdit = (e: React.FormEvent) => {
-    e.preventDefault();    
-
-    setProfileDetails({
-      firstName: editDetail.firstName,
-      lastName: editDetail.lastName,
-      email: editDetail.email,
-      image: image
-    });
-
+  const handleEdit = async (e: React.FormEvent) => {
     setEditDetail({
       firstName: editDetail.firstName,
       lastName: editDetail.lastName,
       email: editDetail.email,
-      newPassword: "", //new password input always starts with an empty string
       image: image
     })
 
     setEdit(!edit);
     
-    //TODO: send update to backend
+    if(user){
+      user.firstName = editDetail.firstName;
+      user.lastName = editDetail.lastName;
+      user.email = editDetail.email;
+      const data = await apiClient.putUsersId(user.id, user);
+    }
   }
 
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("image uploaded");
-    console.log(e.target.files);
     if(e.target.files){
       const image = e.target.files[0];
       const reader = new FileReader()
       reader.readAsDataURL(image);
       reader.onload = () => {
-        console.log(reader.result);
         if(reader.result){
           setImage(reader.result.toString());
         }
       }
-      }
+    }
+  }
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if(user){
+      await apiClient.deleteUsersId(user.id);
+      useLogout()
+    }
   }
 
   return (
@@ -177,13 +169,12 @@ export const ProfilePage = () => {
                   )
                 }
               </Box>
-              <ProfileDetailTile description='First name' data={profileDetails.firstName} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
-              <ProfileDetailTile description='Last name' data={profileDetails.lastName} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
-              <ProfileDetailTile description='Email' data={profileDetails.email} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
+              <ProfileDetailTile description='First name' data={user?.firstName} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
+              <ProfileDetailTile description='Last name' data={user?.lastName} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
+              <ProfileDetailTile description='Email' data={user?.email} edit={edit} editDetail={editDetail} setEditDetail={setEditDetail} editHandler={handleEdit}/>
             </>
         }
         <Box display={'flex'} justifyContent='space-between'>
-          <Box>
             {
               !edit ?
               (
@@ -191,13 +182,20 @@ export const ProfilePage = () => {
                   Edit
                 </Button>
               ) : (
-                <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
-                  Done
-                </Button>
+                <Flex justifyContent={'space-between'} width='100%'>
+                  <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
+                    Done
+                  </Button>
+                  <Text color={'rgba(220, 0, 0, 100%)'} onClick={()=>{navigate('./resetpassword'); setEdit(!edit)}} cursor='pointer' fontSize='xs' fontWeight={'medium'} pb={'0.1rem'} pt={'0.5em'}>
+                    Reset password
+                  </Text>
+                </Flex>
               )
             }
-          </Box>
-          {!edit && <Button variant={'link'} color='red' _active={{}} size={'sm'}>Delete account</Button>}
+          {!edit && 
+            <Button onClick={(e)=>handleDelete(e)} variant={'link'} color='red' _active={{}} size={'sm'}>
+              Delete account
+            </Button>}
           {!edit && <Button onClick={useLogout} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'#DC0000'} color='white' fontWeight={'medium'}>Logout</Button>}
         </Box>
       </ProfileCard>
