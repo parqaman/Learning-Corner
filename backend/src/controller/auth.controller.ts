@@ -5,6 +5,7 @@ import {
   LoginSchema,
   RegisterUserDTO,
   RegisterUserSchema,
+  ResetPasswortSchema,
   User,
 } from "../entities";
 import { Auth } from "../middleware/auth.middleware";
