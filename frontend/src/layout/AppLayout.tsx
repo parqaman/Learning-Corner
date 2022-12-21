@@ -1,6 +1,6 @@
 import { NavItem } from "./Nav";
 import { BaseLayout, BaseLayoutProps } from "./BaseLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import { Text, Flex, Menu, MenuButton, MenuList, useDisclosure } from "@chakra-ui/react"
 import { RxHamburgerMenu } from 'react-icons/rx'
@@ -13,6 +13,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   const profileDisclosure = useDisclosure()
   const hamburgerDisclosure = useDisclosure()
   const useLogout = useAuth().actions.logout;
+  const navigate = useNavigate();
 
   const HamburgerMenuItems = () => {
     return (
@@ -78,14 +79,14 @@ export const AppLayout = (props: AppLayoutProps) => {
             </NavItem>
           </Link>
           <Menu isOpen={profileDisclosure.isOpen}>
-            <MenuButton onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose} p={"0.25em"} _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
+            <MenuButton onClick={()=>navigate('/myprofile')} onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose} p={"0.25em"} _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
                 <Link to={'/myprofile'}>Profile</Link>
             </MenuButton>
             <MenuList style={{background: "white", marginTop: "-0.5rem", boxShadow: "0 0 1rem 0.1rem rgba(0, 0, 0, 0.1)"}} onMouseEnter={profileDisclosure.onOpen} onMouseLeave={profileDisclosure.onClose}>
-              <Link to={'/myprofile/edit'}>
+              <Link to={'/myprofile'}>
                 <NavItem _hover={{background:"rgba(0, 0, 0, 0.1)"}} fontSize={"sm"}>
-                  Edit profile
-                  </NavItem>
+                  My profile
+                </NavItem>
               </Link>
               <Link to={'/'}>
                 <NavItem _hover={{background:"rgba(0, 0, 0, 0.1)"}} fontSize={"sm"}
