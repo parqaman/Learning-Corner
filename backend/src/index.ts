@@ -15,6 +15,7 @@ import {
   User,
 } from "./entities";
 import { AuthController } from "./controller/auth.controller";
+import {UserController} from "./controller/user.controller";
 import { Auth } from "./middleware/auth.middleware";
 
 const PORT = 4000;
@@ -52,6 +53,7 @@ export const initializeServer = async () => {
     res.send('GET request to the homepage')
   })
   app.use("/auth", AuthController);
+  app.use("/users", Auth.verifyAccess, UserController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
