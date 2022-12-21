@@ -71,6 +71,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (res.status === 200) {
         setAccessToken(resBody.accessToken);
         navigate("/", { replace: true });
+
+        const tokenValidity = 60; // token valid for n minutes
+        setTimeout(() => {
+          alert("Your session has expired")
+          onLogout()
+        }, tokenValidity * 60 * 1000); //timout given in milliseconds
+
       } else {
         if(!toast.isActive("error-password")){
           toast({
