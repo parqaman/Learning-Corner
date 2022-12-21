@@ -258,6 +258,25 @@ paths:
           description: Invalid Id
       security:
         - Bearer: []
+  /auth/resetpassword:
+    put:
+      summary: Update password
+      operationId: put-auth-resetpassword
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
   /auth/register:
     post:
       description: Perform registration
@@ -331,13 +350,15 @@ components:
           type: string
           format: uuid
           description: Unique identifier for the given user.
-        firstname:
+        firstName:
           type: string
-        lastname:
+        lastName:
           type: string
         email:
           type: string
           format: email
+        image:
+          type: string
         createdAt:
           type: string
           format: date-time
@@ -345,9 +366,11 @@ components:
           type: string
           format: date-time
       required:
-        - firstname
-        - lastname
+        - id
+        - firstName
+        - lastName
         - email
+        - image
     Course:
       title: Course
       type: object
