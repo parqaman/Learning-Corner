@@ -50,7 +50,7 @@ export const CourseList = ({courses}: CourseListProps) => {
                 <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
                     {
                         courses.map((course)=>(
-                            <GridItem>
+                            <GridItem key={course.id}>
                                 <SingleCourse
                                     id={course.id}
                                     courseName={course.courseName}
