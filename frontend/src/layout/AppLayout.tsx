@@ -7,6 +7,7 @@ import { RxHamburgerMenu } from 'react-icons/rx'
 import { GrClose } from 'react-icons/gr'
 import { useState } from "react";
 export type AppLayoutProps = Partial<BaseLayoutProps>;
+import React from "react";
 
 export const AppLayout = (props: AppLayoutProps) => {
   const [drawer, setDrawer] = useState('none');
@@ -106,7 +107,11 @@ export const AppLayout = (props: AppLayoutProps) => {
           <HamburgerMenuItems/>
         </Flex>
     </>
-  );  
+  );
+  
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);    
 
   //check whether user is logged in or not, since navbar buttons are different for logged in user
   const { isLoggedIn } = useAuth();
