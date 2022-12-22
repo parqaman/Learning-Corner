@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { AppLayout } from '../layout/AppLayout'
 import { useAuth } from '../providers/AuthProvider'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { CourseList } from '../components/CourseList'
+import { CourseList } from '../components/course_components/CourseList'
 
 interface SeacrhBarProps {
   searchVal: string;
