@@ -16,5 +16,6 @@ export const ProfileCard = ({ children }: { children: React.ReactNode }) => {
       >
         {children}
       </Box>
-    </SlideFade>  )
+    </SlideFade>
+  )
 }
