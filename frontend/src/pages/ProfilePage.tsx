@@ -135,7 +135,7 @@ export const ProfilePage = () => {
   }
 
   return (
-    <AppLayout>
+    <AppLayout display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
       <ProfileCard>
         <Heading>
           My Profile

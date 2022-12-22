@@ -17,7 +17,7 @@ export const RegisterPage = () => {
    const useRegister = useAuth().actions.register;
     
   return (
-    <AppLayout>
+    <AppLayout display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
         <AuthCard>
             <Heading >
                 Sign up
