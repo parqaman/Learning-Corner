@@ -3,11 +3,13 @@ import { Box, SlideFade } from "@chakra-ui/react";
 
 export const AuthCard = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SlideFade delay={0.2} in={true} style={{width:'55%'}}>
+    <SlideFade delay={0.2} in={true} style={{width: '55%', display: 'flex', justifyContent: 'center'}}>
       <Box
       id='AuthCard'
-      minH="450px"
-      minW="500px"
+      minH="28rem"
+      minW="32rem"
+      maxH={'45rem'}
+      maxW={'60rem'}
       bg={'white'}
       color={'black'}
       width={'100%'}
