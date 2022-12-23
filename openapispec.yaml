@@ -365,6 +365,10 @@ components:
         updatedAt:
           type: string
           format: date-time
+        courses:
+          $ref: '#/components/schemas/Course'
+        groups:
+          $ref: '#/components/schemas/Group'
       required:
         - id
         - firstName
@@ -436,7 +440,7 @@ components:
         - name
         - description
         - owner
-    CourseFile:
+    File:
       title: File
       type: object
       description: A File
@@ -452,10 +456,10 @@ components:
           format: uuid
         name:
           type: string
-        course:
-          type:
-            $ref: '#/components/schemas/Course'
-          $ref: '#/components/schemas/Course'
+        owner:
+          oneOf:
+            - $ref: '#/components/schemas/Course'
+            - $ref: '#/components/schemas/Group'
         createdAt:
           type: string
           format: date-time
@@ -465,10 +469,14 @@ components:
       required:
         - name
         - course
-    CourseSection:
+      x-stoplight:
+        id: c00d5a960f6ee
+    Section:
       title: Section
-      description: A content section in a course
+      description: A content section in a course/group
       type: object
+      x-stoplight:
+        id: 8703e8cdbf634
       properties:
         id:
           type: string
@@ -480,7 +488,29 @@ components:
         files:
           type: array
           items:
-            $ref: '#/components/schemas/CourseFile'
+            $ref: '#/components/schemas/File'
+    Group:
+      title: Group
+      x-stoplight:
+        id: hincqq4kpsm12
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          $ref: '#/components/schemas/User'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Section'
     Quiz:
       title: Quiz
       type: object
