@@ -5,6 +5,7 @@ import {
     Routes,
     useLocation,
   } from "react-router-dom";
+import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -45,6 +46,11 @@ export const routes: RouteConfig[] = [
     path: "/profile/resetpassword",
     isPrivate: true,
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "/courses/:id",
+    isPrivate: true,
+    element: <CourseDetailPage />,
   },
 ];
   
