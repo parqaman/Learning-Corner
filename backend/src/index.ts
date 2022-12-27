@@ -14,9 +14,10 @@ import {
   LearnerInCourse,
   User,
 } from "./entities";
-import { AuthController } from "./controller/auth.controller";
-import {UserController} from "./controller/user.controller";
 import { Auth } from "./middleware/auth.middleware";
+import { AuthController } from "./controller/auth.controller";
+import { UserController } from "./controller/user.controller";
+import { CourseController } from "./controller/course.controller";
 
 const PORT = 4000;
 const app = express();
@@ -49,15 +50,16 @@ export const initializeServer = async () => {
   app.use(Auth.prepareAuthentication);
 
   // routes
-  app.get('/', (req, res) => {
-    res.send('GET request to the homepage')
-  })
+  app.get("/", (req, res) => {
+    res.send("GET request to the homepage");
+  });
   app.use("/auth", AuthController);
   app.use("/users", Auth.verifyAccess, UserController);
+  app.use("/courses", CourseController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
 };
 
-initializeServer()
+initializeServer();
