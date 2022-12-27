@@ -14,13 +14,13 @@ interface ProfileProps {
     firstName: string;
     lastName: string;
     email: string;
-    image: string;
+    photo: string;
   },
   setEditDetail: React.Dispatch<React.SetStateAction<{
     firstName: string;
     lastName: string;
     email: string;
-    image: string;
+    photo: string;
   }>>
   editHandler: (e: React.FormEvent)=>void
 }
@@ -36,15 +36,15 @@ const ProfileDetailTile = ({description, data, edit, editDetail, setEditDetail, 
             <form onSubmit={(e)=>editHandler(e)}>
               {
                 description == "First name" &&
-                <Input autoFocus={true} isRequired value={editDetail.firstName} onChange={(e)=>setEditDetail({firstName: e.target.value, lastName: editDetail.lastName, email: editDetail.email, image: editDetail.image})} variant={'unstyled'}/>
+                <Input autoFocus={true} isRequired value={editDetail.firstName} onChange={(e)=>setEditDetail({firstName: e.target.value, lastName: editDetail.lastName, email: editDetail.email, photo: editDetail.photo})} variant={'unstyled'}/>
               }
               {
                 description == "Last name" &&
-                <Input isRequired value={editDetail.lastName} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: e.target.value, email: editDetail.email, image: editDetail.image})} variant={'unstyled'}/>
+                <Input isRequired value={editDetail.lastName} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: e.target.value, email: editDetail.email, photo: editDetail.photo})} variant={'unstyled'}/>
               }
               {
                 description == "Email" &&
-                  <Input isRequired value={editDetail.email} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: e.target.value, image: editDetail.image})} variant={'unstyled'} type={'email'}/>
+                  <Input isRequired value={editDetail.email} onChange={(e)=>setEditDetail({firstName: editDetail.firstName, lastName: editDetail.lastName, email: e.target.value, photo: editDetail.photo})} variant={'unstyled'} type={'email'}/>
               }
             </form>
           ) :
@@ -63,14 +63,14 @@ export const ProfilePage = () => {
 
   //use state for input of attributes
   const [editDetail, setEditDetail] = useState({
-    firstName: "", lastName: "", email: "", image: ""
+    firstName: "", lastName: "", email: "", photo: ""
   });  
 
   //state for edit mode
   const [edit, setEdit] = useState(false);
 
-  //state for uploading profile image
-  const [image, setImage] = useState("");
+  //state for uploading profile photo
+  const [photo, setPhoto] = useState("");
 
   const [user, setUser] = useState<User | null>(useAuth().user)
 
@@ -87,7 +87,7 @@ export const ProfilePage = () => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        image: user.image
+        photo: user.photo
       })
     }
   }
@@ -106,21 +106,21 @@ export const ProfilePage = () => {
         firstName: editDetail.firstName,
         lastName: editDetail.lastName,
         email: editDetail.email,
-        image: image
+        photo: photo
       })
       const data = await apiClient.putUsersId(user.id, user);
     }
     setEdit(!edit);
   }
 
-  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files){
-      const image = e.target.files[0];
+      const photo = e.target.files[0];
       const reader = new FileReader()
-      reader.readAsDataURL(image);
+      reader.readAsDataURL(photo);
       reader.onload = () => {
         if(reader.result){
-          setImage(reader.result.toString());
+          setPhoto(reader.result.toString());
         }
       }
     }
@@ -147,8 +147,8 @@ export const ProfilePage = () => {
                   edit ? (
                     <>
                       <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                        <Image src={image} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
-                        <Input type={'file'} accept='image/png, image/jpeg, image/gif' onChange={handleUploadImage} display={'none'} ref={fileInputRef}/>
+                        <Image src={photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+                        <Input type={'file'} accept='image/png, image/jpeg, image/gif' onChange={handleUploadPhoto} display={'none'} ref={fileInputRef}/>
                       </Box>
                       <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'light'}>
                         Upload image
@@ -156,7 +156,7 @@ export const ProfilePage = () => {
                     </>
                   ) : (
                     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                      <Image src={image} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+                      <Image src={photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
                     </Box>
                   )
                 }

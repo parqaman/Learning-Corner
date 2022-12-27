@@ -21,7 +21,7 @@ export type User = {
     firstName: string;
     lastName: string;
     email: string;
-    image: string;
+    photo: string;
 };
 
 export type AuthContext = {
