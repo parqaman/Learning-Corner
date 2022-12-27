@@ -416,7 +416,7 @@ export interface User {
      * @type {any}
      * @memberof User
      */
-    'image': any;
+    'photo': any;
     /**
      * 
      * @type {any}

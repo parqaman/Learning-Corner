@@ -357,7 +357,7 @@ components:
         email:
           type: string
           format: email
-        image:
+        photo:
           type: string
         createdAt:
           type: string
@@ -370,7 +370,7 @@ components:
         - firstName
         - lastName
         - email
-        - image
+        - photo
     Course:
       title: Course
       type: object
