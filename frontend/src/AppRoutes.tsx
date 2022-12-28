@@ -5,9 +5,12 @@ import {
     Routes,
     useLocation,
   } from "react-router-dom";
+import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { useAuth } from "./providers/AuthProvider";
   
 export type RouteConfig = RouteProps & { path: string; isPrivate?: boolean };
@@ -34,6 +37,21 @@ export const routes: RouteConfig[] = [
     isPrivate: false,
     element: <RegisterPage />,
   },
+  {
+    path: "/profile",
+    isPrivate: true,
+    element: <ProfilePage />,
+  },
+  {
+    path: "/profile/resetpassword",
+    isPrivate: true,
+    element: <ResetPasswordPage />,
+  },
+  {
+    path: "/courses/:id",
+    isPrivate: true,
+    element: <CourseDetailPage />,
+  },
 ];
   
 export type AuthRequiredProps = {
@@ -47,7 +65,6 @@ export const AuthRequired = ({
 }: AuthRequiredProps) => {
   const { isLoggedIn } = useAuth();
   const { pathname, search } = useLocation();
-  console.log(pathname);
   
   if (!isLoggedIn && pathname !== to) {
     return <Navigate to={to} state={{ from: search }} replace />;

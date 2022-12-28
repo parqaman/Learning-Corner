@@ -15,7 +15,7 @@ export const LoginPage = () => {
     const useLogin = useAuth().actions.login;
     
   return (
-    <AppLayout>
+    <AppLayout display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
         <AuthCard>
             <Heading >
                 Sign in

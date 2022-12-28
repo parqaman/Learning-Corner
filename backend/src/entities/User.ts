@@ -57,7 +57,7 @@ export class User extends BaseEntity {
 
 export const RegisterUserSchema = object({
   email: string().required(),
-  password: string().required(),
+  password: string().required().min(8),
   firstName: string().required(),
   lastName: string().required(),
   photo: string().required(),
@@ -74,4 +74,10 @@ export type RegisterUserDTO = {
 export const LoginSchema = object({
   email: string().required(),
   password: string().required(),
+});
+
+export const ResetPasswortSchema = object({
+  id: string().required(),
+  newPassword: string().required().min(8),
+  currentPassword: string().required(),
 });

@@ -1,8 +1,15 @@
 import { Router } from "express";
 
 import { DI } from "../";
-import { LoginSchema, RegisterUserDTO, RegisterUserSchema, User } from "../entities";
+import {
+  LoginSchema,
+  RegisterUserDTO,
+  RegisterUserSchema,
+  ResetPasswortSchema,
+  User,
+} from "../entities";
 import { Auth } from "../middleware/auth.middleware";
+import { wrap } from "@mikro-orm/core";
 
 const router = Router({ mergeParams: true });
 
@@ -62,10 +69,38 @@ router.post("/login", async (req, res) => {
     lastName: user.lastName,
   });
 
-  localStorage.setItem("user", JSON.stringify(jwt))
   res.status(200).send({ accessToken: jwt });
 });
 
+router.put("/resetpassword", async (req, res) => {
+  const validatedData = await ResetPasswortSchema.validate(req.body).catch(
+    (e) => {
+      res.status(400).send({ errors: e.errors });
+    }
+  );
+  if (!validatedData) {
+    return;
+  }
 
+  const user = await DI.userRepository.findOne({
+    id: validatedData.id,
+  });
+  if (!user) {
+    return res.status(400).json({ errors: ["User does not exist"] });
+  }
+
+  const matchingPassword = await Auth.comparePasswordWithHash(
+    validatedData.currentPassword,
+    user.password
+  );
+  if (!matchingPassword) {
+    return res.status(401).send({ errors: ["Incorrect password"] });
+  }
+
+  const hashedPassword = await Auth.hashPassword(validatedData.newPassword);
+  wrap(user).assign({ password: hashedPassword });
+  await DI.userRepository.flush();
+  res.status(200).send({ message: ["Password has been changed"] });
+});
 
 export const AuthController = router;
