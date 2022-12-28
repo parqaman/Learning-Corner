@@ -60,6 +60,7 @@ export const ProfilePage = () => {
   const useLogout = useAuth().actions.logout;
   const apiClient = useApiClient()
   const navigate = useNavigate()
+  const MAX_FILE_SIZE = 1048576;
 
   //use state for input of attributes
   const [editDetail, setEditDetail] = useState({
@@ -82,6 +83,7 @@ export const ProfilePage = () => {
       const fetchedUser = await apiClient.getUsersId(user.id)      
       
       setUser(fetchedUser.data);
+      setPhoto(fetchedUser.data.photo);
 
       setEditDetail({
         firstName: user.firstName,
@@ -101,6 +103,7 @@ export const ProfilePage = () => {
       user.firstName = editDetail.firstName;
       user.lastName = editDetail.lastName;
       user.email = editDetail.email;
+      user.photo = photo      
 
       setEditDetail({
         firstName: editDetail.firstName,
@@ -115,12 +118,17 @@ export const ProfilePage = () => {
 
   const handleUploadPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files){
-      const photo = e.target.files[0];
-      const reader = new FileReader()
-      reader.readAsDataURL(photo);
-      reader.onload = () => {
-        if(reader.result){
-          setPhoto(reader.result.toString());
+      const inputedPhoto = e.target.files[0];
+      if(inputedPhoto.size > MAX_FILE_SIZE){
+        alert("file size too big")
+      }
+      else {
+        const reader = new FileReader()
+        reader.readAsDataURL(inputedPhoto);
+        reader.onload = () => {
+          if(reader.result){
+            setPhoto(reader.result.toString());
+          }
         }
       }
     }
@@ -135,7 +143,7 @@ export const ProfilePage = () => {
   }
 
   return (
-    <AppLayout display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
+    <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
       <ProfileCard>
         <Heading>
           My Profile
@@ -156,7 +164,7 @@ export const ProfilePage = () => {
                     </>
                   ) : (
                     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                      <Image src={photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+                      <Image src={user?.photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
                     </Box>
                   )
                 }
