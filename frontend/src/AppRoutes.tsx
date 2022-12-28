@@ -8,6 +8,7 @@ import {
 import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { MyCoursesPage } from "./pages/MyCoursesPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
@@ -46,6 +47,11 @@ export const routes: RouteConfig[] = [
     path: "/profile/resetpassword",
     isPrivate: true,
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "/mycourses",
+    isPrivate: true,
+    element: <MyCoursesPage/>,
   },
   {
     path: "/courses/:id",
