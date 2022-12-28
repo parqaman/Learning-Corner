@@ -779,12 +779,25 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {any} name 
+         * @param {any} description 
+         * @param {User} owner 
+         * @param {any} [id] 
+         * @param {any} [participants] 
+         * @param {any} [sections] 
+         * @param {any} [quizzes] 
+         * @param {any} [createdAt] 
+         * @param {any} [updatedAt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses: async (course?: any, files?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postCourses: async (name: any, description: any, owner: User, id?: any, participants?: any, sections?: any, quizzes?: any, createdAt?: any, updatedAt?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('postCourses', 'name', name)
+            // verify required parameter 'description' is not null or undefined
+            assertParamExists('postCourses', 'description', description)
+            // verify required parameter 'owner' is not null or undefined
+            assertParamExists('postCourses', 'owner', owner)
             const localVarPath = `/courses`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -803,12 +816,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (course !== undefined) { 
-                localVarFormParams.append('course', new Blob([JSON.stringify(course)], { type: "application/json", }));
+            if (id !== undefined) { 
+                localVarFormParams.append('id', new Blob([JSON.stringify(id)], { type: "application/json", }));
             }
     
-            if (files !== undefined) { 
-                localVarFormParams.append('files', new Blob([JSON.stringify(files)], { type: "application/json", }));
+            if (name !== undefined) { 
+                localVarFormParams.append('name', new Blob([JSON.stringify(name)], { type: "application/json", }));
+            }
+    
+            if (description !== undefined) { 
+                localVarFormParams.append('description', new Blob([JSON.stringify(description)], { type: "application/json", }));
+            }
+    
+            if (owner !== undefined) { 
+                localVarFormParams.append('owner', new Blob([JSON.stringify(owner)], { type: "application/json", }));
+            }
+    
+            if (participants !== undefined) { 
+                localVarFormParams.append('participants', new Blob([JSON.stringify(participants)], { type: "application/json", }));
+            }
+    
+            if (sections !== undefined) { 
+                localVarFormParams.append('sections', new Blob([JSON.stringify(sections)], { type: "application/json", }));
+            }
+    
+            if (quizzes !== undefined) { 
+                localVarFormParams.append('quizzes', new Blob([JSON.stringify(quizzes)], { type: "application/json", }));
+            }
+    
+            if (createdAt !== undefined) { 
+                localVarFormParams.append('createdAt', new Blob([JSON.stringify(createdAt)], { type: "application/json", }));
+            }
+    
+            if (updatedAt !== undefined) { 
+                localVarFormParams.append('updatedAt', new Blob([JSON.stringify(updatedAt)], { type: "application/json", }));
             }
     
     
@@ -1043,13 +1084,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {any} name 
+         * @param {any} description 
+         * @param {User} owner 
+         * @param {any} [id] 
+         * @param {any} [participants] 
+         * @param {any} [sections] 
+         * @param {any} [quizzes] 
+         * @param {any} [createdAt] 
+         * @param {any} [updatedAt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postCourses(course?: any, files?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postCourses(course, files, options);
+        async postCourses(name: any, description: any, owner: User, id?: any, participants?: any, sections?: any, quizzes?: any, createdAt?: any, updatedAt?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCourses(name, description, owner, id, participants, sections, quizzes, createdAt, updatedAt, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1169,13 +1217,20 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {any} name 
+         * @param {any} description 
+         * @param {User} owner 
+         * @param {any} [id] 
+         * @param {any} [participants] 
+         * @param {any} [sections] 
+         * @param {any} [quizzes] 
+         * @param {any} [createdAt] 
+         * @param {any} [updatedAt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses(course?: any, files?: any, options?: any): AxiosPromise<Course> {
-            return localVarFp.postCourses(course, files, options).then((request) => request(axios, basePath));
+        postCourses(name: any, description: any, owner: User, id?: any, participants?: any, sections?: any, quizzes?: any, createdAt?: any, updatedAt?: any, options?: any): AxiosPromise<Course> {
+            return localVarFp.postCourses(name, description, owner, id, participants, sections, quizzes, createdAt, updatedAt, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1307,14 +1362,21 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * Post course
-     * @param {any} [course] 
-     * @param {any} [files] 
+     * @param {any} name 
+     * @param {any} description 
+     * @param {User} owner 
+     * @param {any} [id] 
+     * @param {any} [participants] 
+     * @param {any} [sections] 
+     * @param {any} [quizzes] 
+     * @param {any} [createdAt] 
+     * @param {any} [updatedAt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public postCourses(course?: any, files?: any, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).postCourses(course, files, options).then((request) => request(this.axios, this.basePath));
+    public postCourses(name: any, description: any, owner: User, id?: any, participants?: any, sections?: any, quizzes?: any, createdAt?: any, updatedAt?: any, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postCourses(name, description, owner, id, participants, sections, quizzes, createdAt, updatedAt, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
