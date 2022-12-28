@@ -12,6 +12,7 @@ import {
   CourseSection,
   Group,
   LearnerInCourse,
+  LearnerInGroup,
   User,
 } from "./entities";
 import { Auth } from "./middleware/auth.middleware";
@@ -31,6 +32,7 @@ export const DI = {} as {
   courseSectionRepository: EntityRepository<CourseSection>;
   groupRepository: EntityRepository<Group>;
   learnerInCourseRepository: EntityRepository<LearnerInCourse>;
+  learnerInGroupRepository: EntityRepository<LearnerInGroup>;
   userRepository: EntityRepository<User>;
 };
 
@@ -42,6 +44,7 @@ export const initializeServer = async () => {
   DI.courseSectionRepository = DI.orm.em.getRepository(CourseSection);
   DI.groupRepository = DI.orm.em.getRepository(Group);
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
+  DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.userRepository = DI.orm.em.getRepository(User);
 
   // global middleware
