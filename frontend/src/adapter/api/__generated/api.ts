@@ -83,74 +83,6 @@ export interface Course {
     'updatedAt'?: any;
 }
 /**
- * A File
- * @export
- * @interface CourseFile
- */
-export interface CourseFile {
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseFile
-     */
-    'id'?: any;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseFile
-     */
-    'name': any;
-    /**
-     * 
-     * @type {Course}
-     * @memberof CourseFile
-     */
-    'course': Course;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseFile
-     */
-    'createdAt'?: any;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseFile
-     */
-    'updatedAt'?: any;
-}
-/**
- * A content section in a course
- * @export
- * @interface CourseSection
- */
-export interface CourseSection {
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseSection
-     */
-    'id'?: any;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseSection
-     */
-    'heading'?: any;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseSection
-     */
-    'content'?: any;
-    /**
-     * 
-     * @type {any}
-     * @memberof CourseSection
-     */
-    'files'?: any;
-}
-/**
  * 
  * @export
  * @interface GetUsersId404Response
@@ -162,6 +94,86 @@ export interface GetUsersId404Response {
      * @memberof GetUsersId404Response
      */
     'message'?: any;
+}
+/**
+ * 
+ * @export
+ * @interface Group
+ */
+export interface Group {
+    /**
+     * 
+     * @type {any}
+     * @memberof Group
+     */
+    'id'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Group
+     */
+    'name'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Group
+     */
+    'description'?: any;
+    /**
+     * 
+     * @type {User}
+     * @memberof Group
+     */
+    'owner'?: User;
+    /**
+     * 
+     * @type {any}
+     * @memberof Group
+     */
+    'members'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Group
+     */
+    'sections'?: any;
+}
+/**
+ * A File
+ * @export
+ * @interface ModelFile
+ */
+export interface ModelFile {
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
+    'id'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
+    'name': any;
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
+    'owner'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
+    'createdAt'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
+    'updatedAt'?: any;
 }
 /**
  * 
@@ -382,6 +394,37 @@ export interface QuizQuestionAnswer {
     'updatedAt'?: any;
 }
 /**
+ * A content section in a course/group
+ * @export
+ * @interface Section
+ */
+export interface Section {
+    /**
+     * 
+     * @type {any}
+     * @memberof Section
+     */
+    'id'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Section
+     */
+    'heading'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Section
+     */
+    'content'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Section
+     */
+    'files'?: any;
+}
+/**
  * The User Objet
  * @export
  * @interface User
@@ -429,6 +472,18 @@ export interface User {
      * @memberof User
      */
     'updatedAt'?: any;
+    /**
+     * 
+     * @type {Course}
+     * @memberof User
+     */
+    'courses'?: Course;
+    /**
+     * 
+     * @type {Group}
+     * @memberof User
+     */
+    'groups'?: Group;
 }
 
 /**
