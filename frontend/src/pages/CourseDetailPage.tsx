@@ -1,11 +1,11 @@
-import { Box, Button, Flex, Heading, Input, Text, Textarea } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Input, Text, Textarea, useToast } from '@chakra-ui/react'
 import { CourseCard } from '../components/course_components/CourseCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline } from 'react-icons/io5'
 import { AiFillEdit } from 'react-icons/ai'
 import React, { useEffect, useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Course } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
 
@@ -65,7 +65,9 @@ export const CourseDetailPage = () => {
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [course, setCourse] = useState<Course>()
-    
+    const toast = useToast();
+    const navigate = useNavigate()
+
     const fetchData = async () => {        
         const theCourse = await apiClient.getCoursesId(id)
         .then((res)=>{
@@ -92,6 +94,31 @@ export const CourseDetailPage = () => {
         .catch((e)=>{
             console.log(e);
         })
+    }
+
+    const handleDeleteCourse = async () => {
+        if(course && currentUser) {
+            const res = await apiClient.deleteCoursesCourseIDUsersUserID(course.id, currentUser.id)
+            .then(()=>{
+                toast({
+                    title: "Deleted",
+                    description: <Text>Course sucessfully deleted</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                navigate(-1);
+            })
+            .catch(error=>{             
+                toast({
+                title: "Error occured.",
+                description: <Text>{error.response.data.errors}</Text>,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+                });
+            })
+        }
     }
 
   return (
@@ -140,6 +167,14 @@ export const CourseDetailPage = () => {
                 )
             }
             {/*TODO: map course sections*/}
+            <Box display={'flex'} justifyContent='center' mt={'3rem'}>
+            {
+                isOwner &&
+                <Button onClick={()=>handleDeleteCourse()} variant={'link'} color='red' _active={{}} size={'sm'}>
+                    Delete course
+                </Button>
+            }
+            </Box>
         </CourseCard>
     </AppLayout>
   )
