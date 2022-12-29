@@ -241,6 +241,31 @@ export interface PostAuthRegisterRequest {
 /**
  * 
  * @export
+ * @interface PutAuthResetpasswordRequest
+ */
+export interface PutAuthResetpasswordRequest {
+    /**
+     * 
+     * @type {any}
+     * @memberof PutAuthResetpasswordRequest
+     */
+    'id'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof PutAuthResetpasswordRequest
+     */
+    'currentPassword'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof PutAuthResetpasswordRequest
+     */
+    'newPassword'?: any;
+}
+/**
+ * 
+ * @export
  * @interface PutUsersId400Response
  */
 export interface PutUsersId400Response {
@@ -449,16 +474,16 @@ export interface User {
     'updatedAt'?: any;
     /**
      * 
-     * @type {Course}
+     * @type {any}
      * @memberof User
      */
-    'courses'?: Course;
+    'courses'?: any;
     /**
      * 
-     * @type {Group}
+     * @type {any}
      * @memberof User
      */
-    'groups'?: Group;
+    'groups'?: any;
 }
 
 /**
@@ -794,6 +819,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Update password
+         * @param {PutAuthResetpasswordRequest} [putAuthResetpasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putAuthResetpassword: async (putAuthResetpasswordRequest?: PutAuthResetpasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/resetpassword`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(putAuthResetpasswordRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary update a course by only course creator
          * @param {any} courseID 
          * @param {any} userID 
@@ -980,6 +1039,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Update password
+         * @param {PutAuthResetpasswordRequest} [putAuthResetpasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putAuthResetpassword(putAuthResetpasswordRequest?: PutAuthResetpasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putAuthResetpassword(putAuthResetpasswordRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary update a course by only course creator
          * @param {any} courseID 
          * @param {any} userID 
@@ -1093,6 +1163,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         postCourses(course: Course, options?: any): AxiosPromise<Course> {
             return localVarFp.postCourses(course, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update password
+         * @param {PutAuthResetpasswordRequest} [putAuthResetpasswordRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putAuthResetpassword(putAuthResetpasswordRequest?: PutAuthResetpasswordRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.putAuthResetpassword(putAuthResetpasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1224,6 +1304,18 @@ export class DefaultApi extends BaseAPI {
      */
     public postCourses(course: Course, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).postCourses(course, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update password
+     * @param {PutAuthResetpasswordRequest} [putAuthResetpasswordRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putAuthResetpassword(putAuthResetpasswordRequest?: PutAuthResetpasswordRequest, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putAuthResetpassword(putAuthResetpasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -191,7 +191,7 @@ paths:
                     type: string
       security:
         - Bearer: []
-  /courses/{courseID}/user/{userID}:
+  '/courses/{courseID}/user/{userID}':
     parameters:
       - schema:
           type: string
@@ -277,6 +277,25 @@ paths:
                 password:
                   type: string
         description: ''
+  /auth/resetpassword:
+    put:
+      summary: Update password
+      operationId: put-auth-resetpassword
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
 components:
   schemas:
     User:
@@ -309,9 +328,13 @@ components:
           type: string
           format: date-time
         courses:
-          $ref: '#/components/schemas/Course'
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
         groups:
-          $ref: '#/components/schemas/Group'
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
       required:
         - id
         - firstName
@@ -337,7 +360,7 @@ components:
             type: array
             items:
               type:
-                $ref: '#/components/schemas/CourseFile'
+                $ref: '#/components/schemas/File'
           quizzes:
             type: array
             items:
@@ -365,8 +388,8 @@ components:
           type: array
           items:
             type:
-              $ref: '#/components/schemas/CourseSection'
-            $ref: '#/components/schemas/CourseSection'
+              $ref: '#/components/schemas/Section'
+            $ref: '#/components/schemas/Section'
         quizzes:
           type: array
           items:
