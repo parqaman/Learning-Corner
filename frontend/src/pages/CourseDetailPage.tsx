@@ -3,20 +3,25 @@ import { CourseCard } from '../components/course_components/CourseCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline } from 'react-icons/io5'
 import { AiFillEdit } from 'react-icons/ai'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useApiClient } from '../adapter/api/useApiClient'
+import { useParams } from 'react-router-dom'
+import { Course } from '../adapter/api/__generated'
+import { useAuth } from '../providers/AuthProvider'
 
-export const CourseSection = (section: {title: string; content: string; owner: boolean;}) => {
-    const [editMode, setEditMode] = useState(false)
-    const [theSection, setTheSection] = useState({
-        title: section.title, content: section.content
-    })
+interface CourseDescProps {
+    course: Course;
+    setCourse: React.Dispatch<React.SetStateAction<Course | undefined>>
+    updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
+    isOwner: boolean
+}
+const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: CourseDescProps) => {
+    const [editMode, setEditMode] = useState(false);
 
     const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setEditMode(!editMode)
-        console.log(section.title);
-        
-        //TODO: send put request to update section title
+        setEditMode(false)
+        updateHandler(e)   
     }
 
     return (
@@ -27,34 +32,25 @@ export const CourseSection = (section: {title: string; content: string; owner: b
             pl={'0.5rem'} pr={'0.5rem'}
             justifyContent='space-between'
             >
-                { editMode ? (
-                    <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem', width: '100%', justifyContent: 'space-between'}}>
-                        <Input value={theSection.title} onChange={(e)=>setTheSection({title: e.target.value, content: theSection.content})} width='50%'/>
-                        <Flex flexDir={'column'} alignItems={'center'} fontSize='medium' mt={'0.5rem'}>
-                            <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
-                                Done
-                            </Button>
-                        </Flex>
-                    </form>
-
-                ) : (
-                    <Text fontSize={'2xl'} fontWeight='normal'>{theSection.title}</Text>
-                )
-                }
-                { section.owner && !editMode &&
-                        <Flex alignItems={'center'} fontSize='larger' cursor='pointer'>
-                            <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
-                        </Flex>
+                <Text fontSize={'2xl'} fontWeight='normal'>
+                    Course Description
+                </Text>
+                { isOwner && !editMode &&
+                    <Flex alignItems={'center'} fontSize='larger' cursor='pointer'>
+                        <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
+                    </Flex>
                 }
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={theSection.content} resize='none' height={'10rem'} onChange={(e)=>setTheSection({title: theSection.title, content: e.target.value})} />
+                    <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>setCourse({name: course.name, lecturer: course.lecturer, description: e.target.value})} />
+                    <Button mt={'1rem'} type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
+                        Done
+                    </Button>
                 </form>
-
             ) : (
                 <Box pl={'0.5rem'} pr={'0.5rem'} mt='0.5rem'>
-                        {theSection.content}
+                        {course.description}
                 </Box>
             )
             }
@@ -62,45 +58,40 @@ export const CourseSection = (section: {title: string; content: string; owner: b
     )
 }
 
-export const CourseDetailPage = () => {
-    const sections = [
-        {
-            title: "Course Description",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam recusandae alias error harum maxime adipisci amet laborum. Perspiciatis minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit quibusdam sed amet tempora. Sit laborum ab, eius fugit "
-        },
-        {
-            title: "Documents",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam recusandae alias error harum maxime adipisci amet laborum. Perspiciatis minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit quibusdam sed amet tempora. Sit laborum ab, eius fugit "
-        },
-        {
-            title: "Available groups",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam recusandae alias error harum maxime adipisci amet laborum. Perspiciatis minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit quibusdam sed amet tempora. Sit laborum ab, eius fugit "
-        },
-    ]
-    
-    const owner = true
+export const CourseDetailPage = () => {    
+    const { id } = useParams()
+    const currentUser = useAuth().user
+    const apiClient = useApiClient();
+    const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
-    const [courseInfo, setCourseInfo] = useState({
-        courseName: "", courseAuthor: ""
-    })
-    const fetchData = () => {
-        //TODO: get course by id
-        //TODO: if user === owner, set editor state to true
-        //TODO: set editCourseInfo initial state to according to course info after fetching the data
-        setCourseInfo({
-            courseName: "Course Name",
-            courseAuthor: "Course Author"
+    const [course, setCourse] = useState<Course>()
+    
+    const fetchData = async () => {        
+        const theCourse = await apiClient.getCoursesId(id)
+        .then((res)=>{
+            const theCourse = res.data
+            setCourse(theCourse)
+            
+            if(theCourse.lecturer.id === currentUser?.id){
+                setIsOwner(true)
+            }            
+        })
+        .catch((e)=>{
+            console.log(e);
         })
     }
-
+    
     React.useEffect(()=>{
         fetchData();
     }, [])
 
-    const handleEditCourseInfo = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleEditCourseInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setEditMode(!editMode)
-        //TODO: send put request
+        setEditMode(false)
+        const res = await apiClient.putCourse(id, currentUser?.id, course)
+        .catch((e)=>{
+            console.log(e);
+        })
     }
 
   return (
@@ -111,8 +102,7 @@ export const CourseDetailPage = () => {
                     <Box id='course-info'>
                         {editMode ? (
                             <form onSubmit={(e)=>handleEditCourseInfo(e)}>
-                                <Input value={courseInfo.courseName} onChange={(e)=>setCourseInfo({courseName: e.target.value, courseAuthor: courseInfo.courseAuthor})} />
-                                <Input value={courseInfo.courseAuthor} onChange={(e)=>setCourseInfo({courseName: courseInfo.courseName, courseAuthor: e.target.value})} />
+                                <Input value={course?.name} onChange={(e)=>setCourse({name: e.target.value, lecturer: course?.lecturer!, description: course?.description})} />
                                 <Flex alignItems={'center'} fontSize='medium' mt={'0.5rem'}>
                                     <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                                         Done
@@ -121,14 +111,14 @@ export const CourseDetailPage = () => {
                             </form>
                         ) : (
                             <>
-                                <Heading>{courseInfo.courseName}</Heading>
-                                <Text>{courseInfo.courseAuthor}</Text>
+                                <Heading>{course?.name}</Heading>
+                                <Text>{course?.lecturer.firstName} {course?.lecturer.lastName}</Text>
                             </>
                         )
                         }
                     </Box>
                     {
-                        owner && !editMode &&
+                        isOwner && !editMode &&
                         <Flex alignItems={'center'} fontSize='larger'>
                             <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
                         </Flex>
@@ -142,12 +132,14 @@ export const CourseDetailPage = () => {
                     <Text color='green.400' cursor='pointer'><IoEnterOutline/></Text>
                 </Flex>
             </Flex>
-            {
-                sections.map((section)=> (
-                    <CourseSection title={section.title} content={section.content} owner={owner}/>
-                ))
+            { //course description section
+                course? (
+                    <CourseDescriptionSection course={course} setCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
+                ) : (
+                    <Box>Course Desciption not available</Box>
+                )
             }
-
+            {/*TODO: map course sections*/}
         </CourseCard>
     </AppLayout>
   )
