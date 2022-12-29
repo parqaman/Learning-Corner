@@ -5,7 +5,7 @@ import {
   ManyToOne,
   ManyToMany,
   OneToMany,
-  Property,
+  Property, Unique,
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
@@ -16,6 +16,7 @@ import { LearnerInCourse } from "./LearnerInCourse";
 @Entity()
 export class Course extends BaseEntity {
   @Property()
+  @Unique()
   name: string;
 
   @Property()
@@ -54,4 +55,6 @@ export type CreateCourseDTO = {
   name: string;
   description: string;
   lecturer: User;
+  participants?: User[]
+  sections?: CourseSection[]
 };
