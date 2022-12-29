@@ -7,13 +7,20 @@ import { CourseList } from '../components/course_components/CourseList'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { Course } from '../adapter/api/__generated/api'
 import { MockupCourses } from '../mockup/mockup_course'
+import { useNavigate } from 'react-router-dom'
 
-interface SeacrhBarProps {
+interface SearchBarProps {
   searchVal: string;
   setSearchVal: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const SearchBar = ({searchVal, setSearchVal}: SeacrhBarProps) => {
+export const SearchBar = ({searchVal, setSearchVal}: SearchBarProps) => {
+  const navigate = useNavigate()
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate('/searchresult/'+searchVal)
+  }
+
   return (
     <Box 
       bg={'white'}
@@ -25,7 +32,9 @@ export const SearchBar = ({searchVal, setSearchVal}: SeacrhBarProps) => {
       minW={'13rem'}
       mt='3em'
     >
-      <Input value={searchVal} onChange={(e)=>setSearchVal(e.target.value)} placeholder='Search for a course' _placeholder={{color: '#8E8E8E', fontSize: 'sm'}} variant='unstyled'/>
+      <form onSubmit={(e)=>handleSearch(e)}>
+        <Input value={searchVal} onChange={(e)=>setSearchVal(e.target.value)} placeholder='Search for a course' _placeholder={{color: '#8E8E8E', fontSize: 'sm'}} variant='unstyled'/>
+      </form>
       <Box display={'flex'} flexDir='column' alignItems={'center'} justifyContent='center' fontSize={'larger'}>
         <AiOutlineSearch/>
       </Box>
