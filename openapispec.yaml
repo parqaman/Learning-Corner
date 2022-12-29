@@ -138,7 +138,7 @@ paths:
         description: The Course Object to create and the newly added Files
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               $ref: '#/components/schemas/Course'
       responses:
@@ -191,68 +191,21 @@ paths:
                     type: string
       security:
         - Bearer: []
-    put:
-      description: Put course
-      operationId: put-courses-id
-      requestBody:
-        description: The Course Object to be updated and the newly added Files
+  /courses/{courseID}/user/{userID}:
+    parameters:
+      - schema:
+          type: string
+        name: courseID
+        in: path
         required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                course:
-                  type:
-                    $ref: '#/components/schemas/Course'
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          description: Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Course'
-        '400':
-          description: Error while Update
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
-        '404':
-          description: Invalid Id
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-      security:
-        - Bearer: []
-    delete:
-      description: Delete course
-      operationId: delete-courses-id
-      responses:
-        '204':
-          description: Deleted
-        '403':
-          description: Invalid Id
-      security:
-        - Bearer: []
-  /auth/resetpassword:
+      - schema:
+          type: string
+        name: userID
+        in: path
+        required: true
     put:
-      summary: Update password
-      operationId: put-auth-resetpassword
+      summary: 'update a course by only course creator'
+      operationId: put-course
       responses:
         '200':
           description: OK
@@ -260,14 +213,13 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                currentPassword:
-                  type: string
-                newPassword:
-                  type: string
+              $ref: '#/components/schemas/Course'
+    delete:
+      summary: 'delete a course by only course creator'
+      operationId: delete-courses-courseID-users-userID
+      responses:
+        '204':
+          description: No Content
   /auth/register:
     post:
       description: Perform registration
@@ -374,7 +326,7 @@ components:
         - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
           name: Web-Development for Dummies
           description: Learn the 101 of Web-Development
-          owner:
+          lecturer:
             $ref: '#/components/schemas/User'
           participants:
             type: array
@@ -399,7 +351,7 @@ components:
           type: string
         description:
           type: string
-        owner:
+        lecturer:
           type:
             $ref: '#/components/schemas/User'
           $ref: '#/components/schemas/User'
@@ -430,7 +382,7 @@ components:
       required:
         - name
         - description
-        - owner
+        - lecturer
     File:
       title: File
       type: object
