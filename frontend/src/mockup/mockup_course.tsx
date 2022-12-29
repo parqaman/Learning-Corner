@@ -1,5 +1,5 @@
 import { Box, Button } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { Course } from '../adapter/api/__generated/api'
 import { useAuth } from '../providers/AuthProvider'
@@ -53,13 +53,32 @@ export const MockupCourses = () => {
         })
         window.location.reload()
     }
+
+    const [show, setShow] = useState(true)
+    const getCourses = async () => {
+      const res = await apiClient.getCourses()
+      const courses: Course[] = res.data;
+
+      if(courses.length > 0){
+        setShow(false)
+      }
+      else{
+        setShow(true)
+      }
+    }
+
+    useEffect(()=>{
+      getCourses()
+    })
       
 
   return (
     <Box>
-        <Button onClick={(e)=>handleFillCourse(e)}>
+      {
+        show && <Button onClick={(e)=>handleFillCourse(e)}>
             Fill courses
         </Button>
+      }
     </Box>
   )
 }
