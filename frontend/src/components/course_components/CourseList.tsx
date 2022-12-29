@@ -1,26 +1,25 @@
-import { Flex, Grid, GridItem } from "@chakra-ui/react"
-import { Course } from "../../pages/HomePage"
+import { Box, Flex, Grid, GridItem } from "@chakra-ui/react"
+import { Course } from '../../adapter/api/__generated/api'
 import { SingleCourse } from "./SingleCourse";
 
-export interface CourseProps {
-    courses: Course[];
-}
-
-export const CourseList = ({courses}: CourseProps) => {
+export const CourseList = ({courses}: {courses: Course[]}) => {
     return (
             <Flex flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
                 <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
                     {
-                        courses.map((course)=>(
-                            <GridItem key={course.id}>
-                                <SingleCourse
-                                    id={course.id}
-                                    courseName={course.courseName}
-                                    courseAuthor={course.courseAuthor}
-                                    key={course.id}
-                                />
-                            </GridItem>    
-                        ))
+                        courses ? (
+                            courses.map((course)=>(
+                                <GridItem key={course.id}>
+                                    <SingleCourse
+                                        key={course.id} 
+                                        course={course}
+                                        />
+                                </GridItem>    
+                            ))
+                        ) : (
+                            <Box>No courses available</Box>
+                        )
+                        
                     }
                 </Grid>
             </Flex>
