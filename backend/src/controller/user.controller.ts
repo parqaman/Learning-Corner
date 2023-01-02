@@ -123,7 +123,7 @@ router.put("/:userId/course/:courseId/group/:groupId", async (req, res) => {
       return res.status(404).send({ message: "User is not in the course" });
     }
     const existingLearnerInGroup = await DI.learnerInGroupRepository.findOne({
-      learner: learnerInCourse,
+      member: learnerInCourse,
       group: group,
     });
     if (existingLearnerInGroup) {
@@ -132,7 +132,7 @@ router.put("/:userId/course/:courseId/group/:groupId", async (req, res) => {
         .send({ message: "User has already joined the group" });
     }
     const newLearnerInGroup = DI.learnerInGroupRepository.create({
-      learner: learnerInCourse,
+      member: learnerInCourse,
       group: group,
     });
     await DI.learnerInGroupRepository.persistAndFlush(newLearnerInGroup);
@@ -165,13 +165,13 @@ router.delete("/:userId/course/:courseId/group/:groupId", async (req, res) => {
       return res.status(404).send({ message: "User is not in the course" });
     }
     const existingLearnerInGroup = await DI.learnerInGroupRepository.findOne({
-      learner: learnerInCourse,
+      member: learnerInCourse,
       group: group,
     });
     if (!existingLearnerInGroup) {
       return res.status(409).send({ message: "User is not in the group" });
     }
-    await DI.learnerInCourseRepository.removeAndFlush(existingLearnerInGroup);
+    await DI.learnerInGroupRepository.removeAndFlush(existingLearnerInGroup);
     return res.status(204).send({ message: "Deleted user from group" });
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });

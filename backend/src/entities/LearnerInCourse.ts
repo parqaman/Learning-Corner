@@ -1,9 +1,11 @@
+import { v4 } from "uuid";
 import {
   Cascade,
   Collection,
   Entity,
   ManyToMany,
   ManyToOne,
+  PrimaryKey
 } from "@mikro-orm/core";
 import { Course } from "./Course";
 import { Group } from "./Group";
@@ -12,17 +14,20 @@ import { User } from "./User";
 
 @Entity()
 export class LearnerInCourse {
-  @ManyToOne({ primary: true, entity: () => User, onDelete: "cascade" })
+  @PrimaryKey()
+  id: string = v4();
+  
+  @ManyToOne({ entity: () => User, onDelete: "cascade" })
   learner: User;
 
-  @ManyToOne({ primary: true, entity: () => Course })
+  @ManyToOne({ entity: () => Course, onDelete: "cascade" })
   course: Course;
 
   @ManyToMany({
     entity: () => Group,
     pivotEntity: () => LearnerInGroup,
     inversedBy: (e) => e.members,
-    cascade: [Cascade.ALL],
+    nullable: true,
   })
   groups = new Collection<Group>(this);
 

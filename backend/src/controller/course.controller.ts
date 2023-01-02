@@ -20,6 +20,13 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const newCourse = new Course(req.body);
+  await DI.courseRepository.persistAndFlush(newCourse);
+
+  return res.status(201).send(newCourse);
+});
+/*
+router.post("/", async (req, res) => {
     const validatedData = await CreateCourseSchema.validate(req.body).catch((e) => {
         res.status(400).json({ errors: e.errors });
     });
@@ -47,7 +54,7 @@ router.post("/", async (req, res) => {
     if(hasParticipants) await DI.courseRepository.populate(course, ['participants']);
 
     return res.status(201).send(course);
-});
+});*/
 
 // Update a course
 router.put("/:courseId/user/:userId", async (req, res) => {

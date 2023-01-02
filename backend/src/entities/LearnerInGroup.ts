@@ -1,4 +1,4 @@
-import { Entity, ManyToOne } from "@mikro-orm/core";
+import { Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
 import { Group } from "./Group";
 import { LearnerInCourse } from "./LearnerInCourse";
 
@@ -9,13 +9,13 @@ export class LearnerInGroup {
     entity: () => LearnerInCourse,
     onDelete: "cascade",
   })
-  learner: LearnerInCourse;
+  member: LearnerInCourse;
 
   @ManyToOne({ primary: true, entity: () => Group, onDelete: "cascade" })
   group: Group;
 
   constructor({ learner, group }: CreateLearnerInGroupDTO) {
-    this.learner = learner;
+    this.member = learner;
     this.group = group;
   }
 }

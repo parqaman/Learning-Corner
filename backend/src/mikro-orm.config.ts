@@ -4,6 +4,7 @@ import { CourseFile } from "./entities/CourseFile";
 import { CourseSection } from "./entities/CourseSection";
 import { Group } from "./entities/Group";
 import { LearnerInCourse } from "./entities/LearnerInCourse";
+import { LearnerInGroup } from "./entities/LearnerInGroup";
 import { User } from "./entities/User";
 
 const options: Options = {
@@ -20,6 +21,7 @@ const options: Options = {
     CourseSection,
     Group,
     LearnerInCourse,
+    LearnerInGroup,
     User,
   ],
 };
