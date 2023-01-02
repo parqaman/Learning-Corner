@@ -18,6 +18,7 @@ import { Auth } from "./middleware/auth.middleware";
 import { AuthController } from "./controller/auth.controller";
 import { UserController } from "./controller/user.controller";
 import { CourseController } from "./controller/course.controller";
+import * as path from "path";
 
 const PORT = 4000;
 const app = express();
@@ -50,6 +51,9 @@ export const initializeServer = async () => {
   app.use(Auth.prepareAuthentication);
 
   // routes
+
+  app.use("/upload/tmp", express.static(path.join(__dirname, '../upload/tmp')))
+
   app.get("/", (req, res) => {
     res.send("GET request to the homepage");
   });

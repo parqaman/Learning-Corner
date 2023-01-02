@@ -29,22 +29,22 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 export interface Course {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Course
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Course
      */
-    'name': any;
+    'name': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Course
      */
-    'description': any;
+    'description': string;
     /**
      * 
      * @type {User}
@@ -53,35 +53,41 @@ export interface Course {
     'owner': User;
     /**
      * 
-     * @type {any}
+     * @type {Array<User>}
      * @memberof Course
      */
-    'participants'?: any;
+    'participants'?: Array<User>;
     /**
      * 
-     * @type {any}
+     * @type {Array<Section>}
      * @memberof Course
      */
-    'sections'?: any;
+    'sections'?: Array<Section>;
     /**
      * 
-     * @type {any}
+     * @type {Array<Quiz>}
      * @memberof Course
      */
-    'quizzes'?: any;
+    'quizzes'?: Array<Quiz>;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Course
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Course
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
 }
+/**
+ * @type FileOwner
+ * @export
+ */
+export type FileOwner = Course | Group;
+
 /**
  * 
  * @export
@@ -90,10 +96,10 @@ export interface Course {
 export interface GetUsersId404Response {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof GetUsersId404Response
      */
-    'message'?: any;
+    'message'?: string;
 }
 /**
  * 
@@ -103,22 +109,22 @@ export interface GetUsersId404Response {
 export interface Group {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Group
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Group
      */
-    'name'?: any;
+    'name'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Group
      */
-    'description'?: any;
+    'description'?: string;
     /**
      * 
      * @type {User}
@@ -127,16 +133,16 @@ export interface Group {
     'owner'?: User;
     /**
      * 
-     * @type {any}
+     * @type {Array<User>}
      * @memberof Group
      */
-    'members'?: any;
+    'members'?: Array<User>;
     /**
      * 
-     * @type {any}
+     * @type {Array<Section>}
      * @memberof Group
      */
-    'sections'?: any;
+    'sections'?: Array<Section>;
 }
 /**
  * A File
@@ -146,34 +152,34 @@ export interface Group {
 export interface ModelFile {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof ModelFile
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof ModelFile
      */
-    'name': any;
+    'name': string;
     /**
      * 
-     * @type {any}
+     * @type {FileOwner}
      * @memberof ModelFile
      */
-    'owner'?: any;
+    'owner'?: FileOwner;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof ModelFile
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof ModelFile
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
 }
 /**
  * 
@@ -183,10 +189,10 @@ export interface ModelFile {
 export interface PostAuthLogin200Response {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthLogin200Response
      */
-    'accessToken': any;
+    'accessToken': string;
 }
 /**
  * 
@@ -196,16 +202,16 @@ export interface PostAuthLogin200Response {
 export interface PostAuthLoginRequest {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthLoginRequest
      */
-    'email'?: any;
+    'email'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthLoginRequest
      */
-    'password'?: any;
+    'password'?: string;
 }
 /**
  * 
@@ -215,28 +221,28 @@ export interface PostAuthLoginRequest {
 export interface PostAuthRegisterRequest {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthRegisterRequest
      */
-    'email': any;
+    'email': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthRegisterRequest
      */
-    'password': any;
+    'password': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthRegisterRequest
      */
-    'firstName': any;
+    'firstName': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PostAuthRegisterRequest
      */
-    'lastName': any;
+    'lastName': string;
 }
 /**
  * 
@@ -246,22 +252,22 @@ export interface PostAuthRegisterRequest {
 export interface PutAuthResetpasswordRequest {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PutAuthResetpasswordRequest
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PutAuthResetpasswordRequest
      */
-    'currentPassword'?: any;
+    'currentPassword'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof PutAuthResetpasswordRequest
      */
-    'newPassword'?: any;
+    'newPassword'?: string;
 }
 /**
  * 
@@ -271,10 +277,10 @@ export interface PutAuthResetpasswordRequest {
 export interface PutUsersId400Response {
     /**
      * 
-     * @type {any}
+     * @type {Array<string>}
      * @memberof PutUsersId400Response
      */
-    'errors'?: any;
+    'errors'?: Array<string>;
 }
 /**
  * A Quiz
@@ -284,40 +290,40 @@ export interface PutUsersId400Response {
 export interface Quiz {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Quiz
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Quiz
      */
-    'name': any;
+    'name': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Quiz
      */
-    'description': any;
+    'description': string;
     /**
      * 
-     * @type {any}
+     * @type {Array<QuizQuestion>}
      * @memberof Quiz
      */
-    'questions': any;
+    'questions': Array<QuizQuestion>;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Quiz
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Quiz
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
 }
 /**
  * A QuizQuestion
@@ -327,40 +333,40 @@ export interface Quiz {
 export interface QuizQuestion {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestion
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestion
      */
-    'text': any;
+    'text': string;
     /**
      * 
-     * @type {any}
+     * @type {number}
      * @memberof QuizQuestion
      */
-    'correctAnswer': any;
+    'correctAnswer': number;
     /**
      * 
-     * @type {any}
+     * @type {Array<QuizQuestionAnswer>}
      * @memberof QuizQuestion
      */
-    'answers': any;
+    'answers': Array<QuizQuestionAnswer>;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestion
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestion
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
 }
 /**
  * A QuizQuestionAnswer
@@ -370,28 +376,28 @@ export interface QuizQuestion {
 export interface QuizQuestionAnswer {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestionAnswer
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestionAnswer
      */
-    'text': any;
+    'text': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestionAnswer
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof QuizQuestionAnswer
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
 }
 /**
  * A content section in a course/group
@@ -401,28 +407,28 @@ export interface QuizQuestionAnswer {
 export interface Section {
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Section
      */
-    'id'?: any;
+    'id'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Section
      */
-    'heading'?: any;
+    'heading'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof Section
      */
-    'content'?: any;
+    'content'?: string;
     /**
      * 
-     * @type {any}
+     * @type {Array<any>}
      * @memberof Section
      */
-    'files'?: any;
+    'files'?: Array<any>;
 }
 /**
  * The User Objet
@@ -432,46 +438,46 @@ export interface Section {
 export interface User {
     /**
      * Unique identifier for the given user.
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'id': any;
+    'id': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'firstName': any;
+    'firstName': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'lastName': any;
+    'lastName': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'email': any;
+    'email': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'photo': any;
+    'photo': string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'createdAt'?: any;
+    'createdAt'?: string;
     /**
      * 
-     * @type {any}
+     * @type {string}
      * @memberof User
      */
-    'updatedAt'?: any;
+    'updatedAt'?: string;
     /**
      * 
      * @type {Course}
@@ -494,11 +500,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * Delete course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCoursesId: async (id: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteCoursesId: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteCoursesId', 'id', id)
             const localVarPath = `/courses/{id}`
@@ -531,11 +537,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Delete User
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUsersId: async (id: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteUsersId: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteUsersId', 'id', id)
             const localVarPath = `/users/{id}`
@@ -601,11 +607,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Get an Course by Id
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCoursesId: async (id: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getCoursesId: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getCoursesId', 'id', id)
             const localVarPath = `/courses/{id}`
@@ -638,11 +644,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Get Users
-         * @param {any} [name] The name to filter users by
+         * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsers: async (name?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUsers: async (name?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -676,11 +682,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Get a User by Id
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsersId: async (id: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUsersId: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getUsersId', 'id', id)
             const localVarPath = `/users/{id}`
@@ -780,11 +786,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Post course
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses: async (course?: any, files?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postCourses: async (course?: any, files?: Array<File>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/courses`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -806,10 +812,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             if (course !== undefined) { 
                 localVarFormParams.append('course', new Blob([JSON.stringify(course)], { type: "application/json", }));
             }
-    
-            if (files !== undefined) { 
-                localVarFormParams.append('files', new Blob([JSON.stringify(files)], { type: "application/json", }));
+                if (files) {
+                files.forEach((element) => {
+                    localVarFormParams.append('files', element as any);
+                })
             }
+
     
     
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
@@ -860,13 +868,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Put course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putCoursesId: async (id: any, course?: any, files?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        putCoursesId: async (id: string, course?: any, files?: Array<File>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('putCoursesId', 'id', id)
             const localVarPath = `/courses/{id}`
@@ -891,10 +899,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             if (course !== undefined) { 
                 localVarFormParams.append('course', new Blob([JSON.stringify(course)], { type: "application/json", }));
             }
-    
-            if (files !== undefined) { 
-                localVarFormParams.append('files', new Blob([JSON.stringify(files)], { type: "application/json", }));
+                if (files) {
+                files.forEach((element) => {
+                    localVarFormParams.append('files', element as any);
+                })
             }
+
     
     
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
@@ -911,16 +921,18 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Put User
-         * @param {any} id The id of the user to work with
-         * @param {User} user The User Object to be updated
+         * @param {string} id The id of the user to work with
+         * @param {string} [id2] 
+         * @param {string} [firstName] 
+         * @param {string} [lastName] 
+         * @param {string} [email] 
+         * @param {File} [photo] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putUsersId: async (id: any, user: User, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        putUsersId: async (id: string, id2?: string, firstName?: string, lastName?: string, email?: string, photo?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('putUsersId', 'id', id)
-            // verify required parameter 'user' is not null or undefined
-            assertParamExists('putUsersId', 'user', user)
             const localVarPath = `/users/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -933,19 +945,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+            if (id2 !== undefined) { 
+                localVarFormParams.append('id', id2 as any);
+            }
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
+            if (firstName !== undefined) { 
+                localVarFormParams.append('firstName', firstName as any);
+            }
+    
+            if (lastName !== undefined) { 
+                localVarFormParams.append('lastName', lastName as any);
+            }
+    
+            if (email !== undefined) { 
+                localVarFormParams.append('email', email as any);
+            }
+    
+            if (photo !== undefined) { 
+                localVarFormParams.append('photo', photo as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(user, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -964,21 +997,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * Delete course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCoursesId(id: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deleteCoursesId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCoursesId(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Delete User
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteUsersId(id: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deleteUsersId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUsersId(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -987,37 +1020,37 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCourses(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async getCourses(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Course>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCourses(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Get an Course by Id
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCoursesId(id: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+        async getCoursesId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCoursesId(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Get Users
-         * @param {any} [name] The name to filter users by
+         * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUsers(name?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async getUsers(name?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUsers(name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Get a User by Id
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUsersId(id: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+        async getUsersId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersId(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1044,11 +1077,11 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         /**
          * Post course
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postCourses(course?: any, files?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+        async postCourses(course?: any, files?: Array<File>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postCourses(course, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1065,25 +1098,29 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * Put course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putCoursesId(id: any, course?: any, files?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+        async putCoursesId(id: string, course?: any, files?: Array<File>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.putCoursesId(id, course, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Put User
-         * @param {any} id The id of the user to work with
-         * @param {User} user The User Object to be updated
+         * @param {string} id The id of the user to work with
+         * @param {string} [id2] 
+         * @param {string} [firstName] 
+         * @param {string} [lastName] 
+         * @param {string} [email] 
+         * @param {File} [photo] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putUsersId(id: any, user: User, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putUsersId(id, user, options);
+        async putUsersId(id: string, id2?: string, firstName?: string, lastName?: string, email?: string, photo?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putUsersId(id, id2, firstName, lastName, email, photo, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1098,20 +1135,20 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * Delete course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCoursesId(id: any, options?: any): AxiosPromise<void> {
+        deleteCoursesId(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteCoursesId(id, options).then((request) => request(axios, basePath));
         },
         /**
          * Delete User
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUsersId(id: any, options?: any): AxiosPromise<void> {
+        deleteUsersId(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteUsersId(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1119,34 +1156,34 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCourses(options?: any): AxiosPromise<any> {
+        getCourses(options?: any): AxiosPromise<Array<Course>> {
             return localVarFp.getCourses(options).then((request) => request(axios, basePath));
         },
         /**
          * Get an Course by Id
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCoursesId(id: any, options?: any): AxiosPromise<Course> {
+        getCoursesId(id: string, options?: any): AxiosPromise<Course> {
             return localVarFp.getCoursesId(id, options).then((request) => request(axios, basePath));
         },
         /**
          * Get Users
-         * @param {any} [name] The name to filter users by
+         * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsers(name?: any, options?: any): AxiosPromise<any> {
+        getUsers(name?: string, options?: any): AxiosPromise<Array<User>> {
             return localVarFp.getUsers(name, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a User by Id
-         * @param {any} id The id of the user to work with
+         * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsersId(id: any, options?: any): AxiosPromise<User> {
+        getUsersId(id: string, options?: any): AxiosPromise<User> {
             return localVarFp.getUsersId(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1170,11 +1207,11 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         /**
          * Post course
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses(course?: any, files?: any, options?: any): AxiosPromise<Course> {
+        postCourses(course?: any, files?: Array<File>, options?: any): AxiosPromise<Course> {
             return localVarFp.postCourses(course, files, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1189,24 +1226,28 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * Put course
-         * @param {any} id The id of the course to work with
+         * @param {string} id The id of the course to work with
          * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Array<File>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putCoursesId(id: any, course?: any, files?: any, options?: any): AxiosPromise<Course> {
+        putCoursesId(id: string, course?: any, files?: Array<File>, options?: any): AxiosPromise<Course> {
             return localVarFp.putCoursesId(id, course, files, options).then((request) => request(axios, basePath));
         },
         /**
          * Put User
-         * @param {any} id The id of the user to work with
-         * @param {User} user The User Object to be updated
+         * @param {string} id The id of the user to work with
+         * @param {string} [id2] 
+         * @param {string} [firstName] 
+         * @param {string} [lastName] 
+         * @param {string} [email] 
+         * @param {File} [photo] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putUsersId(id: any, user: User, options?: any): AxiosPromise<User> {
-            return localVarFp.putUsersId(id, user, options).then((request) => request(axios, basePath));
+        putUsersId(id: string, id2?: string, firstName?: string, lastName?: string, email?: string, photo?: File, options?: any): AxiosPromise<User> {
+            return localVarFp.putUsersId(id, id2, firstName, lastName, email, photo, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1220,23 +1261,23 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 export class DefaultApi extends BaseAPI {
     /**
      * Delete course
-     * @param {any} id The id of the course to work with
+     * @param {string} id The id of the course to work with
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteCoursesId(id: any, options?: AxiosRequestConfig) {
+    public deleteCoursesId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).deleteCoursesId(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Delete User
-     * @param {any} id The id of the user to work with
+     * @param {string} id The id of the user to work with
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteUsersId(id: any, options?: AxiosRequestConfig) {
+    public deleteUsersId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).deleteUsersId(id, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1252,34 +1293,34 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * Get an Course by Id
-     * @param {any} id The id of the course to work with
+     * @param {string} id The id of the course to work with
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getCoursesId(id: any, options?: AxiosRequestConfig) {
+    public getCoursesId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getCoursesId(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Get Users
-     * @param {any} [name] The name to filter users by
+     * @param {string} [name] The name to filter users by
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getUsers(name?: any, options?: AxiosRequestConfig) {
+    public getUsers(name?: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getUsers(name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Get a User by Id
-     * @param {any} id The id of the user to work with
+     * @param {string} id The id of the user to work with
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getUsersId(id: any, options?: AxiosRequestConfig) {
+    public getUsersId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getUsersId(id, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1308,12 +1349,12 @@ export class DefaultApi extends BaseAPI {
     /**
      * Post course
      * @param {any} [course] 
-     * @param {any} [files] 
+     * @param {Array<File>} [files] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public postCourses(course?: any, files?: any, options?: AxiosRequestConfig) {
+    public postCourses(course?: any, files?: Array<File>, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).postCourses(course, files, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1331,27 +1372,31 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * Put course
-     * @param {any} id The id of the course to work with
+     * @param {string} id The id of the course to work with
      * @param {any} [course] 
-     * @param {any} [files] 
+     * @param {Array<File>} [files] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public putCoursesId(id: any, course?: any, files?: any, options?: AxiosRequestConfig) {
+    public putCoursesId(id: string, course?: any, files?: Array<File>, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).putCoursesId(id, course, files, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Put User
-     * @param {any} id The id of the user to work with
-     * @param {User} user The User Object to be updated
+     * @param {string} id The id of the user to work with
+     * @param {string} [id2] 
+     * @param {string} [firstName] 
+     * @param {string} [lastName] 
+     * @param {string} [email] 
+     * @param {File} [photo] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public putUsersId(id: any, user: User, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).putUsersId(id, user, options).then((request) => request(this.axios, this.basePath));
+    public putUsersId(id: string, id2?: string, firstName?: string, lastName?: string, email?: string, photo?: File, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putUsersId(id, id2, firstName, lastName, email, photo, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
