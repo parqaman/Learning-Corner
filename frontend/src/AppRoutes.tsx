@@ -8,6 +8,8 @@ import {
 import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { MyCoursesPage } from "./pages/MyCoursesPage";
+import { NewCoursePage } from "./pages/NewCoursePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
@@ -48,9 +50,19 @@ export const routes: RouteConfig[] = [
     element: <ResetPasswordPage />,
   },
   {
+    path: "/mycourses",
+    isPrivate: true,
+    element: <MyCoursesPage/>,
+  },
+  {
     path: "/courses/:id",
     isPrivate: true,
     element: <CourseDetailPage />,
+  },
+  {
+    path: "/courses/newcourse",
+    isPrivate: true,
+    element: <NewCoursePage />,
   },
 ];
   

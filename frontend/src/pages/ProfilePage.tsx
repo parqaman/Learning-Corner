@@ -2,7 +2,8 @@ import { Box, Button, Heading, Text, Image, Input, Flex } from '@chakra-ui/react
 import React, { useRef, useState } from 'react'
 import { ProfileCard } from '../components/ProfileCard'
 import { AppLayout } from '../layout/AppLayout'
-import { useAuth, User } from '../providers/AuthProvider'
+import { useAuth } from '../providers/AuthProvider'
+import { User } from '../adapter/api/__generated'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { useNavigate } from 'react-router-dom'
 

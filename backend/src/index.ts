@@ -49,7 +49,7 @@ export const initializeServer = async () => {
   DI.userRepository = DI.orm.em.getRepository(User);
 
   // global middleware
-  app.use(express.json());
+  app.use(express.json({limit: '5mb'}));
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
   app.use(Auth.prepareAuthentication);
 

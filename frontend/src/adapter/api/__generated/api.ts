@@ -50,7 +50,7 @@ export interface Course {
      * @type {User}
      * @memberof Course
      */
-    'owner': User;
+    'lecturer': User;
     /**
      * 
      * @type {any}
@@ -474,16 +474,16 @@ export interface User {
     'updatedAt'?: any;
     /**
      * 
-     * @type {Course}
+     * @type {any}
      * @memberof User
      */
-    'courses'?: Course;
+    'courses'?: any;
     /**
      * 
-     * @type {Group}
+     * @type {any}
      * @memberof User
      */
-    'groups'?: Group;
+    'groups'?: any;
 }
 
 /**
@@ -493,16 +493,21 @@ export interface User {
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Delete course
-         * @param {any} id The id of the course to work with
+         * 
+         * @summary delete a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCoursesId: async (id: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteCoursesId', 'id', id)
-            const localVarPath = `/courses/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        deleteCoursesCourseIDUsersUserID: async (courseID: any, userID: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseID' is not null or undefined
+            assertParamExists('deleteCoursesCourseIDUsersUserID', 'courseID', courseID)
+            // verify required parameter 'userID' is not null or undefined
+            assertParamExists('deleteCoursesCourseIDUsersUserID', 'userID', userID)
+            const localVarPath = `/courses/{courseID}/user/{userID}`
+                .replace(`{${"courseID"}}`, encodeURIComponent(String(courseID)))
+                .replace(`{${"userID"}}`, encodeURIComponent(String(userID)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -513,10 +518,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -779,12 +780,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Course} course The Course Object to create and the newly added Files
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses: async (course?: any, files?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postCourses: async (course: Course, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'course' is not null or undefined
+            assertParamExists('postCourses', 'course', course)
             const localVarPath = `/courses`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -796,28 +798,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (course !== undefined) { 
-                localVarFormParams.append('course', new Blob([JSON.stringify(course)], { type: "application/json", }));
-            }
     
-            if (files !== undefined) { 
-                localVarFormParams.append('files', new Blob([JSON.stringify(files)], { type: "application/json", }));
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(course, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -859,18 +852,22 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * Put course
-         * @param {any} id The id of the course to work with
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * 
+         * @summary update a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
+         * @param {Course} [course] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putCoursesId: async (id: any, course?: any, files?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('putCoursesId', 'id', id)
-            const localVarPath = `/courses/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        putCourse: async (courseID: any, userID: any, course?: Course, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseID' is not null or undefined
+            assertParamExists('putCourse', 'courseID', courseID)
+            // verify required parameter 'userID' is not null or undefined
+            assertParamExists('putCourse', 'userID', userID)
+            const localVarPath = `/courses/{courseID}/user/{userID}`
+                .replace(`{${"courseID"}}`, encodeURIComponent(String(courseID)))
+                .replace(`{${"userID"}}`, encodeURIComponent(String(userID)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -881,28 +878,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (course !== undefined) { 
-                localVarFormParams.append('course', new Blob([JSON.stringify(course)], { type: "application/json", }));
-            }
     
-            if (files !== undefined) { 
-                localVarFormParams.append('files', new Blob([JSON.stringify(files)], { type: "application/json", }));
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(course, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -963,13 +947,15 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
-         * Delete course
-         * @param {any} id The id of the course to work with
+         * 
+         * @summary delete a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCoursesId(id: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCoursesId(id, options);
+        async deleteCoursesCourseIDUsersUserID(courseID: any, userID: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCoursesCourseIDUsersUserID(courseID, userID, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1043,13 +1029,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Course} course The Course Object to create and the newly added Files
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postCourses(course?: any, files?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postCourses(course, files, options);
+        async postCourses(course: Course, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCourses(course, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1064,15 +1049,16 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * Put course
-         * @param {any} id The id of the course to work with
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * 
+         * @summary update a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
+         * @param {Course} [course] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putCoursesId(id: any, course?: any, files?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Course>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putCoursesId(id, course, files, options);
+        async putCourse(courseID: any, userID: any, course?: Course, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putCourse(courseID, userID, course, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1097,13 +1083,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = DefaultApiFp(configuration)
     return {
         /**
-         * Delete course
-         * @param {any} id The id of the course to work with
+         * 
+         * @summary delete a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCoursesId(id: any, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteCoursesId(id, options).then((request) => request(axios, basePath));
+        deleteCoursesCourseIDUsersUserID(courseID: any, userID: any, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteCoursesCourseIDUsersUserID(courseID, userID, options).then((request) => request(axios, basePath));
         },
         /**
          * Delete User
@@ -1169,13 +1157,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * Post course
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * @param {Course} course The Course Object to create and the newly added Files
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCourses(course?: any, files?: any, options?: any): AxiosPromise<Course> {
-            return localVarFp.postCourses(course, files, options).then((request) => request(axios, basePath));
+        postCourses(course: Course, options?: any): AxiosPromise<Course> {
+            return localVarFp.postCourses(course, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1188,15 +1175,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.putAuthResetpassword(putAuthResetpasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Put course
-         * @param {any} id The id of the course to work with
-         * @param {any} [course] 
-         * @param {any} [files] 
+         * 
+         * @summary update a course by only course creator
+         * @param {any} courseID 
+         * @param {any} userID 
+         * @param {Course} [course] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putCoursesId(id: any, course?: any, files?: any, options?: any): AxiosPromise<Course> {
-            return localVarFp.putCoursesId(id, course, files, options).then((request) => request(axios, basePath));
+        putCourse(courseID: any, userID: any, course?: Course, options?: any): AxiosPromise<void> {
+            return localVarFp.putCourse(courseID, userID, course, options).then((request) => request(axios, basePath));
         },
         /**
          * Put User
@@ -1219,14 +1207,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  */
 export class DefaultApi extends BaseAPI {
     /**
-     * Delete course
-     * @param {any} id The id of the course to work with
+     * 
+     * @summary delete a course by only course creator
+     * @param {any} courseID 
+     * @param {any} userID 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteCoursesId(id: any, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteCoursesId(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteCoursesCourseIDUsersUserID(courseID: any, userID: any, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteCoursesCourseIDUsersUserID(courseID, userID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1307,14 +1297,13 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * Post course
-     * @param {any} [course] 
-     * @param {any} [files] 
+     * @param {Course} course The Course Object to create and the newly added Files
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public postCourses(course?: any, files?: any, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).postCourses(course, files, options).then((request) => request(this.axios, this.basePath));
+    public postCourses(course: Course, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postCourses(course, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1330,16 +1319,17 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
-     * Put course
-     * @param {any} id The id of the course to work with
-     * @param {any} [course] 
-     * @param {any} [files] 
+     * 
+     * @summary update a course by only course creator
+     * @param {any} courseID 
+     * @param {any} userID 
+     * @param {Course} [course] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public putCoursesId(id: any, course?: any, files?: any, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).putCoursesId(id, course, files, options).then((request) => request(this.axios, this.basePath));
+    public putCourse(courseID: any, userID: any, course?: Course, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putCourse(courseID, userID, course, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
