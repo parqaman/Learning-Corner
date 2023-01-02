@@ -422,6 +422,8 @@ components:
           format: uuid
         name:
           type: string
+        content:
+          type: string
         owner:
           oneOf:
             - $ref: '#/components/schemas/Course'
