@@ -112,7 +112,11 @@ export const ProfilePage = () => {
         email: editDetail.email,
         photo: photo
       })
-      const data = await apiClient.putUsersId(user.id, user);
+      const data = await apiClient.putUsersId(user.id, user)
+      .catch((e)=>{
+        console.log(e);
+        
+      })
     }
     setEdit(!edit);
   }
@@ -159,7 +163,7 @@ export const ProfilePage = () => {
                         <Image src={photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
                         <Input type={'file'} accept='image/png, image/jpeg, image/gif' onChange={handleUploadPhoto} display={'none'} ref={fileInputRef}/>
                       </Box>
-                      <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'light'}>
+                      <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'semibold'}>
                         Upload image
                       </Text>
                     </>
@@ -184,10 +188,14 @@ export const ProfilePage = () => {
                 </Button>
               ) : (
                 <Flex justifyContent={'space-between'} width='100%'>
-                  {/*TODO: done button check if user input is empty or not before sending request*/}
-                  <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
-                    Done
-                  </Button>
+                  <Flex gap={'0.25rem'}>
+                    <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
+                      Done
+                    </Button>
+                    <Button onClick={()=>setEdit(false)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'gray'} color='white' fontWeight={'medium'}>
+                        Cancel
+                    </Button>
+                  </Flex>
                   <Text color={'rgba(220, 0, 0, 100%)'} onClick={()=>{navigate('./resetpassword'); setEdit(!edit)}} cursor='pointer' fontSize='xs' fontWeight={'medium'} pb={'0.1rem'} pt={'0.5em'}>
                     Reset password
                   </Text>
