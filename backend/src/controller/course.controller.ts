@@ -8,7 +8,7 @@ const router = Router({ mergeParams: true });
 router.get("/", async (req, res) => {
   return res.json(
     await DI.courseRepository.findAll({
-      populate: ["sections", "participants"],
+      populate: ["sections", "participants", 'lecturer'],
     })
   );
 });
@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
   const course = await DI.courseRepository.findOne(
     { id: req.params.id },
     {
-      populate: ["sections", "participants"],
+      populate: ["sections", "participants", 'lecturer'],
     }
   );
   if (!course) return res.status(404).send({ message: "Course not found" });

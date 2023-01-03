@@ -3,19 +3,24 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  Property,
+  Unique,
 } from "@mikro-orm/core";
 import { Course } from "./Course";
 import { Group } from "./Group";
 import { LearnerInGroup } from "./LearnerInGroup";
 import { User } from "./User";
-import { BaseEntity } from "./BaseEntity";
+import { v4 } from "uuid";
 
 @Entity()
-export class LearnerInCourse extends BaseEntity {  
-  @ManyToOne({ entity: () => User, onDelete: "cascade" })
+export class LearnerInCourse {
+  @Property()
+  @Unique()
+  id: string = v4();
+
+  @ManyToOne({ primary: true, entity: () => User, })
   learner: User;
 
-  @ManyToOne({ entity: () => Course, onDelete: "cascade" })
   @ManyToOne({ primary: true, entity: () => Course  })
   course: Course;
 
@@ -28,7 +33,6 @@ export class LearnerInCourse extends BaseEntity {
   groups = new Collection<Group>(this);
 
   constructor({ learner, course }: CreateLearnerInCourseDTO) {
-    super();
     this.learner = learner;
     this.course = course;
   }
