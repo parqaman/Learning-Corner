@@ -6,6 +6,7 @@ import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
+import { User } from '../adapter/api/__generated'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
@@ -70,6 +71,7 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
 export const CourseDetailPage = () => {    
     const { id } = useParams()
     const currentUser = useAuth().user
+    const [user, setUser] = useState<User | null>(useAuth().user);
     const apiClient = useApiClient();
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
@@ -144,7 +146,31 @@ export const CourseDetailPage = () => {
             })
             modalDisclosure.onClose()
         }
+    }
         
+    const joinCourse = async () => {
+        if(course && currentUser) {
+            const res = await apiClient.putUsersUserIDCourseCourseID(currentUser.id, course.id)
+            .then(()=>{
+                toast({
+                    title: "Joined",
+                    description: <Text>Course sucessfully joined</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                navigate(-1);
+            })
+            .catch(error=>{             
+                toast({
+                title: "Error occured.",
+                description: <Text>{error.response.data.errors}</Text>,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+                });
+            })
+        }
     }
 
   return (
@@ -187,7 +213,7 @@ export const CourseDetailPage = () => {
                         check whether this user is registered in this course
                         if yes show leave button, otherwise enter button
                     */}
-                    <Text color='green.400' cursor='pointer'><IoEnterOutline/></Text>
+                    <button onClick={()=>joinCourse()}><Text color='green.400' cursor='pointer'><IoEnterOutline/></Text></button>
                 </Flex>
             </Flex>
             {
