@@ -1,41 +1,40 @@
 import {
-  Cascade,
   Collection,
   Entity,
   ManyToMany,
   ManyToOne,
-  PrimaryKey,
 } from "@mikro-orm/core";
-import { v4 } from "uuid";
 import { Course } from "./Course";
 import { Group } from "./Group";
+import { LearnerInGroup } from "./LearnerInGroup";
 import { User } from "./User";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class LearnerInCourse {
-  @PrimaryKey()
-  id: string = v4();
+export class LearnerInCourse extends BaseEntity {  
+  @ManyToOne({ entity: () => User, onDelete: "cascade" })
+  learner: User;
 
-  @ManyToOne({ primary: true, entity: () => User})
-  user: User;
-
+  @ManyToOne({ entity: () => Course, onDelete: "cascade" })
   @ManyToOne({ primary: true, entity: () => Course  })
   course: Course;
 
   @ManyToMany({
     entity: () => Group,
+    pivotEntity: () => LearnerInGroup,
     inversedBy: (e) => e.members,
-    cascade: [Cascade.ALL],
-  }) 
+    nullable: true,
+  })
   groups = new Collection<Group>(this);
 
-  constructor({ user, course }: CreateLearnerInCourseDTO) {
-    this.user = user;
+  constructor({ learner, course }: CreateLearnerInCourseDTO) {
+    super();
+    this.learner = learner;
     this.course = course;
   }
 }
 
 export type CreateLearnerInCourseDTO = {
-  user: User;
+  learner: User;
   course: Course;
 };

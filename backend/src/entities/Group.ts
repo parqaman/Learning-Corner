@@ -2,6 +2,7 @@ import { Collection, Entity, ManyToMany, Property } from "@mikro-orm/core";
 import { object, string } from "yup";
 import { BaseEntity } from "./BaseEntity";
 import { LearnerInCourse } from "./LearnerInCourse";
+import { LearnerInGroup } from "./LearnerInGroup";
 
 @Entity()
 export class Group extends BaseEntity {
@@ -11,7 +12,11 @@ export class Group extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToMany({ entity: () => LearnerInCourse, mappedBy: (e) => e.groups })
+  @ManyToMany({
+    entity: () => LearnerInCourse,
+    pivotEntity: () => LearnerInGroup,
+    mappedBy: (e) => e.groups,
+  })
   members = new Collection<LearnerInCourse>(this);
 
   constructor({ name, description }: CreateGroupDTO) {

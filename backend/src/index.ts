@@ -12,12 +12,14 @@ import {
   CourseSection,
   Group,
   LearnerInCourse,
+  LearnerInGroup,
   User,
 } from "./entities";
 import { Auth } from "./middleware/auth.middleware";
 import { AuthController } from "./controller/auth.controller";
 import { UserController } from "./controller/user.controller";
 import { CourseController } from "./controller/course.controller";
+import { GroupController } from "./controller/group.controller";
 
 const PORT = 4000;
 const app = express();
@@ -31,6 +33,7 @@ export const DI = {} as {
   courseSectionRepository: EntityRepository<CourseSection>;
   groupRepository: EntityRepository<Group>;
   learnerInCourseRepository: EntityRepository<LearnerInCourse>;
+  learnerInGroupRepository: EntityRepository<LearnerInGroup>;
   userRepository: EntityRepository<User>;
 };
 
@@ -42,6 +45,7 @@ export const initializeServer = async () => {
   DI.courseSectionRepository = DI.orm.em.getRepository(CourseSection);
   DI.groupRepository = DI.orm.em.getRepository(Group);
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
+  DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.userRepository = DI.orm.em.getRepository(User);
 
   // global middleware
@@ -56,6 +60,7 @@ export const initializeServer = async () => {
   app.use("/auth", AuthController);
   app.use("/users", Auth.verifyAccess, UserController);
   app.use("/courses", CourseController);
+  app.use("/groups", GroupController);
 
   DI.server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
