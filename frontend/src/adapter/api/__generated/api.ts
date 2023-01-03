@@ -490,6 +490,12 @@ export interface User {
      * @memberof User
      */
     'groups'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof User
+     */
+    'joinedCourses'?: any;
 }
 
 /**

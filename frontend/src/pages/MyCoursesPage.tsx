@@ -49,7 +49,18 @@ export const MyCoursesPage = () => {
                 </Heading>
                 <NewCourseTile/>
             </Flex>
-            <CourseList courses={user?.courses}/>
+            <Flex flexDir={'column'}>
+              <Heading fontSize={'2xl'} fontWeight='semibold'>
+                  Created by you
+              </Heading>
+              <CourseList courses={user?.courses}/>
+            </Flex>
+            <Flex flexDir={'column'}>
+              <Heading fontSize={'2xl'} fontWeight='semibold'>
+                  Joined by you
+              </Heading>
+              <CourseList courses={user?.joinedCourses}/>
+            </Flex>
         </Box>
       </SlideFade>
     </AppLayout>
