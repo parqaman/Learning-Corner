@@ -178,4 +178,46 @@ router.delete("/:userId/course/:courseId/group/:groupId", async (req, res) => {
   }
 });
 
+// Read all courses from user
+router.get("/:userId/course", async (req, res) => {
+  try {
+    const user = await DI.userRepository.findOne(req.params.userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    const learners = await DI.learnerInCourseRepository.find(
+      { learner: user },
+      { populate: ["course"] }
+    );
+    return res.status(200).send(learners);
+  } catch (e: any) {
+    return res.status(400).send({ errors: [e.message] });
+  }
+});
+
+// Read all groups from user
+router.get("/:userId/course/:courseId/group", async (req, res) => {
+  try {
+    const user = await DI.userRepository.findOne(req.params.userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    const course = await DI.courseRepository.findOne(req.params.courseId);
+    if (!course) {
+      return res.status(404).send({ message: "Course not found" });
+    }
+    const learnerInCourse = await DI.learnerInCourseRepository.findOne({
+      learner: user,
+      course: course,
+    });
+    const courses = await DI.learnerInGroupRepository.find(
+      { member: learnerInCourse },
+      { populate: ["group"] }
+    );
+    return res.status(200).send(courses);
+  } catch (e: any) {
+    return res.status(400).send({ errors: [e.message] });
+  }
+});
+
 export const UserController = router;

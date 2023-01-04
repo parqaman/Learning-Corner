@@ -95,4 +95,18 @@ router.delete("/:courseId", async (req, res) => {
   }
 });
 
+// Read all groups in course
+router.get("/:courseId/group", async (req, res) => {
+  try {
+    const course = await DI.courseRepository.findOne(req.params.courseId);
+    if (!course) {
+      return res.status(404).send({ message: "Course not found" });
+    }
+    const groups = await DI.groupRepository.find({ course: course });
+    return res.status(200).send(groups);
+  } catch (e: any) {
+    return res.status(400).send({ errors: [e.message] });
+  }
+});
+
 export const CourseController = router;
