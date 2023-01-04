@@ -69,17 +69,13 @@ router.post("/", async (req, res) => {
 });
 
 // Update a course
-router.put("/:courseId/user/:userId", async (req, res) => {
+router.put("/:courseId", async (req, res) => {
   try {
-    const user = await DI.userRepository.findOne(req.params.userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
     const course = await DI.courseRepository.findOne(req.params.courseId);
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
     }
-    if (course.lecturer !== user) {
+    if (course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
     wrap(course).assign(req.body);
@@ -91,17 +87,13 @@ router.put("/:courseId/user/:userId", async (req, res) => {
 });
 
 // Delete a course
-router.delete("/:courseId/user/:userId", async (req, res) => {
+router.delete("/:courseId", async (req, res) => {
   try {
-    const user = await DI.userRepository.findOne(req.params.userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
     const course = await DI.courseRepository.findOne(req.params.courseId);
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
     }
-    if (course.lecturer !== user) {
+    if (course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
     await DI.courseRepository.removeAndFlush(course);
