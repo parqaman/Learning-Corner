@@ -53,13 +53,13 @@ export const MyCoursesPage = () => {
               <Heading fontSize={'2xl'} fontWeight='semibold'>
                   Created by you
               </Heading>
-              <CourseList courses={user?.courses}/>
+              <CourseList courses={user?.courses!}/>
             </Flex>
             <Flex flexDir={'column'}>
               <Heading fontSize={'2xl'} fontWeight='semibold'>
                   Joined by you
               </Heading>
-              <CourseList courses={user?.joinedCourses}/>
+              <CourseList courses={user?.joinedCourses!}/>
             </Flex>
         </Box>
       </SlideFade>

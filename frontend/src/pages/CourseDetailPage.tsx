@@ -89,7 +89,7 @@ export const CourseDetailPage = () => {
     const newGroupDisclosure = useDisclosure()
 
     const fetchData = async () => {        
-        const theCourse = await apiClient.getCoursesId(id)
+        const theCourse = await apiClient.getCoursesId(id!)
         .then((res)=>{
             const theCourse = res.data
             setCourse(theCourse)
@@ -110,7 +110,7 @@ export const CourseDetailPage = () => {
     const handleEditCourseInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setEditMode(false)
-        const res = await apiClient.putCourse(id, currentUser?.id, course)
+        const res = await apiClient.putCourse(id!, currentUser?.id!, course)
         .catch((e)=>{
             console.log(e);
         })
@@ -118,7 +118,7 @@ export const CourseDetailPage = () => {
 
     const handleDeleteCourse = async () => {
         if(course && currentUser) {
-            const res = await apiClient.deleteCoursesCourseIDUsersUserID(course.id, currentUser.id)
+            const res = await apiClient.deleteCoursesCourseIDUsersUserID(course.id!, currentUser.id)
             .then(()=>{
                 toast({
                     title: "Deleted",
@@ -143,7 +143,7 @@ export const CourseDetailPage = () => {
 
     const handleNewSection = () => {
         if(course) {
-            const mergedSections = [...course.sections, newSection]
+            const mergedSections = [...course.sections!, newSection]
             course.sections = mergedSections            
             setNewSection({
                 heading: "",
@@ -177,7 +177,7 @@ export const CourseDetailPage = () => {
         
     const joinCourse = async () => {
         if(course && currentUser) {
-            const res = await apiClient.putUsersUserIDCourseCourseID(currentUser.id, course.id)
+            const res = await apiClient.putUsersUserIDCourseCourseID(currentUser.id, course.id!)
             .then(()=>{
                 toast({
                     title: "Joined",
@@ -208,7 +208,7 @@ export const CourseDetailPage = () => {
                     <Box id='course-info' maxW={'36rem'}>
                         {editMode ? (
                             <form onSubmit={(e)=>handleEditCourseInfo(e)} style={{width: '100%'}}>
-                                <Textarea w={'100%'} resize={'none'} value={course?.name} onChange={(e)=>setCourse({name: e.target.value, lecturer: course?.lecturer!, description: course?.description})} />
+                                <Textarea w={'100%'} resize={'none'} value={course?.name} onChange={(e)=>setCourse({name: e.target.value, lecturer: course?.lecturer!, description: course?.description!})} />
                                 <Flex alignItems={'center'} fontSize='medium' mt={'0.5rem'} gap={'0.25rem'}>
                                     <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                                         Done
@@ -295,7 +295,7 @@ export const CourseDetailPage = () => {
                     </Box>
                 }
                 {
-                    course &&
+                    course && course.sections &&
                     <SectionList sections={course.sections}/>
                 }
             </Box>
@@ -341,7 +341,7 @@ export const CourseDetailPage = () => {
                     </Modal>
                 </Box>
                 {
-                    course &&
+                    course && course.groups &&
                         <GroupList course={course} groups={course.groups}/>
                 }
             </Box>

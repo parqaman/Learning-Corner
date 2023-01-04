@@ -29,7 +29,7 @@ export const RegisterPage = () => {
                 lastName: "",
                 email: "",
                 password: "",
-                photo: "default",
+                photo: "profile_empty.png",
             }}
             onSubmit={(values) => {
                 useRegister(values);
