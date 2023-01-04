@@ -12,9 +12,11 @@ export const SearchPage = () => {
   const [foundCourses, setFoundCourses] = useState<Course[]>()
 
   const fetchUser = async () => {
-    // const res = await apiClient.getCoursesName(input)
-    // const courses: Course[] = res.data
-    // setFoundCourses(courses)
+    if (name) {
+      const res = await apiClient.getCourses(name)
+      
+      setFoundCourses(res.data)
+    }
   }
 
   useEffect(()=>{

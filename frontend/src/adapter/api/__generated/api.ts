@@ -631,10 +631,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Get courses
+         * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCourses: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getCourses: async (name?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/courses`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -650,6 +651,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
 
 
     
@@ -1139,11 +1144,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * Get courses
+         * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCourses(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Course>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getCourses(options);
+        async getCourses(name?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Course>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCourses(name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1311,11 +1317,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * Get courses
+         * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCourses(options?: any): AxiosPromise<Array<Course>> {
-            return localVarFp.getCourses(options).then((request) => request(axios, basePath));
+        getCourses(name?: string, options?: any): AxiosPromise<Array<Course>> {
+            return localVarFp.getCourses(name, options).then((request) => request(axios, basePath));
         },
         /**
          * Get an Course by Id
@@ -1477,12 +1484,13 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * Get courses
+     * @param {string} [name] The name to filter courses by
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getCourses(options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).getCourses(options).then((request) => request(this.axios, this.basePath));
+    public getCourses(name?: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getCourses(name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

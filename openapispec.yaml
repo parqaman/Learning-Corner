@@ -157,6 +157,12 @@ paths:
     get:
       description: Get courses
       operationId: get-courses
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: The name to filter courses by
       responses:
         '200':
           description: OK
