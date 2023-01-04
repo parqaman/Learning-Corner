@@ -120,6 +120,12 @@ paths:
     get:
       description: Get courses
       operationId: get-courses
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: The name to filter courses by
       responses:
         '200':
           description: OK
@@ -394,7 +400,7 @@ components:
             type: array
             items:
               type:
-                $ref: '#/components/schemas/CourseFile'
+                $ref: '#/components/schemas/File'
           quizzes:
             type: array
             items:
@@ -422,8 +428,8 @@ components:
           type: array
           items:
             type:
-              $ref: '#/components/schemas/CourseSection'
-            $ref: '#/components/schemas/CourseSection'
+              $ref: '#/components/schemas/Section'
+            $ref: '#/components/schemas/Section'
         quizzes:
           type: array
           items:

@@ -6,6 +6,16 @@ import {wrap} from "@mikro-orm/core";
 const router = Router({ mergeParams: true });
 
 router.get("/", async (req, res) => {
+    const courseName = req.query?.name as string;
+    if(courseName){
+        return (await DI.courseRepository.find(
+            {},
+            {
+                filters: { name: { name: courseName } },
+                populate: ['sections', 'participants']
+            }
+        ));
+    }
     return res.json(await DI.courseRepository.findAll({
         populate: ['sections', 'participants']
     }));
