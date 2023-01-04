@@ -11,7 +11,7 @@ import {
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
-import { CourseSection } from "./CourseSection";
+import { Section } from "./Section";
 import { Quiz } from "./Quiz";
 import { LearnerInCourse } from "./LearnerInCourse";
 import { Group } from "./Group";
@@ -39,8 +39,8 @@ export class Course extends BaseEntity {
   })
   participants = new Collection<User>(this);
 
-  @OneToMany(() => CourseSection, (e) => e.course)
-  sections? = new Collection<CourseSection>(this);
+  @OneToMany(() => Section, (e) => e.course)
+  sections? = new Collection<Section>(this);
 
   @OneToMany(() => Group, (e) => e.course)
   groups? = new Collection<Group>(this);
@@ -66,5 +66,5 @@ export type CreateCourseDTO = {
   description: string;
   lecturer: User;
   participants?: User[];
-  sections?: CourseSection[];
+  sections?: Section[];
 };
