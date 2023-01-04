@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const user = await DI.userRepository.findOne({ id: req.params.id },
-    {populate: ['courses', 'joinedCourses', 'courses.lecturer']});
+    {populate: ['courses', 'joinedCourses', 'courses.lecturer', 'joinedCourses.lecturer']});
   if (!user) {
     return res.status(204).send();
   }

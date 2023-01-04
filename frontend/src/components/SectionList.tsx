@@ -66,7 +66,7 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
                 const formData = new FormData();
                 formData.append("myFile", inputedFile);
 
-                axios.post("http://localhost:4000/courses/2e8ff124-7822-479c-b7ec-600bef5d1f2e/fileupload", formData, {
+                axios.post(profile_empty, formData, {
                 headers: {
                     "content-type": "multipart/form-data",
                 },
@@ -151,11 +151,11 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
     )
 }
 
-export const SectionList = ({sections}: {sections: Section[]}) => {
+export const SectionList = ({sections}: {sections: Section[] | null}) => {
     return (
         <Flex flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'} id='sectionlist'>
             {
-                sections ? (
+                sections && sections.length > 0 ? (
                     <Box width={'100%'}>
                         {
                             sections.map((section)=>(
@@ -164,9 +164,7 @@ export const SectionList = ({sections}: {sections: Section[]}) => {
                         }
                     </Box>
                 ) : (
-                    <Box>
-                        <Text>No sections available</Text>
-                    </Box>
+                    <Text width='100%'>No sections available</Text>
                 )
             }
         </Flex>

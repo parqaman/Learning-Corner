@@ -21,7 +21,7 @@ export const CourseList = ({courses}: {courses: Course[] | null}) => {
                         </Grid>
                     ) : (
                         <Box>
-                            <Text>No courses available</Text>
+                            <Text>No courses found</Text>
                         </Box>
                     )
                 }
