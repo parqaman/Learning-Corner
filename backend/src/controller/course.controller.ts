@@ -59,6 +59,14 @@ router.post("/", async (req, res) => {
   if (hasParticipants)
     wrap(course).assign({ participants: createCourseDTO.participants });
 
+  const existingCourse = await DI.courseRepository.findOne({
+    name: course.name
+  })
+
+  if(existingCourse){
+    return res.status(409).send({ errors: "Course existed already" });
+  }
+
   await DI.courseRepository.persistAndFlush(course);
 
   if (hasSections) await DI.courseRepository.populate(course, ["sections"]);
@@ -78,6 +86,15 @@ router.put("/:courseId", async (req, res) => {
     if (course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
+
+    const existingCourse = await DI.courseRepository.findOne({
+      name: req.body.name
+    })
+  
+    if(existingCourse){
+      return res.status(409).send({ errors: "Course existed already" });
+    }
+  
     wrap(course).assign(req.body);
     await DI.courseRepository.flush();
     return res.status(200).send(course);
