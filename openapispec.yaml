@@ -202,6 +202,15 @@ paths:
                     type: array
                     items:
                       type: string
+        '409':
+            description: Error while creating - Course name already exists
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: string
       security:
         - Bearer: []
   '/courses/{id}':
@@ -234,18 +243,6 @@ paths:
                     type: string
       security:
         - Bearer: []
-  '/courses/{courseID}/user/{userID}':
-    parameters:
-      - schema:
-          type: string
-        name: courseID
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: userID
-        in: path
-        required: true
     put:
       summary: 'update a course by only course creator'
       operationId: put-course
@@ -257,12 +254,16 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Course'
+      security:
+        - Bearer: []
     delete:
       summary: 'delete a course by only course creator'
       operationId: delete-courses-courseID-users-userID
       responses:
         '204':
           description: No Content
+      security:
+        - Bearer: [] 
   /auth/register:
     post:
       description: Perform registration

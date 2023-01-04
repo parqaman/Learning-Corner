@@ -72,7 +72,6 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
 export const CourseDetailPage = () => {    
     const { id } = useParams()
     const currentUser = useAuth().user
-    const [user, setUser] = useState<User | null>(useAuth().user);
     const apiClient = useApiClient();
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
@@ -84,6 +83,7 @@ export const CourseDetailPage = () => {
     const [newGroup, setNewGroup] = useState<Group>({
         name: "", description: ""
     })
+    const [oldCourse, setOldCourse] = useState<Course>()
     const toast = useToast();
     const navigate = useNavigate()
     const newSectionDisclosure = useDisclosure()
@@ -94,6 +94,7 @@ export const CourseDetailPage = () => {
         .then((res)=>{
             const theCourse = res.data
             setCourse(theCourse)
+            setOldCourse(theCourse)
             
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
@@ -118,15 +119,32 @@ export const CourseDetailPage = () => {
     const handleEditCourseInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setEditMode(false)
-        const res = await apiClient.putCourse(id!, currentUser?.id!, course)
-        .catch((e)=>{
-            console.log(e);
+        await apiClient.putCourse(id!, course)
+        .then(()=>{
+            setOldCourse(course)
+            toast({
+                title: "Updated",
+                description: <Text>Course sucessfully updated</Text>,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                });
+        })
+        .catch(error=>{
+            setCourse(oldCourse)
+            toast({
+            title: "Error occured.",
+            description: <Text>{error.response.data.errors}</Text>,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            });
         })
     }
 
     const handleDeleteCourse = async () => {
         if(course && currentUser) {
-            const res = await apiClient.deleteCoursesCourseIDUsersUserID(course.id!, currentUser.id)
+            const res = await apiClient.deleteCoursesCourseIDUsersUserID(course.id!)
             .then(()=>{
                 toast({
                     title: "Deleted",
