@@ -5,12 +5,15 @@ import { wrap } from "@mikro-orm/core";
 const router = Router({ mergeParams: true });
 
 router.get("/", async (req, res) => {
-  const users = await DI.userRepository.findAll();
+  const users = await DI.userRepository.findAll({
+    populate: ['courses', 'joinedCourses']
+  });
   res.status(200).send(users);
 });
 
 router.get("/:id", async (req, res) => {
-  const user = await DI.userRepository.findOne({ id: req.params.id });
+  const user = await DI.userRepository.findOne({ id: req.params.id },
+    {populate: ['courses', 'joinedCourses', 'courses.lecturer']});
   if (!user) {
     return res.status(204).send();
   }

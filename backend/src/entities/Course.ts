@@ -28,7 +28,7 @@ export class Course extends BaseEntity {
   @ManyToMany({
     entity: () => User,
     pivotEntity: () => LearnerInCourse,
-    mappedBy: (e) => e.joinedCourses,
+    mappedBy: (e) => e.joinedCourses
   })
   participants = new Collection<User>(this);
 

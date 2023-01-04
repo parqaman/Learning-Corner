@@ -34,8 +34,7 @@ export class User extends BaseEntity {
   @ManyToMany({
     entity: () => Course,
     pivotEntity: () => LearnerInCourse,
-    inversedBy: (e) => e.participants,
-    cascade: [Cascade.ALL],
+    inversedBy: (e) => e.participants
   })
   joinedCourses = new Collection<Course>(this);
 

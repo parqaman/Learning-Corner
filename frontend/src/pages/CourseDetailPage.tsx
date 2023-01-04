@@ -1,14 +1,16 @@
-import { Box, Button, Flex, Heading, Input, Text, Textarea, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 import { CourseCard } from '../components/course_components/CourseCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline } from 'react-icons/io5'
-import { AiFillEdit } from 'react-icons/ai'
-import React, { useEffect, useState } from 'react'
+import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
+import { RxCross1 } from 'react-icons/rx'
+import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { User } from '../adapter/api/__generated'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Course } from '../adapter/api/__generated'
+import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
+import { SectionList } from '../components/SectionList'
 
 interface CourseDescProps {
     course: Course;
@@ -16,6 +18,7 @@ interface CourseDescProps {
     updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
     isOwner: boolean
 }
+
 const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: CourseDescProps) => {
     const [editMode, setEditMode] = useState(false);
 
@@ -45,9 +48,14 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
                     <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>setCourse({name: course.name, lecturer: course.lecturer, description: e.target.value})} />
-                    <Button mt={'1rem'} type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
-                        Done
-                    </Button>
+                    <Box mt={'1rem'}>
+                        <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
+                            <AiOutlineCheck/>
+                        </Button>
+                        <Button onClick={()=>setEditMode(false)} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'gray'} color='white' fontWeight={'medium'}>
+                            <RxCross1/>
+                        </Button>
+                    </Box>
                 </form>
             ) : (
                 <Box pl={'0.5rem'} pr={'0.5rem'} mt='0.5rem'>
@@ -59,6 +67,7 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
     )
 }
 
+
 export const CourseDetailPage = () => {    
     const { id } = useParams()
     const currentUser = useAuth().user
@@ -67,8 +76,12 @@ export const CourseDetailPage = () => {
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [course, setCourse] = useState<Course>()
+    const [newSection, setNewSection] = useState<Section>({
+        heading: "", content: ""
+    })
     const toast = useToast();
     const navigate = useNavigate()
+    const modalDisclosure = useDisclosure()
 
     const fetchData = async () => {        
         const theCourse = await apiClient.getCoursesId(id)
@@ -78,9 +91,7 @@ export const CourseDetailPage = () => {
             
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
-            }  
-            
-            console.log(theCourse)
+            }
         })
         .catch((e)=>{
             console.log(e);
@@ -125,29 +136,17 @@ export const CourseDetailPage = () => {
         }
     }
 
-    const joinCourse = async () => {
-        if(course && currentUser) {
-            const res = await apiClient.putUsersUserIDCourseCourseID(currentUser.id, course.id)
-            .then(()=>{
-                toast({
-                    title: "Joined",
-                    description: <Text>Course sucessfully joined</Text>,
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                    });
-                navigate(-1);
+    const handleNewSection = () => {
+        if(course) {
+            const mergedSections = [...course.sections, newSection]
+            course.sections = mergedSections            
+            setNewSection({
+                heading: "",
+                content: ""
             })
-            .catch(error=>{             
-                toast({
-                title: "Error occured.",
-                description: <Text>{error.response.data.errors}</Text>,
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-                });
-            })
+            modalDisclosure.onClose()
         }
+        
     }
 
   return (
@@ -155,19 +154,24 @@ export const CourseDetailPage = () => {
         <CourseCard>
             <Flex id='course-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
-                    <Box id='course-info'>
+                    <Box id='course-info' maxW={'36rem'}>
                         {editMode ? (
-                            <form onSubmit={(e)=>handleEditCourseInfo(e)}>
-                                <Input value={course?.name} onChange={(e)=>setCourse({name: e.target.value, lecturer: course?.lecturer!, description: course?.description})} />
-                                <Flex alignItems={'center'} fontSize='medium' mt={'0.5rem'}>
+                            <form onSubmit={(e)=>handleEditCourseInfo(e)} style={{width: '100%'}}>
+                                <Textarea w={'100%'} resize={'none'} value={course?.name} onChange={(e)=>setCourse({name: e.target.value, lecturer: course?.lecturer!, description: course?.description})} />
+                                <Flex alignItems={'center'} fontSize='medium' mt={'0.5rem'} gap={'0.25rem'}>
                                     <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                                         Done
+                                    </Button>
+                                    <Button onClick={()=>setEditMode(false)} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'gray'} color='white' fontWeight={'medium'}>
+                                        Cancel
                                     </Button>
                                 </Flex>
                             </form>
                         ) : (
                             <>
-                                <Heading>{course?.name}</Heading>
+                                <Heading>
+                                    {course?.name}
+                                </Heading>
                                 <Text>{course?.lecturer.firstName} {course?.lecturer.lastName}</Text>
                             </>
                         )
@@ -188,14 +192,54 @@ export const CourseDetailPage = () => {
                     <button onClick={()=>joinCourse()}><Text color='green.400' cursor='pointer'><IoEnterOutline/></Text></button>
                 </Flex>
             </Flex>
-            { //course description section
+            {
+                //course description section
                 course? (
                     <CourseDescriptionSection course={course} setCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
                 ) : (
                     <Box>Course Desciption not available</Box>
                 )
             }
-            {/*TODO: map course sections*/}
+            {/** Section List  **/}
+            <SectionList sections={course?.sections}/>
+            { isOwner &&
+                <Box>
+                    <Button onClick={modalDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
+                        Add new section
+                    </Button>
+                    <Modal blockScrollOnMount={false} isOpen={modalDisclosure.isOpen} onClose={modalDisclosure.onClose}>
+                        <ModalOverlay />
+                        <ModalContent>
+                        <ModalHeader>New Section</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                            <Flex mb={'0.5rem'}>
+                                <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
+                                    <Input placeholder='Section title' value={newSection?.heading} onChange={(e)=>setNewSection({
+                                        heading: e.target.value,
+                                        content: newSection!.content
+                                    })}/>
+                                    <Textarea placeholder='Section description' value={newSection?.content} onChange={(e)=>setNewSection({
+                                        heading: newSection!.heading, 
+                                        content: e.target.value
+                                    })}/>
+                                    
+                                </form>
+                            </Flex>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button colorScheme='blue' mr={3} onClick={()=>handleNewSection()}>
+                                Add
+                            </Button>
+                            <Button variant='ghost' onClick={modalDisclosure.onClose}>
+                                Cancel
+                            </Button>
+                        </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                </Box>
+            }
             <Box display={'flex'} justifyContent='center' mt={'3rem'}>
             {
                 isOwner &&

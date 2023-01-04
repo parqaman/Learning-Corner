@@ -161,6 +161,12 @@ export interface ModelFile {
      * @type {any}
      * @memberof ModelFile
      */
+    'content'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof ModelFile
+     */
     'owner'?: any;
     /**
      * 
