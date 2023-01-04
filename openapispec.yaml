@@ -321,6 +321,18 @@ paths:
                   type: string
                 newPassword:
                   type: string
+  /groups:
+    post:
+      summary: ''
+      operationId: post-groups
+      responses:
+        '201':
+          description: Created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
 components:
   schemas:
     User:
@@ -413,6 +425,11 @@ components:
             type:
               $ref: '#/components/schemas/User'
             $ref: '#/components/schemas/User'
+        groups:
+          type: array
+          items:
+            type:
+              $ref: '#/components/schemas/Group'
         sections:
           type: array
           items:
