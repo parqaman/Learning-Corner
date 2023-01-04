@@ -116,6 +116,31 @@ paths:
           description: Invalid Id
       security:
         - Bearer: []
+  '/users/{userID}/course/{courseID}':
+    parameters:
+      - schema:
+          type: string
+        name: userID
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: courseID
+        in: path
+        required: true
+    put:
+      summary: ''
+      operationId: put-users-userID-course-courseID
+      responses:
+        '200':
+          description: OK
+      description: ''
+    delete:
+      summary: ''
+      operationId: delete-users-userID-course-courseID
+      responses:
+        '204':
+          description: No Content
   /courses:
     get:
       description: Get courses
