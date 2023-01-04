@@ -28,11 +28,11 @@ router.post("/", async (req, res) => {
     course: req.body.course,
   };
 
+  // Check authorization
   const course = await DI.courseRepository.findOne(createGroupDTO.course);
   if (!course) {
     return res.status(404).send({ message: "Course not found" });
   }
-
   const learnerInCourse = await DI.learnerInCourseRepository.findOne({
     learner: req.user,
     course: course,
@@ -43,12 +43,6 @@ router.post("/", async (req, res) => {
 
   const newGroup = new Group(createGroupDTO);
   await DI.groupRepository.persistAndFlush(newGroup);
-
-  const newLearnerInGroup = DI.learnerInGroupRepository.create({
-    member: learnerInCourse,
-    group: newGroup,
-  });
-  await DI.learnerInGroupRepository.persistAndFlush(newLearnerInGroup);
 
   return res.status(201).send(newGroup);
 });
@@ -61,6 +55,7 @@ router.put("/:groupId", async (req, res) => {
       return res.status(404).send({ message: "Group not found" });
     }
 
+    // Check authorization
     const course = await DI.courseRepository.findOne(group.course);
     const learnerInCourse = await DI.learnerInCourseRepository.findOne({
       learner: req.user,
@@ -90,6 +85,7 @@ router.delete("/:groupId", async (req, res) => {
       return res.status(404).send({ message: "Group not found" });
     }
 
+    // Check authorization
     const course = await DI.courseRepository.findOne(group.course);
     const learnerInCourse = await DI.learnerInCourseRepository.findOne({
       learner: req.user,

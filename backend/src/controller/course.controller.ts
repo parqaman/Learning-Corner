@@ -6,26 +6,30 @@ import { wrap } from "@mikro-orm/core";
 const router = Router({ mergeParams: true });
 
 router.get("/", async (req, res) => {
-    const courseName = req.query?.name as string;
-    if(courseName){
-        return (res.json(await DI.courseRepository.find(
-          {},
-          {
-              filters: { name: { name: courseName } },
-              populate: ['sections', 'participants', 'lecturer']
-          }
-      )));
-    }
-    return res.json(await DI.courseRepository.findAll({
-        populate: ['sections', 'participants', 'lecturer']
-    }));
+  const courseName = req.query?.name as string;
+  if (courseName) {
+    return res.json(
+      await DI.courseRepository.find(
+        {},
+        {
+          filters: { name: { name: courseName } },
+          populate: ["sections", "participants", "lecturer"],
+        }
+      )
+    );
+  }
+  return res.json(
+    await DI.courseRepository.findAll({
+      populate: ["sections", "participants", "lecturer"],
+    })
+  );
 });
 
 router.get("/:id", async (req, res) => {
   const course = await DI.courseRepository.findOne(
     { id: req.params.id },
     {
-      populate: ["sections", "participants", 'lecturer'],
+      populate: ["sections", "participants", "lecturer", "groups"],
     }
   );
   if (!course) return res.status(404).send({ message: "Course not found" });
@@ -60,10 +64,10 @@ router.post("/", async (req, res) => {
     wrap(course).assign({ participants: createCourseDTO.participants });
 
   const existingCourse = await DI.courseRepository.findOne({
-    name: course.name
-  })
+    name: course.name,
+  });
 
-  if(existingCourse){
+  if (existingCourse) {
     return res.status(409).send({ errors: "Course existed already" });
   }
 
@@ -72,12 +76,6 @@ router.post("/", async (req, res) => {
   if (hasSections) await DI.courseRepository.populate(course, ["sections"]);
   if (hasParticipants)
     await DI.courseRepository.populate(course, ["participants"]);
-
-  const newLearnerInCourse = DI.learnerInCourseRepository.create({
-    learner: req.user,
-    course: course,
-  });
-  await DI.learnerInCourseRepository.persistAndFlush(newLearnerInCourse);
 
   return res.status(201).send(course);
 });
@@ -94,13 +92,13 @@ router.put("/:courseId", async (req, res) => {
     }
 
     const existingCourse = await DI.courseRepository.findOne({
-      name: req.body.name
-    })
-  
-    if(existingCourse){
+      name: req.body.name,
+    });
+
+    if (existingCourse) {
       return res.status(409).send({ errors: "Course existed already" });
     }
-  
+
     wrap(course).assign(req.body);
     await DI.courseRepository.flush();
     return res.status(200).send(course);
@@ -121,20 +119,6 @@ router.delete("/:courseId", async (req, res) => {
     }
     await DI.courseRepository.removeAndFlush(course);
     return res.status(204).send({ message: "Course deleted" });
-  } catch (e: any) {
-    return res.status(400).send({ errors: [e.message] });
-  }
-});
-
-// Read all groups in course
-router.get("/:courseId/group", async (req, res) => {
-  try {
-    const course = await DI.courseRepository.findOne(req.params.courseId);
-    if (!course) {
-      return res.status(404).send({ message: "Course not found" });
-    }
-    const groups = await DI.groupRepository.find({ course: course });
-    return res.status(200).send(groups);
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
   }
