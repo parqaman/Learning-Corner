@@ -1,7 +1,7 @@
-import { Box, Button, Flex, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 import { CourseCard } from '../components/course_components/CourseCard'
 import { AppLayout } from '../layout/AppLayout'
-import { IoEnterOutline } from 'react-icons/io5'
+import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
 import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
@@ -75,6 +75,7 @@ export const CourseDetailPage = () => {
     const apiClient = useApiClient();
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
+    const [joined, setJoined] = useState(false)
     const [course, setCourse] = useState<Course>()
     const [newSection, setNewSection] = useState<Section>({
         heading: "", content: ""
@@ -92,6 +93,13 @@ export const CourseDetailPage = () => {
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
             }
+
+            const participants = theCourse.participants.map((obj:any) => obj.id);
+            
+            if(participants.includes(currentUser?.id)){
+                setJoined(true)
+            }
+                
         })
         .catch((e)=>{
             console.log(e);
@@ -149,6 +157,56 @@ export const CourseDetailPage = () => {
         
     }
 
+    const joinCourse = async () => {
+        if(course && currentUser) {
+            const res = await apiClient.putUsersUserIDCourseCourseID(currentUser.id, course.id)
+            .then(()=>{
+                toast({
+                    title: "Joined",
+                    description: <Text>Course sucessfully joined</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                setJoined(true)
+            })
+            .catch(error=>{             
+                toast({
+                title: "Error occured.",
+                description: <Text>{error.response.data.errors}</Text>,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+                });
+            })
+        }
+    }
+
+    const leaveCourse = async () => {
+        if(course && currentUser) {
+            const res = await apiClient.deleteUsersUserIDCourseCourseID(currentUser.id, course.id)
+            .then(()=>{
+                toast({
+                    title: "Left",
+                    description: <Text>Course sucessfully left</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                setJoined(false)
+            })
+            .catch(error=>{             
+                toast({
+                title: "Error occured.",
+                description: <Text>{error.response.data.errors}</Text>,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+                });
+            })
+        }
+    }
+
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
         <CourseCard>
@@ -184,12 +242,15 @@ export const CourseDetailPage = () => {
                         </Flex>
                     }
                 </Box>
-                <Flex gap={'1rem'} id='course-buttons' flexDir={'row'} alignItems='center' fontSize={'3xl'}>
-                    {/* TODO:
-                        check whether this user is registered in this course
-                        if yes show leave button, otherwise enter button
-                    */}
-                    <button onClick={()=>joinCourse()}><Text color='green.400' cursor='pointer'><IoEnterOutline/></Text></button>
+                <Flex gap={'1rem'} id='course-buttons' flexDir={'row'} alignItems='center'>
+                    {
+                        !isOwner && !joined &&
+                        <button onClick={()=>joinCourse()}><HStack><Text>Join course</Text><Text color='green.400' cursor='pointer' fontSize={'3xl'}><IoEnterOutline/></Text></HStack></button>
+                    }
+                    {
+                        !isOwner && joined &&
+                        <button onClick={()=>leaveCourse()}><HStack><Text>Leave course</Text><Text color='red.400' cursor='pointer' fontSize={'3xl'}><IoExitOutline/></Text></HStack></button>
+                    }
                 </Flex>
             </Flex>
             {
