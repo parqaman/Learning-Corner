@@ -342,16 +342,121 @@ paths:
                   type: string
   /groups:
     post:
-      summary: ''
+      summary: Post group
       operationId: post-groups
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - not a member of the course
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: string
+        '404':
+          description: Course does not exist
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      security:
+        - Bearer: []
+  '/groups/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the group to work with
+    get:
+      description: Get a Group by Id
+      operationId: get-group-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - Bearer: []
+    put:
+      summary: 'update a group'
+      operationId: put-group
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Group does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Group'
+      security:
+        - Bearer: []
+    delete:
+      summary: 'delete a group'
+      operationId: delete-group
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Group does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - Bearer: [] 
 components:
   schemas:
     User:
@@ -416,6 +521,11 @@ components:
             items:
               type:
                 $ref: '#/components/schemas/User'
+          groups:
+            type: array
+            items:
+              type:
+                $ref: '#/components/schemas/Group'
           files:
             type: array
             items:
@@ -534,8 +644,8 @@ components:
           type: string
         description:
           type: string
-        owner:
-          $ref: '#/components/schemas/User'
+        course:
+          $ref: '#/components/schemas/Course'
         members:
           type: array
           items:
