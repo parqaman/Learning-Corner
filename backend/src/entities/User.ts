@@ -25,7 +25,7 @@ export class User extends BaseEntity {
   @Property()
   lastName: string;
 
-  @Property()
+  @Property({length: 5242880}) //photo max 5 mb
   photo: string;
 
   @OneToMany(() => Course, (e) => e.lecturer)
@@ -34,8 +34,7 @@ export class User extends BaseEntity {
   @ManyToMany({
     entity: () => Course,
     pivotEntity: () => LearnerInCourse,
-    inversedBy: (e) => e.participants,
-    cascade: [Cascade.ALL],
+    inversedBy: (e) => e.participants
   })
   joinedCourses = new Collection<Course>(this);
 

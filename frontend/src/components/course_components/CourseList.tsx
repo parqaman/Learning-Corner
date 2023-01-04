@@ -1,28 +1,31 @@
-import { Flex, Grid, GridItem } from "@chakra-ui/react"
-import { Course } from "../../pages/HomePage"
+import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react"
+import { Course } from '../../adapter/api/__generated/api'
 import { SingleCourse } from "./SingleCourse";
 
-export interface CourseProps {
-    courses: Course[];
-}
-
-export const CourseList = ({courses}: CourseProps) => {
+export const CourseList = ({courses}: {courses: Course[] | null}) => {
     return (
-            <Flex flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
-                <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
-                    {
-                        courses.map((course)=>(
-                            <GridItem key={course.id}>
-                                <SingleCourse
-                                    id={course.id}
-                                    courseName={course.courseName}
-                                    courseAuthor={course.courseAuthor}
-                                    key={course.id}
-                                />
-                            </GridItem>    
-                        ))
-                    }
-                </Grid>
+            <Flex minW={'47rem'} flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
+                {
+                    courses ? (
+                        <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
+                            {
+                                courses.map((course)=>(
+                                    <GridItem key={course.id}>
+                                        <SingleCourse
+                                            key={course.id} 
+                                            course={course}
+                                            />
+                                    </GridItem>    
+                                ))
+                            }
+                        </Grid>
+                    ) : (
+                        <Box>
+                            <Text>No courses found</Text>
+                        </Box>
+                    )
+                }
+                
             </Flex>
     )
 }

@@ -5,7 +5,7 @@ import {
   ManyToOne,
   ManyToMany,
   OneToMany,
-  Property, Unique,
+  Property, Unique, Filter,
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
@@ -14,6 +14,7 @@ import { Quiz } from "./Quiz";
 import { LearnerInCourse } from "./LearnerInCourse";
 
 @Entity()
+@Filter({ name: 'name', cond: args => ({ name: { $ilike: `%${args.name}%` } }) })
 export class Course extends BaseEntity {
   @Property()
   @Unique()
@@ -28,7 +29,7 @@ export class Course extends BaseEntity {
   @ManyToMany({
     entity: () => User,
     pivotEntity: () => LearnerInCourse,
-    mappedBy: (e) => e.joinedCourses,
+    mappedBy: (e) => e.joinedCourses
   })
   participants = new Collection<User>(this);
 

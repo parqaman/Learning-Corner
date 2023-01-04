@@ -1,8 +1,8 @@
 import { Box, Heading, Text } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
-import { Course } from "../../pages/HomePage"
+import { Course } from "../../adapter/api/__generated/api"
 
-export const SingleCourse = (course: Course) => {
+export const SingleCourse = ({course}: {course: Course}) => {
     const navigate = useNavigate()
 
     return (
@@ -32,12 +32,12 @@ export const SingleCourse = (course: Course) => {
                 noOfLines={2}
                 height={'100%'}
             >
-                {course.courseName}
+                {course.name}
             </Heading>
             <Text 
                 noOfLines={1}
             >
-                {course.courseAuthor}
+                {course.lecturer.firstName} {course.lecturer.lastName}
             </Text>
         </Box>
     )

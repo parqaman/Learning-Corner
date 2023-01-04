@@ -1,10 +1,12 @@
-import { Box, Button, Heading, Text, Image, Input, Flex } from '@chakra-ui/react'
+import {Box, Button, Heading, Text, Image, Input, Flex, Spinner} from '@chakra-ui/react'
 import React, { useRef, useState } from 'react'
 import { ProfileCard } from '../components/ProfileCard'
 import { AppLayout } from '../layout/AppLayout'
-import { useAuth, User } from '../providers/AuthProvider'
+import { useAuth } from '../providers/AuthProvider'
+import { User } from '../adapter/api/__generated'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { useNavigate } from 'react-router-dom'
+import {useReducedMotion} from "framer-motion";
 
 interface ProfileProps {
   description: string,
@@ -49,7 +51,7 @@ const ProfileDetailTile = ({description, data, edit, editDetail, setEditDetail, 
             </form>
           ) :
             <Text>
-              {data}
+                {data}
             </Text>
         }
       </Box>
@@ -72,6 +74,7 @@ export const ProfilePage = () => {
 
   //state for uploading profile photo
   const [photo, setPhoto] = useState("");
+  const [photoRaw, setPhotoRaw] = useState<File>();
 
   const [user, setUser] = useState<User | null>(useAuth().user)
 
@@ -81,9 +84,9 @@ export const ProfilePage = () => {
   const fetchData = async () => {
     if(user){
       const fetchedUser = await apiClient.getUsersId(user.id)      
-      
+      console.log(fetchedUser)
       setUser(fetchedUser.data);
-      setPhoto(fetchedUser.data.photo);
+      //setPhoto(fetchedUser.data.photo);
 
       setEditDetail({
         firstName: user.firstName,
@@ -103,15 +106,15 @@ export const ProfilePage = () => {
       user.firstName = editDetail.firstName;
       user.lastName = editDetail.lastName;
       user.email = editDetail.email;
-      user.photo = photo      
 
       setEditDetail({
         firstName: editDetail.firstName,
         lastName: editDetail.lastName,
         email: editDetail.email,
-        photo: photo
+        photo: user?.photo
       })
-      const data = await apiClient.putUsersId(user.id, user);
+
+      const data = await apiClient.putUsersId(user.id, user.id, user.firstName, user.lastName, user.email, photoRaw);
     }
     setEdit(!edit);
   }
@@ -123,6 +126,7 @@ export const ProfilePage = () => {
         alert("file size too big")
       }
       else {
+        setPhotoRaw(inputedPhoto);
         const reader = new FileReader()
         reader.readAsDataURL(inputedPhoto);
         reader.onload = () => {
@@ -142,6 +146,20 @@ export const ProfilePage = () => {
     }
   }
 
+  const ProfilePhoto = () => {
+    if(photo){
+      return (
+          <Image src={ photo } h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+      )
+    }
+    if(user?.photo){
+      return (
+          <Image src={ 'http://localhost:4000/upload/tmp/' + user?.photo } h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+      )
+    }
+    return <Spinner/>
+  }
+
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
       <ProfileCard>
@@ -155,16 +173,16 @@ export const ProfilePage = () => {
                   edit ? (
                     <>
                       <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                        <Image src={photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+                        <ProfilePhoto/>
                         <Input type={'file'} accept='image/png, image/jpeg, image/gif' onChange={handleUploadPhoto} display={'none'} ref={fileInputRef}/>
                       </Box>
-                      <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'light'}>
+                      <Text onClick={()=>fileInputRef.current?.click()} mt={'1em'} p={'0.7em'} borderRadius={'0.375em'} cursor={'pointer'} size='xs' bg={'black'} color='#D0D0D0' fontSize={'x-small'} fontWeight={'semibold'}>
                         Upload image
                       </Text>
                     </>
                   ) : (
                     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'} bg='#D0D0D0' borderRadius='50%' overflow={'hidden'}>
-                      <Image src={user?.photo} h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+                      <ProfilePhoto/>
                     </Box>
                   )
                 }
@@ -183,10 +201,14 @@ export const ProfilePage = () => {
                 </Button>
               ) : (
                 <Flex justifyContent={'space-between'} width='100%'>
-                  {/*TODO: done button check if user input is empty or not before sending request*/}
-                  <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
-                    Done
-                  </Button>
+                  <Flex gap={'0.25rem'}>
+                    <Button onClick={(e)=>handleEdit(e)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'black'} color='white' fontWeight={'medium'}>
+                      Done
+                    </Button>
+                    <Button onClick={()=>setEdit(false)} variant={'solid'} _hover={{}} _active={{}} size='sm' bg={'gray'} color='white' fontWeight={'medium'}>
+                        Cancel
+                    </Button>
+                  </Flex>
                   <Text color={'rgba(220, 0, 0, 100%)'} onClick={()=>{navigate('./resetpassword'); setEdit(!edit)}} cursor='pointer' fontSize='xs' fontWeight={'medium'} pb={'0.1rem'} pt={'0.5em'}>
                     Reset password
                   </Text>

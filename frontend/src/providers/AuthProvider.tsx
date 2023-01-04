@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useToast, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/localStorage";
+import { User } from "../adapter/api/__generated/api";
 
 export type RegisterUserData = {
   firstName: string;
@@ -14,14 +15,6 @@ export type RegisterUserData = {
 export type LoginData = {
   password: string;
   email: string;
-};
-
-export type User = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    photo: string;
 };
 
 export type AuthContext = {
