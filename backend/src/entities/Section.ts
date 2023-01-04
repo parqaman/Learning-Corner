@@ -22,20 +22,22 @@ export class Section extends BaseEntity {
   @Property()
   text: string;
 
-  @ManyToOne(() => Course)
+  @ManyToOne({entity: () => Course, nullable: true})
   course?: Course;
 
-  @ManyToOne(() => Group)
+  @ManyToOne({entity: () => Group, nullable: true})
   group?: Group;
 
   @OneToMany(() => File, (e) => e.section)
   files = new Collection<File>(this);
 
-  constructor({ heading, description, text }: CreateSectionDTO) {
+  constructor({ heading, description, text, course, group }: CreateSectionDTO) {
     super();
     this.heading = heading;
     this.description = description;
     this.text = text;
+    this.course = course;
+    this.group = group;
   }
 }
 
