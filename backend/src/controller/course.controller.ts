@@ -57,6 +57,12 @@ router.post("/", async (req, res) => {
   if (hasParticipants)
     await DI.courseRepository.populate(course, ["participants"]);
 
+  const newLearnerInCourse = DI.learnerInCourseRepository.create({
+    learner: req.user,
+    course: course,
+  });
+  await DI.learnerInCourseRepository.persistAndFlush(newLearnerInCourse);
+
   return res.status(201).send(course);
 });
 

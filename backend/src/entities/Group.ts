@@ -19,7 +19,7 @@ export class Group extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToOne(() => Course)
+  @ManyToOne({ entity: () => Course, onDelete: "cascade" })
   course: Course;
 
   @ManyToMany({

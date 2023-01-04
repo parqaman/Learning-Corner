@@ -44,6 +44,12 @@ router.post("/", async (req, res) => {
   const newGroup = new Group(createGroupDTO);
   await DI.groupRepository.persistAndFlush(newGroup);
 
+  const newLearnerInGroup = DI.learnerInGroupRepository.create({
+    member: learnerInCourse,
+    group: newGroup,
+  });
+  await DI.learnerInGroupRepository.persistAndFlush(newLearnerInGroup);
+
   return res.status(201).send(newGroup);
 });
 
