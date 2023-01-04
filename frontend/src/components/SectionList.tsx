@@ -5,6 +5,7 @@ import { ModelFile, Section } from '../adapter/api/__generated';
 import { RxCross1 } from 'react-icons/rx';
 import profile_empty  from '../assets/profile_empty.png'
 import axios from 'axios';
+import { IoTrash } from 'react-icons/io5';
 
 interface SectionProps {
     section: Section;
@@ -74,6 +75,14 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
             }
           }
         }
+    
+    const handleDeleteSection = () => {
+        console.log("delete section");
+        console.log(sectionProp.section);
+        
+        //send delete request to backend
+    }
+        
 
     return (
         <Box mt={'1.5rem'} mb='1.5rem' id='section-tile' >
@@ -104,8 +113,9 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
                             {editSection.heading}
                         </Text>
                         { sectionProp.isOwner && !editMode &&
-                            <Flex alignItems={'center'} fontSize='larger' cursor='pointer'>
+                            <Flex alignItems={'center'} fontSize='larger' gap={'1rem'}>
                                 <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
+                                <IoTrash color='red' cursor='pointer' onClick={()=>handleDeleteSection()}/>
                             </Flex>
                         }
                     </>

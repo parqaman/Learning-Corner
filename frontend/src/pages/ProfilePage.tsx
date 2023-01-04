@@ -84,7 +84,6 @@ export const ProfilePage = () => {
   const fetchData = async () => {
     if(user){
       const fetchedUser = await apiClient.getUsersId(user.id)      
-      console.log(fetchedUser)
       setUser(fetchedUser.data);
       //setPhoto(fetchedUser.data.photo);
 

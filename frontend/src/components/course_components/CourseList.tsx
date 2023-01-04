@@ -2,11 +2,11 @@ import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react"
 import { Course } from '../../adapter/api/__generated/api'
 import { SingleCourse } from "./SingleCourse";
 
-export const CourseList = ({courses}: {courses: Course[] | null}) => {
+export const CourseList = ({courses}: {courses: Course[] | undefined}) => {
     return (
             <Flex minW={'47rem'} flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
                 {
-                    courses ? (
+                    courses && courses.length > 0 ? (
                         <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
                             {
                                 courses.map((course)=>(
@@ -20,9 +20,7 @@ export const CourseList = ({courses}: {courses: Course[] | null}) => {
                             }
                         </Grid>
                     ) : (
-                        <Box>
-                            <Text>No courses found</Text>
-                        </Box>
+                        <Text  width='100%'>No courses found</Text>
                     )
                 }
                 
