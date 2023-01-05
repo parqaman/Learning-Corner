@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
     learner: req.user,
     course: course,
   });
-  if (!learnerInCourse) {
+  if (!learnerInCourse && course.lecturer !== req.user) {
     return res.status(401).send({ message: "User not authorized" });
   }
 
@@ -64,6 +64,9 @@ router.put("/:groupId", async (req, res) => {
 
     // Check authorization
     const course = await DI.courseRepository.findOne(group.course);
+    if (!course) {
+      return res.status(404).send({ message: "Course not found" });
+    }
     const learnerInCourse = await DI.learnerInCourseRepository.findOne({
       learner: req.user,
       course: course,
@@ -72,7 +75,7 @@ router.put("/:groupId", async (req, res) => {
       member: learnerInCourse,
       group: group,
     });
-    if (!learnerInGroup) {
+    if (!learnerInGroup && course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
 
@@ -94,6 +97,9 @@ router.delete("/:groupId", async (req, res) => {
 
     // Check authorization
     const course = await DI.courseRepository.findOne(group.course);
+    if (!course) {
+      return res.status(404).send({ message: "Course not found" });
+    }
     const learnerInCourse = await DI.learnerInCourseRepository.findOne({
       learner: req.user,
       course: course,
@@ -102,7 +108,7 @@ router.delete("/:groupId", async (req, res) => {
       member: learnerInCourse,
       group: group,
     });
-    if (!learnerInGroup) {
+    if (!learnerInGroup && course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
 
