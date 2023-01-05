@@ -264,6 +264,162 @@ paths:
           description: No Content
       security:
         - Bearer: [] 
+  '/courses/{id}/section':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the course
+    post:
+      description: Create section in course
+      operationId: post-section-course
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - not a creator of the course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        description: The Section Object to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Section'
+      security:
+        - Bearer: [] 
+  '/courses/{courseId}/section/{sectionId}':
+    parameters:
+      - in: path
+        name: courseId
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the course
+      - in: path
+        name: sectionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the section
+    put:
+      description: Update section in a course
+      operationId: put-section-course
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - not a creator of the course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Section'
+      security:
+        - Bearer: []
+    delete:
+      description: Delete section in a course
+      operationId: delete-section-course
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - not a creator of the course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - Bearer: []
   /auth/register:
     post:
       description: Perform registration
@@ -457,6 +613,162 @@ paths:
                     type: string
       security:
         - Bearer: [] 
+  '/groups/{id}/section':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the group
+    post:
+      description: Create section in group
+      operationId: post-section-group
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - neither a creator of the course nor a member of the group
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        description: The Section Object to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Section'
+      security:
+        - Bearer: [] 
+  '/groups/{groupId}/section/{sectionId}':
+    parameters:
+      - in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the group
+      - in: path
+        name: sectionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the section
+    put:
+      description: Update section in a group
+      operationId: put-section-group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - neither a creator of the course nor a member of the group
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Section'
+      security:
+        - Bearer: []
+    delete:
+      description: Delete section in a group
+      operationId: delete-section-group
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating - neither a creator of the course nor a member of the group
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - Bearer: []
 components:
   schemas:
     User:
@@ -559,6 +871,7 @@ components:
           items:
             type:
               $ref: '#/components/schemas/Group'
+            $ref: '#/components/schemas/Group'
         sections:
           type: array
           items:
@@ -626,12 +939,35 @@ components:
           format: uuid
         heading:
           type: string
-        content:
+        description:
           type: string
+        text:
+          type: string
+        course:
+          type:
+            $ref: '#/components/schemas/Course'
+          $ref: '#/components/schemas/Course'
+        group:
+          type:
+            $ref: '#/components/schemas/Group'
+          $ref: '#/components/schemas/Group'
         files:
           type: array
           items:
+            type:
+              $ref: '#/components/schemas/File'
             $ref: '#/components/schemas/File'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - heading
+        - description
+        - text
     Group:
       title: Group
       x-stoplight:
@@ -649,11 +985,21 @@ components:
         members:
           type: array
           items:
+            type:
+              $ref: '#/components/schemas/User'
             $ref: '#/components/schemas/User'
         sections:
           type: array
           items:
+            type:
+              $ref: '#/components/schemas/Section'
             $ref: '#/components/schemas/Section'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Quiz:
       title: Quiz
       type: object
