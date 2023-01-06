@@ -77,8 +77,9 @@ export const CourseDetailPage = () => {
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
     const [course, setCourse] = useState<Course>()
+    const [sections, setSections] = useState<Section[]>()
     const [newSection, setNewSection] = useState<Section>({
-        heading: "", content: ""
+        heading: "", description: "", text: "section text" //wofür ist "text" überhaupt da?
     })
     const [newGroup, setNewGroup] = useState<Group>({
         name: "", description: ""
@@ -89,12 +90,13 @@ export const CourseDetailPage = () => {
     const newSectionDisclosure = useDisclosure()
     const newGroupDisclosure = useDisclosure()
 
-    const fetchData = async () => {        
-        const theCourse = await apiClient.getCoursesId(id!)
+    const fetchData = async () => {
+        await apiClient.getCoursesId(id!)
         .then((res)=>{
             const theCourse = res.data
             setCourse(theCourse)
             setOldCourse(theCourse)
+            setSections(theCourse.sections)
             
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
@@ -167,17 +169,24 @@ export const CourseDetailPage = () => {
         }
     }
 
-    const handleNewSection = () => {
+    const handleNewSection = async () => {
         if(course) {
-            const mergedSections = [...course.sections!, newSection]
-            course.sections = mergedSections            
             setNewSection({
                 heading: "",
-                content: ""
+                description: "",
+                text: newSection.text
             })
-            newSectionDisclosure.onClose()
-
-            //send post section to backend
+            
+            await apiClient.postSectionCourse(course!.id!, newSection)
+            .then((response)=>{
+                const theSection = response.data
+                const mergedSections = [...sections!, theSection]
+                setSections(mergedSections)
+                newSectionDisclosure.onClose()
+            })
+            .catch((e)=> {
+                console.log(e);
+            })            
         }
     }
 
@@ -326,11 +335,13 @@ export const CourseDetailPage = () => {
                                         <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
                                             <Input placeholder='Section title' value={newSection?.heading} onChange={(e)=>setNewSection({
                                                 heading: e.target.value,
-                                                content: newSection!.content
+                                                description: newSection!.description,
+                                                text: newSection!.text
                                             })}/>
-                                            <Textarea placeholder='Section description' value={newSection?.content} onChange={(e)=>setNewSection({
+                                            <Textarea placeholder='Section description' value={newSection?.description} onChange={(e)=>setNewSection({
                                                 heading: newSection!.heading, 
-                                                content: e.target.value
+                                                description: e.target.value,
+                                                text: newSection!.text
                                             })}/>
                                         </form>
                                     </Flex>
@@ -348,8 +359,8 @@ export const CourseDetailPage = () => {
                         </Box>
                     }
                     {
-                        course && course.sections &&
-                        <SectionList sections={course.sections}/>
+                        course &&
+                        <SectionList course={course} sections={sections} setSections={setSections} isOwner={isOwner}/>
                     }
                 </Box>
             }
