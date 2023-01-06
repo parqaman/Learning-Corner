@@ -203,14 +203,14 @@ paths:
                     items:
                       type: string
         '409':
-            description: Error while creating - Course name already exists
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errors:
-                      type: string
+          description: Error while creating - Course name already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
       security:
         - Bearer: []
   '/courses/{id}':
@@ -244,7 +244,7 @@ paths:
       security:
         - Bearer: []
     put:
-      summary: 'update a course by only course creator'
+      summary: update a course by only course creator
       operationId: put-course
       responses:
         '200':
@@ -257,13 +257,13 @@ paths:
       security:
         - Bearer: []
     delete:
-      summary: 'delete a course by only course creator'
+      summary: delete a course by only course creator
       operationId: delete-courses-courseID-users-userID
       responses:
         '204':
           description: No Content
       security:
-        - Bearer: [] 
+        - Bearer: []
   '/courses/{id}/section':
     parameters:
       - in: path
@@ -320,7 +320,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Section'
       security:
-        - Bearer: [] 
+        - Bearer: []
   '/courses/{courseId}/section/{sectionId}':
     parameters:
       - in: path
@@ -521,21 +521,21 @@ paths:
         '401':
           description: Error while creating - not a member of the course
           content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errors:
-                      type: string
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
         '404':
           description: Course does not exist
           content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errors:
-                      type: string
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
       requestBody:
         required: true
         content:
@@ -575,7 +575,7 @@ paths:
       security:
         - Bearer: []
     put:
-      summary: 'update a group'
+      summary: update a group
       operationId: put-group
       responses:
         '200':
@@ -597,7 +597,7 @@ paths:
       security:
         - Bearer: []
     delete:
-      summary: 'delete a group'
+      summary: delete a group
       operationId: delete-group
       responses:
         '204':
@@ -612,7 +612,7 @@ paths:
                   message:
                     type: string
       security:
-        - Bearer: [] 
+        - Bearer: []
   '/groups/{id}/section':
     parameters:
       - in: path
@@ -669,7 +669,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Section'
       security:
-        - Bearer: [] 
+        - Bearer: []
   '/groups/{groupId}/section/{sectionId}':
     parameters:
       - in: path
@@ -769,6 +769,26 @@ paths:
                     type: string
       security:
         - Bearer: []
+  '/users/{userid}/groups':
+    parameters:
+      - schema:
+          type: string
+        name: userid
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearnerInGroup'
+      operationId: get-users-userid-groups
 components:
   schemas:
     User:
@@ -1094,6 +1114,32 @@ components:
       examples:
         - id: d46eb448-768b-4e74-a7dd-60cd9e7ee8a2
           text: 'No'
+    LearnerInCourse:
+      title: LearnerInCourse
+      x-stoplight:
+        id: vpxhav7q7r8uk
+      type: object
+      properties:
+        id:
+          type: string
+        learner:
+          $ref: '#/components/schemas/User'
+        course:
+          $ref: '#/components/schemas/Course'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    LearnerInGroup:
+      title: LearnerInGroup
+      x-stoplight:
+        id: zazkntjzojrjc
+      type: object
+      properties:
+        member:
+          $ref: '#/components/schemas/LearnerInCourse'
+        group:
+          $ref: '#/components/schemas/Group'
   securitySchemes:
     Bearer:
       type: http

@@ -37,6 +37,27 @@ router.get("/:id", async (req, res) => {
   return res.status(200).send(user);
 });
 
+// Read all groups from user
+router.get("/:userId/groups", async (req, res) => {
+  try {
+    const user = await DI.userRepository.findOne(req.params.userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    const learnerInCourse = await DI.learnerInCourseRepository.find({
+      learner: user,
+    });
+
+    const courses = await DI.learnerInGroupRepository.find(
+      { member: learnerInCourse },
+      { populate: ["group", "group.course"] }
+    );
+    return res.status(200).send(courses);
+  } catch (e: any) {
+    return res.status(400).send({ errors: [e.message] });
+  }
+});
+
 router.put("/:id", uploadProfilePicture, async (req, res) => {
   try {
     const user = await DI.userRepository.findOne(req.params.id);

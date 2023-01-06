@@ -14,7 +14,9 @@ const router = Router({ mergeParams: true });
 
 // Get group by ID
 router.get("/:groupId", async (req, res) => {
-  const group = await DI.groupRepository.findOne(req.params.groupId);
+  const group = await DI.groupRepository.findOne({
+    id: req.params.groupId,
+  });
   if (!group) return res.status(404).send({ message: "Group not found" });
   return res.status(200).send(group);
 });
@@ -36,7 +38,10 @@ router.post("/", async (req, res) => {
   };
 
   // Check authorization
-  const course = await DI.courseRepository.findOne(createGroupDTO.course);
+  const course = await DI.courseRepository.findOne({
+    id: createGroupDTO.course.id
+  });
+
   if (!course) {
     return res.status(404).send({ message: "Course not found" });
   }
@@ -63,7 +68,9 @@ router.put("/:groupId", async (req, res) => {
     }
 
     // Check authorization
-    const course = await DI.courseRepository.findOne(group.course);
+    const course = await DI.courseRepository.findOne({
+      id: group.course.id
+    });
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
     }
@@ -96,7 +103,9 @@ router.delete("/:groupId", async (req, res) => {
     }
 
     // Check authorization
-    const course = await DI.courseRepository.findOne(group.course);
+    const course = await DI.courseRepository.findOne({
+      id: group.course.id
+    });
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
     }

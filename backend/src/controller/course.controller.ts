@@ -20,14 +20,14 @@ router.get("/", async (req, res) => {
         {},
         {
           filters: { name: { name: courseName } },
-          populate: ["sections", "participants", "lecturer"],
+          populate: ["sections", "participants", "lecturer", 'groups'],
         }
       )
     );
   }
   return res.json(
     await DI.courseRepository.findAll({
-      populate: ["sections", "participants", "lecturer"],
+      populate: ["sections", "participants", "lecturer", 'groups'],
     })
   );
 });
@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
   const course = await DI.courseRepository.findOne(
     { id: req.params.id },
     {
-      populate: ["sections", "participants", "lecturer", "groups"],
+      populate: ["sections", "participants", "lecturer", "groups", 'groups.members'],
     }
   );
   if (!course) return res.status(404).send({ message: "Course not found" });
@@ -102,7 +102,7 @@ router.put("/:courseId", async (req, res) => {
       name: req.body.name,
     });
 
-    if (existingCourse) {
+    if (existingCourse && course !== existingCourse) {
       return res.status(409).send({ errors: "Course existed already" });
     }
 

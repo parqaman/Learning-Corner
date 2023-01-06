@@ -1,4 +1,5 @@
 import {
+  Cascade,
   Collection,
   Entity,
   ManyToOne,
@@ -22,10 +23,10 @@ export class Section extends BaseEntity {
   @Property()
   text: string;
 
-  @ManyToOne({entity: () => Course, nullable: true})
+  @ManyToOne({entity: () => Course, nullable: true, onDelete: 'cascade'})
   course?: Course;
 
-  @ManyToOne({entity: () => Group, nullable: true})
+  @ManyToOne({entity: () => Group, nullable: true, onDelete: 'cascade'})
   group?: Group;
 
   @OneToMany(() => File, (e) => e.section)

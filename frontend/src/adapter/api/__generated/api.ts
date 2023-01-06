@@ -163,6 +163,56 @@ export interface Group {
     'updatedAt'?: string;
 }
 /**
+ * 
+ * @export
+ * @interface LearnerInCourse
+ */
+export interface LearnerInCourse {
+    /**
+     * 
+     * @type {string}
+     * @memberof LearnerInCourse
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {User}
+     * @memberof LearnerInCourse
+     */
+    'learner'?: User;
+    /**
+     * 
+     * @type {Course}
+     * @memberof LearnerInCourse
+     */
+    'course'?: Course;
+    /**
+     * 
+     * @type {Array<Group>}
+     * @memberof LearnerInCourse
+     */
+    'groups'?: Array<Group>;
+}
+/**
+ * 
+ * @export
+ * @interface LearnerInGroup
+ */
+export interface LearnerInGroup {
+    /**
+     * 
+     * @type {LearnerInCourse}
+     * @memberof LearnerInGroup
+     */
+    'member'?: LearnerInCourse;
+    /**
+     * 
+     * @type {Group}
+     * @memberof LearnerInGroup
+     */
+    'group'?: Group;
+}
+/**
  * A File
  * @export
  * @interface ModelFile
@@ -992,6 +1042,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersUseridGroups: async (userid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userid' is not null or undefined
+            assertParamExists('getUsersUseridGroups', 'userid', userid)
+            const localVarPath = `/users/{userid}/groups`
+                .replace(`{${"userid"}}`, encodeURIComponent(String(userid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Perform login and return accesstoken
          * @param {PostAuthLoginRequest} [postAuthLoginRequest] 
          * @param {*} [options] Override http request option.
@@ -1661,6 +1745,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUsersUseridGroups(userid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LearnerInGroup>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersUseridGroups(userid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Perform login and return accesstoken
          * @param {PostAuthLoginRequest} [postAuthLoginRequest] 
          * @param {*} [options] Override http request option.
@@ -1923,6 +2018,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getUsersId(id: string, options?: any): AxiosPromise<User> {
             return localVarFp.getUsersId(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersUseridGroups(userid: string, options?: any): AxiosPromise<Array<LearnerInGroup>> {
+            return localVarFp.getUsersUseridGroups(userid, options).then((request) => request(axios, basePath));
         },
         /**
          * Perform login and return accesstoken
@@ -2195,6 +2300,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getUsersId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getUsersId(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Your GET endpoint
+     * @param {string} userid 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getUsersUseridGroups(userid: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getUsersUseridGroups(userid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

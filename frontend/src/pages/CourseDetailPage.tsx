@@ -15,12 +15,12 @@ import { GroupList } from '../components/group_components/GroupList'
 
 interface CourseDescProps {
     course: Course;
-    setCourse: React.Dispatch<React.SetStateAction<Course | undefined>>
+    updateCourse: React.Dispatch<React.SetStateAction<Course>>
     updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
     isOwner: boolean
 }
 
-const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: CourseDescProps) => {
+const CourseDescriptionSection = ({course, updateCourse, updateHandler, isOwner}: CourseDescProps) => {
     const [editMode, setEditMode] = useState(false);
 
     const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,7 +48,7 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>setCourse({name: course.name, lecturer: course.lecturer, description: e.target.value})} />
+                    <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>updateCourse((prev) => {return {...prev, description: e.target.value}})} />
                     <Box mt={'1rem'}>
                         <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                             <AiOutlineCheck/>
@@ -76,15 +76,20 @@ export const CourseDetailPage = () => {
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
-    const [course, setCourse] = useState<Course>()
+    const [course, setCourse] = useState<Course>({
+        name: "",
+        description: "",
+        lecturer: currentUser!
+    })
     const [sections, setSections] = useState<Section[]>()
     const [newSection, setNewSection] = useState<Section>({
-        heading: "", description: "", text: "section text" //wofür ist "text" überhaupt da?
+        heading: "", description: "", text: "section text" //text dari sebuah section
     })
+    const [groups, setGroups] = useState<Group[]>();
     const [newGroup, setNewGroup] = useState<Group>({
-        name: "", description: ""
+        name: "", description: "", course: course
     })
-    const [oldCourse, setOldCourse] = useState<Course>()
+    const [oldCourse, setOldCourse] = useState<Course>(course)
     const toast = useToast();
     const navigate = useNavigate()
     const newSectionDisclosure = useDisclosure()
@@ -93,10 +98,12 @@ export const CourseDetailPage = () => {
     const fetchData = async () => {
         await apiClient.getCoursesId(id!)
         .then((res)=>{
+            console.log(res.data.groups);
             const theCourse = res.data
             setCourse(theCourse)
             setOldCourse(theCourse)
             setSections(theCourse.sections)
+            setGroups(theCourse.groups)
             
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
@@ -124,6 +131,7 @@ export const CourseDetailPage = () => {
         await apiClient.putCourse(id!, course)
         .then(()=>{
             setOldCourse(course)
+            setCourse(course)
             toast({
                 title: "Updated",
                 description: <Text>Course sucessfully updated</Text>,
@@ -177,35 +185,35 @@ export const CourseDetailPage = () => {
                 text: newSection.text
             })
             
-            await apiClient.postSectionCourse(course!.id!, newSection)
-            .then((response)=>{
-                const theSection = response.data
-                const mergedSections = [...sections!, theSection]
-                setSections(mergedSections)
-                newSectionDisclosure.onClose()
-            })
-            .catch((e)=> {
-                console.log(e);
-            })            
+            if(course && course.id){
+                await apiClient.postSectionCourse(course.id, newSection)
+                .then((response)=>{
+                    const theSection = response.data
+                    const mergedSections = [...sections!, theSection]
+                    setSections(mergedSections)
+                    newSectionDisclosure.onClose()
+                })
+                .catch((e)=> {
+                    console.log(e);
+                })
+            }        
         }
     }
 
-    const handleNewGroup = () => {
-        if(newGroup && course) {
-            if(course.groups) { //case: course already has groups
-                const mergedGroups = [...course.groups, newGroup];
-                course.groups = mergedGroups
-            }
-            else { //case: course does not have any groups yet
-                course.groups = [newGroup]
-            }
-            setNewGroup({
-                name: "",
-                description: ""
+    const handleNewGroup = async () => {
+        if(newGroup) {
+            await apiClient.postGroups(newGroup)
+            .then((res) => {
+                const theGroup = res.data;
+                const mergedGroupList = [...groups!, theGroup];
+                setGroups(mergedGroupList)
+                setNewGroup({
+                    name: "",
+                    description: "",
+                    course: course
+                })
+                newGroupDisclosure.onClose()
             })
-            newGroupDisclosure.onClose()
-
-            //send post group to backend
         }
 
     }
@@ -308,8 +316,8 @@ export const CourseDetailPage = () => {
             </Flex>
             {
                 //course description section
-                course? (
-                    <CourseDescriptionSection course={course} setCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
+                course ? (
+                    <CourseDescriptionSection course={course} updateCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
                 ) : (
                     <Box>Course Desciption not available</Box>
                 )
@@ -384,11 +392,13 @@ export const CourseDetailPage = () => {
                                     <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
                                         <Input placeholder='Group name' value={newGroup?.name} onChange={(e)=>setNewGroup({
                                             name: e.target.value,
-                                            description: newGroup.description
+                                            description: newGroup.description,
+                                            course: course
                                         })}/>
                                         <Textarea placeholder='Group description' value={newGroup?.description} onChange={(e)=>setNewGroup({
                                             name: newGroup.name,
                                             description: e.target.value,
+                                            course: course
                                         })}/>
                                         
                                     </form>
@@ -407,7 +417,7 @@ export const CourseDetailPage = () => {
                     </Box>
                     {
                         course &&
-                            <GroupList course={course}/>
+                            <GroupList course={course} groups={groups} />
                     }
                 </Box>
             }
