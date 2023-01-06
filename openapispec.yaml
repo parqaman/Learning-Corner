@@ -789,6 +789,39 @@ paths:
                 items:
                   $ref: '#/components/schemas/LearnerInGroup'
       operationId: get-users-userid-groups
+  '/users/{userid}/course/{courseid}/group/{groupid}':
+    parameters:
+      - schema:
+          type: string
+        name: userid
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: courseid
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: groupid
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: delete-users-userid-course-courseid-group-groupid
+      responses:
+        '204':
+          description: No Content
+    put:
+      summary: ''
+      operationId: put-users-userid-course-courseid-group-groupid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerInGroup'
 components:
   schemas:
     User:

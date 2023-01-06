@@ -9,6 +9,7 @@ import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
+import { MyGroupsPage } from "./pages/MyGroupsPage";
 import { NewCoursePage } from "./pages/NewCoursePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -54,6 +55,11 @@ export const routes: RouteConfig[] = [
     path: "/mycourses",
     isPrivate: true,
     element: <MyCoursesPage/>,
+  },
+  {
+    path: "/mygroups",
+    isPrivate: true,
+    element: <MyGroupsPage/>,
   },
   {
     path: "/courses/:id",

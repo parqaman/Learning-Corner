@@ -98,7 +98,6 @@ export const CourseDetailPage = () => {
     const fetchData = async () => {
         await apiClient.getCoursesId(id!)
         .then((res)=>{
-            console.log(res.data.groups);
             const theCourse = res.data
             setCourse(theCourse)
             setOldCourse(theCourse)
