@@ -7,20 +7,19 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
 
     return (
         <Flex alignItems={'center'} gap='0.5rem'>
-            <Text>•</Text>
-            <Heading
-                as={'u'}
-                fontSize={'lg'}
-                fontWeight={'semibold'}
-                maxWidth={'15rem'}
-                maxHeight={'3rem'}
-                cursor='pointer'
-                mt={'0.5rem'}
-                mb={'0.5rem'}
-                onClick={()=>navigate('/courses/'+course.id+'/groups/'+group.id)}    
+            <Box
+            bg={'#F0F2F5'}
+            padding='1rem 0.75rem'
+            width={'100%'}
+            cursor='pointer'
+            onClick={()=>navigate('/courses/'+course.id+'/groups/'+group.id)}
+            borderRadius={'0.5rem'}
+            boxShadow={'0 0.05rem 0.15rem rgba(0, 0, 0, 0.25)'}
             >
-                {group.name}
-            </Heading>
+                <Heading fontSize={'lg'} fontWeight={'medium'}>
+                    {group.name}
+                </Heading>
+            </Box>
         </Flex>
 )
 }
