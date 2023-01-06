@@ -964,7 +964,6 @@ components:
           type: string
           format: date-time
       required:
-        - id
         - heading
         - description
         - text
