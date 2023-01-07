@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       value={{
         accessToken,
         user,
-        isLoggedIn: !!user,
+        isLoggedIn: true,
         actions: {
           login: onLogin,
           register: onRegister,
@@ -158,5 +158,6 @@ export const useAuth = () => {
   if (!contextValue) {
     throw new Error("ensure to use useAuth within its provider");
   }
+  contextValue.isLoggedIn = contextValue.accessToken ? (JSON.parse(atob(contextValue.accessToken.split(".")[1])).exp * 1000) > Date.now() : false;
   return contextValue;
 };
