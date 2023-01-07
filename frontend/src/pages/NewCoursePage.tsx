@@ -21,24 +21,29 @@ export const NewCoursePage = () => {
     e.preventDefault()
     
     if(course){
-        const res = await apiClient.postCourses(course)
-        .then(async ()=>{
+        await apiClient.postCourses(course)
+        .then(async (res)=>{
           if(user) {
-            const res = await apiClient.putUsersUserIDCourseCourseID(user.id, course.id!)
-            toast({
-                  title: "Sucessful",
-                  description: <Text>Course sucessfully created</Text>,
-                  status: "success",
-                  duration: 5000,
-                  isClosable: true,
-                  });
-              navigate(-1);
+            const theCourse = res.data;
+            if(theCourse.id) {
+              await apiClient.putUsersUserIDCourseCourseID(user.id, theCourse.id)
+              toast({
+                    title: "Sucessful",
+                    description: <Text>Course sucessfully created</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                navigate(-1);
+            }
           }
         })
         .catch(error=>{             
+          console.log(error);
+          
             toast({
             title: "Error occured.",
-            description: <Text>{error.response.data.errors}</Text>,
+            description: <Text>{error.response}</Text>,
             status: "error",
             duration: 9000,
             isClosable: true,

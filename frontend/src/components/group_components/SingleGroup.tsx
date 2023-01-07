@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react"
+import { Box, Flex, Heading, HStack, Text, useToast } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom"
@@ -11,6 +11,7 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
     const [currentUser, setCurrentUser] = useState(useAuth().user)
     const navigate = useNavigate()
     const apiClient = useApiClient()
+    const toast = useToast()
 
     const fetchData = async () => {
         const groupID: string[] = []
@@ -44,7 +45,14 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
         if(currentUser && course && course.id && group && group.id) {
             await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, course.id, group.id)
             .then((res) => {
-                console.log(res);
+                toast({
+                    title: "Joined",
+                    description: <Text>Group sucessfully joined</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });    
+                setJoined(true)
             })
         }
     }
@@ -54,6 +62,14 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
             await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, course.id, group.id)
             .then((res) => {
                 console.log(res);
+                toast({
+                    title: "Left",
+                    description: <Text>Group sucessfully left</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });    
+                setJoined(false)
             })
         }
     }
