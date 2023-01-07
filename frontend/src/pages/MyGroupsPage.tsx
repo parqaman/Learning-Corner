@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { useNavigate } from 'react-router-dom'
 import { GroupList } from '../components/group_components/GroupList'
+import { SingleGroup } from '../components/group_components/SingleGroup'
 
 export const MyGroupsPage = () => {
     const [groups, setGroups] = useState<LearnerInGroup[]>()
@@ -43,15 +44,24 @@ export const MyGroupsPage = () => {
                       My Groups
                   </Heading>
               </Flex>
-              <Flex flexDir={'column'}>
+              <Flex minW={'47rem'} flexDir={'column'} mt='0.25rem' mb={'1.5rem'} gap='1.25rem' >
                 {
-                  groups && groups
-                  .sort((a, b) => a.group?.course?.name! > b.group?.course?.name! ? 1 : -1)
-                  .map((val) => (
-                    <Text key={val.group?.id}>{val.group?.name} - {val.group?.course?.name}</Text>
-                  ))
+                    groups && groups.length > 0 ? ( groups
+                    .sort((a, b) => a.group?.course?.name! > b.group?.course?.name! ? 1 : -1)
+                    .map((val) => (
+                      val.group && val.group.course &&
+                            <SingleGroup
+                                key={val.group.id}
+                                course={val.group.course}
+                                group={val.group}
+                                myGroupPage={true}
+                            />    
+                        ))
+                    ) : (
+                        <Text>No groups found</Text>
+                    )
                 }
-              </Flex>
+            </Flex>
           </Box>
         </SlideFade>
       </AppLayout>

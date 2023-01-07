@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Text, useToast } from "@chakra-ui/react"
+import { Flex, Heading, HStack, Text, useToast } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom"
@@ -6,7 +6,7 @@ import { useApiClient } from "../../adapter/api/useApiClient";
 import { Course, Group } from "../../adapter/api/__generated/api"
 import { useAuth } from "../../providers/AuthProvider";
 
-export const SingleGroup = ({course, group}: {course: Course; group: Group}) => {
+export const SingleGroup = ({course, group, myGroupPage}: {course: Course; group: Group; myGroupPage: boolean}) => {
     const [joined, setJoined] = useState(false)
     const [currentUser, setCurrentUser] = useState(useAuth().user)
     const navigate = useNavigate()
@@ -61,7 +61,6 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
         if(currentUser && course && course.id && group && group.id) {
             await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, course.id, group.id)
             .then((res) => {
-                console.log(res);
                 toast({
                     title: "Left",
                     description: <Text>Group sucessfully left</Text>,
@@ -87,6 +86,12 @@ export const SingleGroup = ({course, group}: {course: Course; group: Group}) => 
             >
                 <Heading fontSize={'lg'} fontWeight={'medium'} onClick={()=>navigate('/courses/'+course.id+'/groups/'+group.id)} cursor='pointer'>
                     {group.name}
+                    {
+                        myGroupPage &&
+                        <Text fontSize={'sm'} fontWeight='normal' mt={'0.5rem'} >
+                            {course.name}
+                        </Text>
+                    }
                 </Heading>
                 <Flex gap={'1rem'} id='course-buttons' flexDir={'row'} alignItems='center'>
                     {
