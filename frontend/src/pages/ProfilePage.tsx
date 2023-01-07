@@ -148,12 +148,12 @@ export const ProfilePage = () => {
   const ProfilePhoto = () => {
     if(photo){
       return (
-          <Image src={ photo } h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+          <Image src={ photo } h={'7.5rem'} w={'7.5rem'} objectFit={'cover'}/>
       )
     }
     if(user?.photo){
       return (
-          <Image src={ 'http://localhost:4000/upload/tmp/' + user?.photo } h={'6.5rem'} w={'6.5rem'} objectFit={'cover'}/>
+          <Image src={ 'http://localhost:4000/upload/tmp/' + user?.photo } h={'7.5rem'} w={'7.5rem'} objectFit={'cover'}/>
       )
     }
     return <Spinner/>
@@ -162,7 +162,7 @@ export const ProfilePage = () => {
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
       <ProfileCard>
-        <Heading>
+        <Heading fontSize={'5xl'}>
           My Profile
         </Heading>
         {

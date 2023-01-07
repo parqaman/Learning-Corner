@@ -76,7 +76,6 @@ export const SingleGroup = ({course, group, myGroupPage}: {course: Course; group
     return (
         <Flex alignItems={'center'} gap='0.5rem'>
             <Flex
-            bg={'transparent'}
             padding='1rem 0.75rem'
             width={'100%'}
             borderBottom={'solid 0.025rem'}

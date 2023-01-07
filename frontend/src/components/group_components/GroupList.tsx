@@ -4,7 +4,7 @@ import { SingleGroup } from "./SingleGroup";
 
 export const GroupList = ({course, groups}: {course: Course | null; groups: Group[] | undefined;}) => {
     return (
-        <Flex minW={'47rem'} flexDir={'column'} mt='0.25rem' mb={'1.5rem'} gap='1.25rem' >
+        <Flex flexDir={'column'} mt='0.25rem' mb={'1.5rem'} gap='1.25rem' >
             {
                 course && groups && groups.length > 0 ? (
                     groups.map((group) => (
