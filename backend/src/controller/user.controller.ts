@@ -226,7 +226,12 @@ router.delete("/:userId/course/:courseId/group/:groupId", async (req, res) => {
     if (!existingLearnerInGroup) {
       return res.status(409).send({ message: "User is not in the group" });
     }
-    await DI.learnerInGroupRepository.removeAndFlush(existingLearnerInGroup);
+
+    await DI.learnerInGroupRepository.nativeDelete({
+      member: learnerInCourse,
+      group: group
+    })
+
     return res.status(204).send({ message: "Deleted user from group" });
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
