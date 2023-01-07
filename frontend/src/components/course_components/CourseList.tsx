@@ -9,7 +9,9 @@ export const CourseList = ({courses}: {courses: Course[] | undefined}) => {
                     courses && courses.length > 0 ? (
                         <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>
                             {
-                                courses.map((course)=>(
+                                courses
+                                .sort((a, b) => a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase() ? 1 : -1)
+                                .map((course)=>(
                                     <GridItem key={course.id}>
                                         <SingleCourse
                                             key={course.id} 

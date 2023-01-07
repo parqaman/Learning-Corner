@@ -44,10 +44,15 @@ export const MyGroupsPage = () => {
                       My Groups
                   </Heading>
               </Flex>
-              <Flex minW={'47rem'} flexDir={'column'} mt='0.25rem' mb={'1.5rem'} gap='1.25rem' >
+              <Flex minW={'47rem'} flexDir={'column'} mt='0.25rem' mb={'1.5rem'} gap='1.25rem'>
                 {
                     groups && groups.length > 0 ? ( groups
-                    .sort((a, b) => a.group?.course?.name! > b.group?.course?.name! ? 1 : -1)
+                    .sort((a, b) =>
+                      a && a.group && a.group.course && a.group.course.name && a.group.course.name.toLocaleLowerCase()
+                      >
+                      b && b.group && b.group.course && b.group.course.name && b.group.course.name.toLocaleLowerCase()
+                      ? 1 : -1
+                    )
                     .map((val) => (
                       val.group && val.group.course &&
                             <SingleGroup
