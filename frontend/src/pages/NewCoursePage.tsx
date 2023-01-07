@@ -22,15 +22,18 @@ export const NewCoursePage = () => {
     
     if(course){
         const res = await apiClient.postCourses(course)
-        .then(()=>{
+        .then(async ()=>{
+          if(user) {
+            const res = await apiClient.putUsersUserIDCourseCourseID(user.id, course.id!)
             toast({
-                title: "Sucessful",
-                description: <Text>Course sucessfully created</Text>,
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-                });
-            navigate(-1);
+                  title: "Sucessful",
+                  description: <Text>Course sucessfully created</Text>,
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  });
+              navigate(-1);
+          }
         })
         .catch(error=>{             
             toast({

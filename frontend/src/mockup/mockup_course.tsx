@@ -49,8 +49,14 @@ export const MockupCourses = () => {
     const handleFillCourse = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         mockCourses.map(async (course) => {
             const res = await apiClient.postCourses(course)
+            .then(async (res)=> {
+              const theCourse = res.data
+              console.log(theCourse);
+              if(theCourse.id) {
+                await apiClient.putUsersUserIDCourseCourseID(user.id, theCourse.id)
+              }
+            })
         })
-        window.location.reload()
     }
 
     const [show, setShow] = useState(true)
