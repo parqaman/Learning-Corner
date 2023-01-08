@@ -21,6 +21,8 @@ import { UserController } from "./controller/user.controller";
 import { CourseController } from "./controller/course.controller";
 import { GroupController } from "./controller/group.controller";
 import * as path from "path";
+import * as socketIo from "socket.io";
+import {Socket} from "socket.io";
 
 const PORT = 4000;
 const app = express();
@@ -37,6 +39,13 @@ export const DI = {} as {
   learnerInGroupRepository: EntityRepository<LearnerInGroup>;
   userRepository: EntityRepository<User>;
 };
+
+interface ChatMessage {
+  message: string
+  time: number,
+  sender: User
+}
+
 
 export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
@@ -66,7 +75,56 @@ export const initializeServer = async () => {
   app.use("/courses", CourseController);
   app.use("/groups", GroupController);
 
-  DI.server = app.listen(PORT, () => {
+  const server = http.createServer(app)
+  const io = new socketIo.Server(server, {
+    cors: {
+      origin: "http://127.0.0.1:3000",
+      methods: ["GET", "POST"]
+    }
+  })
+
+  io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    const res = Auth.verifyToken(token);
+    console.log('Socket-Auth:', res)
+    if(!res) {
+      const err = new Error("not authorized");
+      next(err);
+    }
+    next()
+  });
+
+  io.on("connection", async (socket: Socket) => {
+    console.log('Connection: ', socket);
+    socket.on("helloRoom", (args) => {
+      console.log('helloRoom: ', args)
+      socket.join(args.room)
+      const message: ChatMessage = {
+        message: args.user.firstName + ' ' + args.user.lastName + ' joined the room!',
+        sender: socket.handshake.auth.user,
+        time: Date.now()
+      }
+      socket.in(args.room).emit('message', message)
+    })
+
+    socket.on("message", (args) => {
+      console.log('message: ', args)
+      const message: ChatMessage = {
+        message: args.message,
+        sender: socket.handshake.auth.user,
+        time: Date.now()
+      }
+      const clients = io.sockets.adapter.rooms.get(args.room);
+      io.in(args.room).emit('message', message)
+    })
+
+    socket.on("disconnect", (reason) => {
+      console.log('disconnect: ', reason)
+    })
+
+  });
+
+  DI.server = server.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
 };
