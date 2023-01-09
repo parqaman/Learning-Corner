@@ -27,23 +27,28 @@ export const NewCoursePage = () => {
             const theCourse = res.data;
             if(theCourse.id) {
               await apiClient.putUsersUserIDCourseCourseID(user.id, theCourse.id)
-              toast({
-                    title: "Sucessful",
-                    description: <Text>Course sucessfully created</Text>,
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                    });
-                navigate(-1);
+              .then((e)=>{
+                console.log(e);
+                toast({
+                      title: "Sucessful",
+                      description: <Text>Course sucessfully created</Text>,
+                      status: "success",
+                      duration: 5000,
+                      isClosable: true,
+                      });
+                  navigate(-1);      
+              })
+              .catch((e)=>{
+                console.log(e);
+                navigate(-1);      
+              })
             }
           }
         })
-        .catch(error=>{             
-          console.log(error);
-          
+        .catch(error=>{
             toast({
             title: "Error occured.",
-            description: <Text>{error.response}</Text>,
+            description: <Text>{error.response.data.errors}</Text>,
             status: "error",
             duration: 9000,
             isClosable: true,
