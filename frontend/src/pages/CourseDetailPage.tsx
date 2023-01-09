@@ -6,12 +6,13 @@ import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
-import { Group, User } from '../adapter/api/__generated'
+import { Group } from '../adapter/api/__generated'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
 import { SectionList } from '../components/SectionList'
 import { GroupList } from '../components/group_components/GroupList'
+import { ActionClose } from '../components/ChatWindow'
 
 interface CourseDescProps {
     course: Course;
@@ -246,6 +247,7 @@ export const CourseDetailPage = () => {
         if(course && currentUser) {
             const res = await apiClient.deleteUsersUserIDCourseCourseID(currentUser.id, course.id!)
             .then(()=>{
+                ActionClose('course-card')
                 toast({
                     title: "Left",
                     description: <Text>Course sucessfully left</Text>,
@@ -269,7 +271,7 @@ export const CourseDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <CourseCard>
+        <CourseCard joined={joined} >
             <Flex id='course-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='course-info' maxW={'36rem'}>

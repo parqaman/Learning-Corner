@@ -1,5 +1,4 @@
-import { Box, Flex, Heading, HTMLChakraProps, Input, ModalContent, Text, Textarea } from '@chakra-ui/react'
-import React, { useRef, useState } from 'react'
+import { Box, Flex, Input, Text } from '@chakra-ui/react'
 import { BsFillChatDotsFill } from 'react-icons/bs'
 import { AiOutlineMinus } from 'react-icons/ai';
 import { BiSend } from 'react-icons/bi';
@@ -9,18 +8,18 @@ const remToPixel = (val: any) => {
   return val * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
-const ActionOpen = () => {
+const ActionOpen = (cardID: string) => {
 
   const rem25 = remToPixel(25) + "px";
   const rem4 = remToPixel(4) + "px";
 
-  const theCourseCard = document.getElementById("course-card");
+  const theCard = document.getElementById(cardID);
   const chatArea = document.getElementById("chat-area")
   const chatWindow = document.getElementById("chat-window")
   const chatButton = document.getElementById("chat-disclosure-button")
   const chatContents = document.getElementById("chat-contents")
-  if(theCourseCard && chatArea && chatWindow && chatButton && chatContents){
-    theCourseCard.style.marginRight = rem25;
+  if(theCard && chatArea && chatWindow && chatButton && chatContents){
+    theCard.style.marginRight = rem25;
     chatArea.style.right = rem4
     chatWindow.hidden = false
     chatButton.hidden = true
@@ -30,16 +29,15 @@ const ActionOpen = () => {
   }
 }
 
-const ActionClose = () => {
-  const rem10 = remToPixel(10) + "px";
+export const ActionClose = (cardID: string) => {
+  const rem10 = remToPixel(10) + "px";  
 
-  const theCourseCard = document.getElementById("course-card");
+  const theCard = document.getElementById(cardID);
   const chatArea = document.getElementById("chat-area")
   const chatButton = document.getElementById("chat-disclosure-button")
   const chatWindow = document.getElementById("chat-window")
-  if(theCourseCard && chatArea && chatButton && chatWindow){
-    theCourseCard.style.marginRight = "0";
-    chatArea.style.right = rem10;
+  if(theCard && chatArea && chatButton && chatWindow){
+    theCard.style.marginRight = "0";
     chatButton.hidden = false
     chatWindow.hidden = true;
     chatArea.style.boxShadow = '0 0 rgba(0, 0, 0, 0)';
@@ -90,7 +88,7 @@ const mockup_chat = [
   },
 ]
 
-export const OutcomingSingleChatTile = ({content}: {content: string}) => {
+export const IncomingSingleChatTile = ({content}: {content: string}) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-start'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-start'>
@@ -101,35 +99,35 @@ export const OutcomingSingleChatTile = ({content}: {content: string}) => {
         >
           {content}
         </Text>
-        <Text as={'span'} alignSelf={'flex-end'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          Farouq
+        <Text as={'span'} alignSelf={'flex-start'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
+          Admin
         </Text>
       </Flex>
     </Flex>
   )
 }
 
-export const IncomingSingleChatTile = ({content}: {content: string}) => {
+export const OutcomingSingleChatTile = ({content}: {content: string}) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-end'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-end'>
         <Text
         bg='#D5D8DC'
         p='0.25rem 0.75rem'
-        borderRadius={'1.2rem 0 1.2rem 1.2rem'}
+        borderRadius={'1.2rem 1.2rem 0 1.2rem'}
         flex={1}
         >
           {content}
         </Text>
         <Text as={'span'} alignSelf={'flex-end'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          Farouq
+          You
         </Text>
       </Flex>
     </Flex>
   )
 }
 
-export const ChatDisclosureButton = (buttonProps: HTMLChakraProps<"div">) => {
+export const ChatDisclosureButton = ({cardID}: {cardID: string}) => {
   return (
     <Text
       id='chat-disclosure-button'
@@ -137,7 +135,7 @@ export const ChatDisclosureButton = (buttonProps: HTMLChakraProps<"div">) => {
       p='1rem'
       fontSize={'1.5rem'}
       color='#0194F3'
-      onClick={()=>ActionOpen()}
+      onClick={()=>ActionOpen(cardID)}
       cursor='pointer'
       borderRadius={'1rem'}
       boxShadow={'0 0.125rem 0.25rem rgba(0, 0, 0, 0.15)'}    
@@ -147,7 +145,7 @@ export const ChatDisclosureButton = (buttonProps: HTMLChakraProps<"div">) => {
   )
 }
 
-export const ChatWindow = (disclosureProps: any) => {
+export const ChatWindow = ({cardID}: {cardID: string}) => {
   return (
     <Flex
     id='chat-window'
@@ -167,11 +165,11 @@ export const ChatWindow = (disclosureProps: any) => {
         <Text fontSize={'3xl'} fontWeight={'bold'}>
           Chat
         </Text>
-        <Text bg={'#F56565'} borderRadius='100%' p={'0.35rem'} fontSize={'xl'} alignItems='center' cursor={'pointer'} onClick={()=>ActionClose()} >
+        <Text bg={'#F56565'} borderRadius='100%' p={'0.35rem'} fontSize={'xl'} alignItems='center' cursor={'pointer'} onClick={()=>ActionClose(cardID)} >
           <AiOutlineMinus/>
         </Text>
       </Flex>
-      <Text
+      <Box
           id='chat-contents'
           maxH={'31rem'}
           overflowY='scroll'
@@ -181,13 +179,13 @@ export const ChatWindow = (disclosureProps: any) => {
       >
         {
           mockup_chat.map((val)=>(
-            <>
-              <OutcomingSingleChatTile key={val.id} content={val.content} />
-              <IncomingSingleChatTile key={val.id} content={val.content} />
-            </>
+            <Box key={val.id}>
+              <OutcomingSingleChatTile content={val.content} />
+              <IncomingSingleChatTile content={val.content} />
+            </Box>
           ))
         }
-      </Text>
+      </Box>
       <Flex
         columnGap={'0.5rem'}
         borderRadius='2rem'
@@ -196,14 +194,9 @@ export const ChatWindow = (disclosureProps: any) => {
         bg='#E2E8F0'
         bottom={'0'}
       >
-        <Textarea 
-        alignItems={'center'} 
-        minH={'0rem'}
-        p={'0 0 0 0.5rem'}
-        height='1.25rem'
-        lineHeight='1' 
-        resize='none' 
-        width={'90%'} 
+        <Input 
+        alignItems={'center'}
+        pl='0.5rem'
         variant='unstyled'/>
         <Text fontSize={'2xl'} cursor={'pointer'} alignSelf='center' bg={'#0194F3'} p='0.25rem' borderRadius={'100%'} >
           <BiSend/>

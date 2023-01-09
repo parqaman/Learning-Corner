@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Image, Input, Text, Textarea } from '@chakra-ui/react'
 import { AiFillEdit, AiOutlineCheck, AiFillFile } from 'react-icons/ai'
 import React, { useRef, useState } from 'react'
-import { Course, ModelFile, Section } from '../adapter/api/__generated';
+import { Course, Group, ModelFile, Section } from '../adapter/api/__generated';
 import { RxCross1 } from 'react-icons/rx';
 import profile_empty  from '../assets/profile_empty.png'
 import axios from 'axios';
@@ -145,7 +145,7 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
 }
 
 interface SectionListProps {
-    course: Course | null;
+    course: Course | Group | null;
     sections: Section[] | undefined;
     setSections: React.Dispatch<React.SetStateAction<Section[] | undefined>>;
     isOwner: boolean
