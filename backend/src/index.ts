@@ -21,6 +21,7 @@ import { UserController } from "./controller/user.controller";
 import { CourseController } from "./controller/course.controller";
 import { GroupController } from "./controller/group.controller";
 import * as path from "path";
+import { TestSeeder } from "./seeders/TestSeeder";
 
 const PORT = 4000;
 const app = express();
@@ -49,14 +50,21 @@ export const initializeServer = async () => {
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.userRepository = DI.orm.em.getRepository(User);
 
+  const numUser = await DI.userRepository.count();
+  const numCourse = await DI.courseRepository.count();
+  if (numUser === 0 && numCourse === 0) {
+    const seeder = DI.orm.getSeeder();
+    await seeder.seed(TestSeeder);
+  }
+
   // global middleware
-  app.use(express.json({limit: '5mb'}));
+  app.use(express.json({ limit: "5mb" }));
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
   app.use(Auth.prepareAuthentication);
 
   // routes
 
-  app.use("/upload/tmp", express.static(path.join(__dirname, '../upload/tmp')))
+  app.use("/upload/tmp", express.static(path.join(__dirname, "../upload/tmp")));
 
   app.get("/", (req, res) => {
     res.send("GET request to the homepage");
