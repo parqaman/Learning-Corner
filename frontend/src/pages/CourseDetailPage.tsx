@@ -10,7 +10,7 @@ import { Group } from '../adapter/api/__generated'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
-import { SectionList } from '../components/SectionList'
+import { CourseSectionList } from '../components/course_components/CourseSectionList'
 import { GroupList } from '../components/group_components/GroupList'
 import { ActionClose } from '../components/ChatWindow'
 
@@ -84,7 +84,7 @@ export const CourseDetailPage = () => {
     })
     const [sections, setSections] = useState<Section[]>()
     const [newSection, setNewSection] = useState<Section>({
-        heading: "", description: "", text: "section text" //text dari sebuah section
+        heading: "", description: "", text: "section text" //text von einem Section
     })
     const [groups, setGroups] = useState<Group[]>();
     const [newGroup, setNewGroup] = useState<Group>({
@@ -178,19 +178,18 @@ export const CourseDetailPage = () => {
     }
 
     const handleNewSection = async () => {
-        if(course) {
-            setNewSection({
-                heading: "",
-                description: "",
-                text: newSection.text
-            })
-            
+        if(course) {            
             if(course && course.id){
                 await apiClient.postSectionCourse(course.id, newSection)
                 .then((response)=>{
                     const theSection = response.data
                     const mergedSections = [...sections!, theSection]
                     setSections(mergedSections)
+                    setNewSection({
+                        heading: "",
+                        description: "",
+                        text: newSection.text
+                    })
                     newSectionDisclosure.onClose()
                 })
                 .catch((e)=> {
@@ -386,7 +385,7 @@ export const CourseDetailPage = () => {
                     }
                     {
                         course &&
-                        <SectionList course={course} sections={sections} setSections={setSections} isOwner={isOwner}/>
+                        <CourseSectionList course={course} sections={sections} setSections={setSections} isOwner={isOwner}/>
                     }
                 </Box>
             }
