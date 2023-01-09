@@ -1,12 +1,12 @@
 import { Box, Button, Flex, Image, Input, Text, Textarea } from '@chakra-ui/react'
 import { AiFillEdit, AiOutlineCheck, AiFillFile } from 'react-icons/ai'
 import React, { useRef, useState } from 'react'
-import { Course, Group, ModelFile, Section } from '../adapter/api/__generated';
+import { Course, ModelFile, Section } from '../../adapter/api/__generated';
 import { RxCross1 } from 'react-icons/rx';
-import profile_empty  from '../assets/profile_empty.png'
+import profile_empty  from '../../assets/profile_empty.png'
 import axios from 'axios';
 import { IoTrash } from 'react-icons/io5';
-import { useApiClient } from '../adapter/api/useApiClient';
+import { useApiClient } from '../../adapter/api/useApiClient';
 
 interface SectionProps {
     section: Section;
@@ -145,16 +145,16 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
 }
 
 interface SectionListProps {
-    course: Course | Group | null;
+    course: Course | null;
     sections: Section[] | undefined;
     setSections: React.Dispatch<React.SetStateAction<Section[] | undefined>>;
     isOwner: boolean
 }
 
-export const SectionList = ({course, sections, setSections, isOwner}: SectionListProps) => {
+export const CourseSectionList = ({course, sections, setSections, isOwner}: SectionListProps) => {
     const apiClient = useApiClient();
 
-    const handleDeleteSection = async (sectionID: string) => {
+    const handleDeleteSection = async (sectionID: string) => {        
         await apiClient.deleteSectionCourse(course!.id!, sectionID)
         .then(async ()=>{
             setSections(sections!.filter((iterateSection) => sectionID !== iterateSection.id))
