@@ -16,7 +16,7 @@ const router = Router({ mergeParams: true });
 router.get("/:groupId", async (req, res) => {
   const group = await DI.groupRepository.findOne({
     id: req.params.groupId,
-  });
+  }, {populate: ['members']});
   if (!group) return res.status(404).send({ message: "Group not found" });
   return res.status(200).send(group);
 });

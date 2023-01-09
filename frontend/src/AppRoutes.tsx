@@ -6,6 +6,7 @@ import {
     useLocation,
   } from "react-router-dom";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
+import { GroupDetailPage } from "./pages/GroupDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
@@ -65,6 +66,11 @@ export const routes: RouteConfig[] = [
     path: "/courses/:id",
     isPrivate: true,
     element: <CourseDetailPage />,
+  },
+  {
+    path: "/courses/:courseID/groups/:groupID",
+    isPrivate: true,
+    element: <GroupDetailPage />,
   },
   {
     path: "/courses/newcourse",
