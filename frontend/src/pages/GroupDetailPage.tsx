@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, HStack, UnorderedList, ListItem, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 import { GroupCard } from '../components/group_components/GroupCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
@@ -17,10 +17,10 @@ interface GroupDescProps {
     group: Group;
     updateGroup: React.Dispatch<React.SetStateAction<Group>>
     updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
-    isOwner: boolean
+    joined: boolean
 }
 
-const GroupDescriptionSection = ({group, updateGroup, updateHandler, isOwner}: GroupDescProps) => {
+const GroupDescriptionSection = ({group, updateGroup, updateHandler, joined}: GroupDescProps) => {
     const [editMode, setEditMode] = useState(false);
 
     const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,7 +40,7 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isOwner}: G
                 <Text fontSize={'2xl'} fontWeight='normal'>
                     Group Description
                 </Text>
-                { isOwner && !editMode &&
+                { joined && !editMode &&
                     <Flex alignItems={'center'} fontSize='larger' cursor='pointer'>
                         <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
                     </Flex>
@@ -48,7 +48,7 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isOwner}: G
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup((prev) => {return {...prev, description: e.target.value}})} />
+                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup((prev) => {return {course: prev.course, name: prev.name, description: e.target.value}})} />
                     <Box mt={'1rem'}>
                         <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                             <AiOutlineCheck/>
@@ -67,6 +67,25 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isOwner}: G
         </Box>
     )
 }
+
+interface GroupMembProps {
+    group: Group;
+}
+
+const MemberList = ({group}:GroupMembProps) => {
+    const members = group.members?.map((obj:any) => obj.learner)
+    let name  = new Array(); 
+    members?.forEach(i => {
+        name.push(i.firstName + " " + i.lastName);
+    });
+    return <>{
+        name.map(item => <ListItem>{item}</ListItem>)  
+    }
+    </>
+   // return(<ListItem>Test</ListItem>)
+}
+
+
 
 
 export const GroupDetailPage = () => {    
@@ -265,7 +284,32 @@ export const GroupDetailPage = () => {
                     }
                 </Flex>
             </Flex>
-            {/** Member list */}
+            {
+                //course description section
+                course ? (
+                    <GroupDescriptionSection group={group} updateGroup={setGroup} updateHandler={handleEditGroupInfo} joined={joined}/>
+                ) : (
+                    <Box>Course Desciption not available</Box>
+                )
+            }
+            <Box mt={'2rem'}>
+                <Flex 
+                borderBottom={'solid 0.075rem'}
+                borderBottomColor={'#0194F3'}
+                pl={'0.5rem'} pr={'0.5rem'}
+                justifyContent='space-between'
+                >
+                    <Text fontSize={'2xl'} fontWeight='normal'>
+                        Member list
+                    </Text>
+                </Flex>
+                <Box pl={'0.5rem'} pr={'0.5rem'} mt='0.5rem'>
+                    <UnorderedList>
+                    <MemberList group={group} />
+                    </UnorderedList>
+                </Box>
+            </Box>
+
             <Box display={'flex'} justifyContent='center' mt={'3rem'}>
             {
                 joined &&
