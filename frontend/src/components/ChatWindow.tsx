@@ -191,7 +191,7 @@ export const ChatWindow = ({cardID}: {cardID: string}) => {
         borderRadius='2rem'
         p={'0.5rem'}
         alignItems={'center'}
-        bg='#E2E8F0'
+        bg='#D5D8DC'
         bottom={'0'}
       >
         <Input 

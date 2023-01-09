@@ -76,11 +76,11 @@ export const SingleGroup = ({course, group, myGroupPage}: {course: Course; group
     return (
         <Flex alignItems={'center'} gap='0.5rem'>
             <Flex
+            bg={'white'}
+            boxShadow={'0 0 0.17rem rgba(0, 0, 0, 0.35)'}
+            borderRadius='1rem'
             padding='1rem 0.75rem'
             width={'100%'}
-            borderBottom={'solid 0.025rem'}
-            borderTop={'solid 0.025rem'}
-            borderColor={'black'}
             justifyContent='space-between'
             alignItems={'center'}
             >
