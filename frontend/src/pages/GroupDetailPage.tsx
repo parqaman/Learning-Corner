@@ -1,5 +1,5 @@
-import { Box, Button, Flex, Heading, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
-import { CourseCard } from '../components/course_components/CourseCard'
+import { Box, Button, Flex, Heading, HStack, UnorderedList, ListItem, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+import { GroupCard } from '../components/group_components/GroupCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
 import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
@@ -11,18 +11,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
 import { SectionList } from '../components/SectionList'
-import { GroupList } from '../components/group_components/GroupList'
-import { GroupCard } from '../components/group_components/GroupCard'
-import { ActionClose } from '../components/ChatWindow'
+import { GroupDetailCard } from '../components/group_details_components/GroupDetailsCard'
 
-interface CourseDescProps {
+interface GroupDescProps {
     group: Group;
     updateGroup: React.Dispatch<React.SetStateAction<Group>>
     updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
-    isMember: boolean
+    joined: boolean
 }
 
-const GroupDescriptionSection = ({group, updateGroup, updateHandler, isMember}: CourseDescProps) => {
+const GroupDescriptionSection = ({group, updateGroup, updateHandler, joined}: GroupDescProps) => {
     const [editMode, setEditMode] = useState(false);
 
     const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,9 +38,9 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isMember}: 
             justifyContent='space-between'
             >
                 <Text fontSize={'2xl'} fontWeight='normal'>
-                    Course Description
+                    Group Description
                 </Text>
-                { isMember && !editMode &&
+                { joined && !editMode &&
                     <Flex alignItems={'center'} fontSize='larger' cursor='pointer'>
                         <AiFillEdit onClick={()=>setEditMode(!editMode)}  cursor='pointer'/>
                     </Flex>
@@ -50,7 +48,7 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isMember}: 
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup((prev) => {return {...prev, description: e.target.value}})} />
+                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup((prev) => {return {course: prev.course, name: prev.name, description: e.target.value}})} />
                     <Box mt={'1rem'}>
                         <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                             <AiOutlineCheck/>
@@ -70,45 +68,65 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, isMember}: 
     )
 }
 
+interface GroupMembProps {
+    group: Group;
+}
+
+const MemberList = ({group}:GroupMembProps) => {
+    const members = group.members?.map((obj:any) => obj.learner)
+    let name  = new Array(); 
+    members?.forEach(i => {
+        name.push(i.firstName + " " + i.lastName);
+    });
+    return <>{
+        name.map(item => <ListItem key={item} >{item}</ListItem>)  
+    }
+    </>
+}
+
 
 export const GroupDetailPage = () => {    
-    const params = useParams()
+    const param = useParams()
     const currentUser = useAuth().user
     const apiClient = useApiClient();
+    const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
     const [group, setGroup] = useState<Group>({
         name: "",
-        description: "",
+        description: ""
     })
-    const [sections, setSections] = useState<Section[]>()
-    const [newSection, setNewSection] = useState<Section>({
-        heading: "", description: "", text: "section text" //text dari sebuah section
+    const [course, setCourse] = useState<Course>({
+        name: "",
+        description: "",
+        lecturer: currentUser!
     })
     const [oldGroup, setOldGroup] = useState<Group>(group)
     const toast = useToast();
     const navigate = useNavigate()
     const newSectionDisclosure = useDisclosure()
+    const newGroupDisclosure = useDisclosure()
 
     const fetchData = async () => {
-        await apiClient.getGroupId(params.groupID!)
-        .then((res)=>{
-            const theGroup = res.data
-            
-            setGroup(theGroup)
-            setOldGroup(theGroup)
-            setSections(theGroup.sections)
-            
-            const participants = theGroup.members!.map((obj:any) => obj.learner);            
-
-            if(participants.includes(currentUser?.id)){
-                setJoined(true)
-            }
+        if(param.groupID) {
+            await apiClient.getGroupId(param.groupID)
+            .then((res)=>{
+                const theGroup = res.data
+                setGroup(theGroup)
+                setOldGroup(theGroup)
+    
+                // Check if user is member of the group
+                const members = theGroup.members!.map((obj:any) => obj.learner.id);
                 
-        })
-        .catch((e)=>{
-            console.log(e);
-        })
+                if(members.includes(currentUser?.id)){
+                    setJoined(true)
+                }
+                    
+            })
+            .catch((e)=>{
+                console.log(e);
+            })
+        }        
     }
     
     React.useEffect(()=>{
@@ -118,37 +136,39 @@ export const GroupDetailPage = () => {
     const handleEditGroupInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setEditMode(false)
-        await apiClient.putGroup(params.groupID!, group)
-        .then(()=>{
-            setOldGroup(group)
-            setGroup(group)
-            toast({
-                title: "Updated",
-                description: <Text>Group sucessfully updated</Text>,
-                status: "success",
-                duration: 5000,
+        if(param.groupID) {
+            await apiClient.putGroup(param.groupID, group)
+            .then(()=>{
+                setOldGroup(group)
+                setGroup(group)
+                toast({
+                    title: "Updated",
+                    description: <Text>Group sucessfully updated</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+            })
+            .catch(error=>{
+                setGroup(oldGroup)
+                toast({
+                title: "Error occured.",
+                description: <Text>{error.response.data.errors}</Text>,
+                status: "error",
+                duration: 9000,
                 isClosable: true,
                 });
-        })
-        .catch(error=>{
-            setGroup(oldGroup)
-            toast({
-            title: "Error occured.",
-            description: <Text>{error.response.data.errors}</Text>,
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-            });
-        })
+            })
+        }
     }
 
     const handleDeleteGroup = async () => {
-        if(group && currentUser && group.id) {
-            const res = await apiClient.deleteCoursesCourseIDUsersUserID(group.id)
+        if(group && currentUser) {
+            const res = await apiClient.deleteGroup(group.id!)
             .then(()=>{
                 toast({
                     title: "Deleted",
-                    description: <Text>Course sucessfully deleted</Text>,
+                    description: <Text>Group sucessfully deleted</Text>,
                     status: "success",
                     duration: 5000,
                     isClosable: true,
@@ -166,33 +186,10 @@ export const GroupDetailPage = () => {
             })
         }
     }
-
-    const handleNewSection = async () => {
-        if(group) {
-            setNewSection({
-                heading: "",
-                description: "",
-                text: newSection.text
-            })
-            
-            if(group && group.id){
-                await apiClient.postSectionCourse(group.id, newSection)
-                .then((response)=>{
-                    const theSection = response.data
-                    const mergedSections = [...sections!, theSection]
-                    setSections(mergedSections)
-                    newSectionDisclosure.onClose()
-                })
-                .catch((e)=> {
-                    console.log(e);
-                })
-            }        
-        }
-    }
         
-    const joinGroup = async () => {        
-        if(currentUser && params.courseID && params.groupID) {
-            const res = await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, params.courseID, params.groupID)
+    const joinGroup = async () => {
+        if(group && currentUser) {
+            const res = await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
             .then(()=>{
                 toast({
                     title: "Joined",
@@ -216,13 +213,12 @@ export const GroupDetailPage = () => {
     }
 
     const leaveGroup = async () => {
-        if(currentUser && params.courseID && params.groupID) {
-            const res = await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, params.courseID, params.groupID)
+        if(group && currentUser) {
+            const res = await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
             .then(()=>{
-                ActionClose('group-card')
                 toast({
                     title: "Left",
-                    description: <Text>Group sucessfully left</Text>,
+                    description: <Text>Gruop sucessfully left</Text>,
                     status: "success",
                     duration: 5000,
                     isClosable: true,
@@ -243,13 +239,13 @@ export const GroupDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <GroupCard joined={joined}>
-            <Flex id='course-heading' justifyContent={'space-between'}>
+        <GroupDetailCard>
+            <Flex id='group-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
-                    <Box id='course-info' maxW={'36rem'}>
+                    <Box id='group-info' maxW={'36rem'}>
                         {editMode ? (
                             <form onSubmit={(e)=>handleEditGroupInfo(e)} style={{width: '100%'}}>
-                                <Textarea w={'100%'} resize={'none'} value={group?.name} onChange={(e)=>setGroup({name: e.target.value})} />
+                                <Textarea w={'100%'} resize={'none'} value={group?.name} onChange={(e)=>setGroup({name: e.target.value, description: group?.description!})} />
                                 <Flex alignItems={'center'} fontSize='medium' mt={'0.5rem'} gap={'0.25rem'}>
                                     <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                                         Done
@@ -261,12 +257,12 @@ export const GroupDetailPage = () => {
                             </form>
                         ) : (
                             <>
-                            {
-                                group &&
+                                <Text>
+                                    Course: {group?.course?.name}
+                                </Text>
                                 <Heading>
-                                    {group.name}
+                                    {group?.name}
                                 </Heading>
-                            }
                             </>
                         )
                         }
@@ -278,7 +274,7 @@ export const GroupDetailPage = () => {
                         </Flex>
                     }
                 </Box>
-                <Flex gap={'1rem'} id='course-buttons' flexDir={'row'} alignItems='center'>
+                <Flex gap={'1rem'} id='group-buttons' flexDir={'row'} alignItems='center'>
                     {
                         !joined &&
                         <button onClick={()=>joinGroup()}><HStack><Text>Join group</Text><Text color='green.400' cursor='pointer' fontSize={'3xl'}><IoEnterOutline/></Text></HStack></button>
@@ -291,62 +287,30 @@ export const GroupDetailPage = () => {
             </Flex>
             {
                 //course description section
-                group ? (
-                    <GroupDescriptionSection group={group} updateGroup={setGroup} updateHandler={handleEditGroupInfo} isMember={joined}/>
+                course ? (
+                    <GroupDescriptionSection group={group} updateGroup={setGroup} updateHandler={handleEditGroupInfo} joined={joined}/>
                 ) : (
                     <Box>Course Desciption not available</Box>
                 )
             }
-            {/** Section List  **/}
-            { (joined) && 
-                <Box mt={'2rem'}>
+            <Box mt={'2rem'}>
+                <Flex 
+                borderBottom={'solid 0.075rem'}
+                borderBottomColor={'#0194F3'}
+                pl={'0.5rem'} pr={'0.5rem'}
+                justifyContent='space-between'
+                >
                     <Text fontSize={'2xl'} fontWeight='normal'>
-                        Sections
+                        Member list
                     </Text>
-                    { joined &&
-                        <Box mb={'1rem'}>
-                            <Button onClick={newSectionDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
-                                Add new section
-                            </Button>
-                            <Modal blockScrollOnMount={false} isOpen={newSectionDisclosure.isOpen} onClose={newSectionDisclosure.onClose}>
-                                <ModalOverlay />
-                                <ModalContent>
-                                <ModalHeader>New Section</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    <Flex mb={'0.5rem'}>
-                                        <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
-                                            <Input placeholder='Section title' value={newSection?.heading} onChange={(e)=>setNewSection({
-                                                heading: e.target.value,
-                                                description: newSection!.description,
-                                                text: newSection!.text
-                                            })}/>
-                                            <Textarea placeholder='Section description' value={newSection?.description} onChange={(e)=>setNewSection({
-                                                heading: newSection!.heading, 
-                                                description: e.target.value,
-                                                text: newSection!.text
-                                            })}/>
-                                        </form>
-                                    </Flex>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button colorScheme='blue' mr={3} onClick={()=>handleNewSection()}>
-                                        Add
-                                    </Button>
-                                    <Button variant='ghost' onClick={newSectionDisclosure.onClose}>
-                                        Cancel
-                                    </Button>
-                                </ModalFooter>
-                                </ModalContent>
-                            </Modal>
-                        </Box>
-                    }
-                    {
-                        group &&
-                        <SectionList course={group} sections={sections} setSections={setSections} isOwner={joined}/>
-                    }
+                </Flex>
+                <Box pl={'0.5rem'} pr={'0.5rem'} mt='0.5rem'>
+                    <UnorderedList>
+                    <MemberList group={group} />
+                    </UnorderedList>
                 </Box>
-            }
+            </Box>
+
             <Box display={'flex'} justifyContent='center' mt={'3rem'}>
             {
                 joined &&
@@ -355,7 +319,7 @@ export const GroupDetailPage = () => {
                 </Button>
             }
             </Box>
-        </GroupCard>
+        </GroupDetailCard>
     </AppLayout>
   )
 }

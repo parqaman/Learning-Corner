@@ -82,6 +82,11 @@ export const routes: RouteConfig[] = [
     isPrivate: true,
     element: <SearchPage />,
   },
+  {
+    path: "/courses/:courseID/groups/:groupID",
+    isPrivate: true,
+    element: <GroupDetailPage />,
+  },
 ];
   
 export type AuthRequiredProps = {
