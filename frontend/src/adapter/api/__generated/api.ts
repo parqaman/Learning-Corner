@@ -59,10 +59,10 @@ export interface Course {
     'participants'?: Array<User>;
     /**
      * 
-     * @type {Array<any>}
+     * @type {Array<Group>}
      * @memberof Course
      */
-    'groups'?: Array<any>;
+    'groups'?: Array<Group>;
     /**
      * 
      * @type {Array<Section>}
@@ -133,10 +133,10 @@ export interface Group {
     'description'?: string;
     /**
      * 
-     * @type {User}
+     * @type {Course}
      * @memberof Group
      */
-    'owner'?: User;
+    'course'?: Course;
     /**
      * 
      * @type {Array<User>}
@@ -149,6 +149,68 @@ export interface Group {
      * @memberof Group
      */
     'sections'?: Array<Section>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Group
+     */
+    'updatedAt'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LearnerInCourse
+ */
+export interface LearnerInCourse {
+    /**
+     * 
+     * @type {string}
+     * @memberof LearnerInCourse
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {User}
+     * @memberof LearnerInCourse
+     */
+    'learner'?: User;
+    /**
+     * 
+     * @type {Course}
+     * @memberof LearnerInCourse
+     */
+    'course'?: Course;
+    /**
+     * 
+     * @type {Array<Group>}
+     * @memberof LearnerInCourse
+     */
+    'groups'?: Array<Group>;
+}
+/**
+ * 
+ * @export
+ * @interface LearnerInGroup
+ */
+export interface LearnerInGroup {
+    /**
+     * 
+     * @type {LearnerInCourse}
+     * @memberof LearnerInGroup
+     */
+    'member'?: LearnerInCourse;
+    /**
+     * 
+     * @type {Group}
+     * @memberof LearnerInGroup
+     */
+    'group'?: Group;
 }
 /**
  * A File
@@ -441,19 +503,49 @@ export interface Section {
      * @type {string}
      * @memberof Section
      */
-    'heading'?: string;
+    'heading': string;
     /**
      * 
      * @type {string}
      * @memberof Section
      */
-    'content'?: string;
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Section
+     */
+    'text': string;
+    /**
+     * 
+     * @type {Course}
+     * @memberof Section
+     */
+    'course'?: Course;
+    /**
+     * 
+     * @type {Group}
+     * @memberof Section
+     */
+    'group'?: Group;
     /**
      * 
      * @type {Array<any>}
      * @memberof Section
      */
     'files'?: Array<any>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Section
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Section
+     */
+    'updatedAt'?: string;
 }
 /**
  * The User Objet
@@ -568,6 +660,126 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 
+         * @summary delete a group
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteGroup: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteGroup', 'id', id)
+            const localVarPath = `/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSectionCourse: async (courseId: string, sectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('deleteSectionCourse', 'courseId', courseId)
+            // verify required parameter 'sectionId' is not null or undefined
+            assertParamExists('deleteSectionCourse', 'sectionId', sectionId)
+            const localVarPath = `/courses/{courseId}/section/{sectionId}`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)))
+                .replace(`{${"sectionId"}}`, encodeURIComponent(String(sectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSectionGroup: async (groupId: string, sectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('deleteSectionGroup', 'groupId', groupId)
+            // verify required parameter 'sectionId' is not null or undefined
+            assertParamExists('deleteSectionGroup', 'sectionId', sectionId)
+            const localVarPath = `/groups/{groupId}/section/{sectionId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"sectionId"}}`, encodeURIComponent(String(sectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Delete User
          * @param {string} id The id of the user to work with
          * @param {*} [options] Override http request option.
@@ -620,6 +832,48 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarPath = `/users/{userID}/course/{courseID}`
                 .replace(`{${"userID"}}`, encodeURIComponent(String(userID)))
                 .replace(`{${"courseID"}}`, encodeURIComponent(String(courseID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUsersUseridCourseCourseidGroupGroupid: async (userid: string, courseid: string, groupid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userid' is not null or undefined
+            assertParamExists('deleteUsersUseridCourseCourseidGroupGroupid', 'userid', userid)
+            // verify required parameter 'courseid' is not null or undefined
+            assertParamExists('deleteUsersUseridCourseCourseidGroupGroupid', 'courseid', courseid)
+            // verify required parameter 'groupid' is not null or undefined
+            assertParamExists('deleteUsersUseridCourseCourseidGroupGroupid', 'groupid', groupid)
+            const localVarPath = `/users/{userid}/course/{courseid}/group/{groupid}`
+                .replace(`{${"userid"}}`, encodeURIComponent(String(userid)))
+                .replace(`{${"courseid"}}`, encodeURIComponent(String(courseid)))
+                .replace(`{${"groupid"}}`, encodeURIComponent(String(groupid)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -718,6 +972,43 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get a Group by Id
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGroupId: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getGroupId', 'id', id)
+            const localVarPath = `/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get Users
          * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
@@ -780,6 +1071,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersUseridGroups: async (userid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userid' is not null or undefined
+            assertParamExists('getUsersUseridGroups', 'userid', userid)
+            const localVarPath = `/users/{userid}/groups`
+                .replace(`{${"userid"}}`, encodeURIComponent(String(userid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -899,12 +1224,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary 
-         * @param {Group} [group] 
+         * @summary Post group
+         * @param {Group} group 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postGroups: async (group?: Group, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postGroups: async (group: Group, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'group' is not null or undefined
+            assertParamExists('postGroups', 'group', group)
             const localVarPath = `/groups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -917,6 +1244,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -925,6 +1256,92 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(group, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create section in course
+         * @param {string} id The id of the course
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSectionCourse: async (id: string, section: Section, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('postSectionCourse', 'id', id)
+            // verify required parameter 'section' is not null or undefined
+            assertParamExists('postSectionCourse', 'section', section)
+            const localVarPath = `/courses/{id}/section`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(section, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create section in group
+         * @param {string} id The id of the group
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSectionGroup: async (id: string, section: Section, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('postSectionGroup', 'id', id)
+            // verify required parameter 'section' is not null or undefined
+            assertParamExists('postSectionGroup', 'section', section)
+            const localVarPath = `/groups/{id}/section`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(section, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1001,6 +1418,138 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(course, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary update a group
+         * @param {string} id The id of the group to work with
+         * @param {Group} [group] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putGroup: async (id: string, group?: Group, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('putGroup', 'id', id)
+            const localVarPath = `/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(group, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putSectionCourse: async (courseId: string, sectionId: string, section?: Section, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('putSectionCourse', 'courseId', courseId)
+            // verify required parameter 'sectionId' is not null or undefined
+            assertParamExists('putSectionCourse', 'sectionId', sectionId)
+            const localVarPath = `/courses/{courseId}/section/{sectionId}`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)))
+                .replace(`{${"sectionId"}}`, encodeURIComponent(String(sectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(section, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putSectionGroup: async (groupId: string, sectionId: string, section?: Section, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('putSectionGroup', 'groupId', groupId)
+            // verify required parameter 'sectionId' is not null or undefined
+            assertParamExists('putSectionGroup', 'sectionId', sectionId)
+            const localVarPath = `/groups/{groupId}/section/{sectionId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"sectionId"}}`, encodeURIComponent(String(sectionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(section, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1111,6 +1660,48 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putUsersUseridCourseCourseidGroupGroupid: async (userid: string, courseid: string, groupid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userid' is not null or undefined
+            assertParamExists('putUsersUseridCourseCourseidGroupGroupid', 'userid', userid)
+            // verify required parameter 'courseid' is not null or undefined
+            assertParamExists('putUsersUseridCourseCourseidGroupGroupid', 'courseid', courseid)
+            // verify required parameter 'groupid' is not null or undefined
+            assertParamExists('putUsersUseridCourseCourseidGroupGroupid', 'groupid', groupid)
+            const localVarPath = `/users/{userid}/course/{courseid}/group/{groupid}`
+                .replace(`{${"userid"}}`, encodeURIComponent(String(userid)))
+                .replace(`{${"courseid"}}`, encodeURIComponent(String(courseid)))
+                .replace(`{${"groupid"}}`, encodeURIComponent(String(groupid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1130,6 +1721,39 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async deleteCoursesCourseIDUsersUserID(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCoursesCourseIDUsersUserID(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary delete a group
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteGroup(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Delete section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteSectionCourse(courseId: string, sectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteSectionCourse(courseId, sectionId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Delete section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteSectionGroup(groupId: string, sectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteSectionGroup(groupId, sectionId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1155,6 +1779,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Get courses
          * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
@@ -1175,6 +1812,16 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * Get a Group by Id
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getGroupId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Group>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGroupId(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Get Users
          * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
@@ -1192,6 +1839,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async getUsersId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersId(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUsersUseridGroups(userid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LearnerInGroup>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersUseridGroups(userid, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1226,13 +1884,35 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 
-         * @param {Group} [group] 
+         * @summary Post group
+         * @param {Group} group 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postGroups(group?: Group, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async postGroups(group: Group, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Group>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postGroups(group, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Create section in course
+         * @param {string} id The id of the course
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postSectionCourse(id: string, section: Section, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postSectionCourse(id, section, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Create section in group
+         * @param {string} id The id of the group
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postSectionGroup(id: string, section: Section, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postSectionGroup(id, section, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1256,6 +1936,42 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async putCourse(id: string, course?: Course, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.putCourse(id, course, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary update a group
+         * @param {string} id The id of the group to work with
+         * @param {Group} [group] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putGroup(id: string, group?: Group, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putGroup(id, group, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Update section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putSectionCourse(courseId, sectionId, section, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Update section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putSectionGroup(groupId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putSectionGroup(groupId, sectionId, section, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1285,6 +2001,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.putUsersUserIDCourseCourseID(userID, courseID, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LearnerInGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -1304,6 +2033,36 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         deleteCoursesCourseIDUsersUserID(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteCoursesCourseIDUsersUserID(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary delete a group
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteGroup(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteGroup(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSectionCourse(courseId: string, sectionId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteSectionCourse(courseId, sectionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSectionGroup(groupId: string, sectionId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteSectionGroup(groupId, sectionId, options).then((request) => request(axios, basePath));
         },
         /**
          * Delete User
@@ -1326,6 +2085,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.deleteUsersUserIDCourseCourseID(userID, courseID, options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get courses
          * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
@@ -1344,6 +2115,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getCoursesId(id, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get a Group by Id
+         * @param {string} id The id of the group to work with
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGroupId(id: string, options?: any): AxiosPromise<Group> {
+            return localVarFp.getGroupId(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get Users
          * @param {string} [name] The name to filter users by
          * @param {*} [options] Override http request option.
@@ -1360,6 +2140,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getUsersId(id: string, options?: any): AxiosPromise<User> {
             return localVarFp.getUsersId(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} userid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsersUseridGroups(userid: string, options?: any): AxiosPromise<Array<LearnerInGroup>> {
+            return localVarFp.getUsersUseridGroups(userid, options).then((request) => request(axios, basePath));
         },
         /**
          * Perform login and return accesstoken
@@ -1390,13 +2180,33 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary 
-         * @param {Group} [group] 
+         * @summary Post group
+         * @param {Group} group 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postGroups(group?: Group, options?: any): AxiosPromise<void> {
+        postGroups(group: Group, options?: any): AxiosPromise<Group> {
             return localVarFp.postGroups(group, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create section in course
+         * @param {string} id The id of the course
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSectionCourse(id: string, section: Section, options?: any): AxiosPromise<Section> {
+            return localVarFp.postSectionCourse(id, section, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create section in group
+         * @param {string} id The id of the group
+         * @param {Section} section The Section Object to create
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postSectionGroup(id: string, section: Section, options?: any): AxiosPromise<Section> {
+            return localVarFp.postSectionGroup(id, section, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1418,6 +2228,39 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         putCourse(id: string, course?: Course, options?: any): AxiosPromise<void> {
             return localVarFp.putCourse(id, course, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary update a group
+         * @param {string} id The id of the group to work with
+         * @param {Group} [group] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putGroup(id: string, group?: Group, options?: any): AxiosPromise<void> {
+            return localVarFp.putGroup(id, group, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update section in a course
+         * @param {string} courseId The id of the course
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: any): AxiosPromise<Section> {
+            return localVarFp.putSectionCourse(courseId, sectionId, section, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update section in a group
+         * @param {string} groupId The id of the group
+         * @param {string} sectionId The id of the section
+         * @param {Section} [section] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putSectionGroup(groupId: string, sectionId: string, section?: Section, options?: any): AxiosPromise<Section> {
+            return localVarFp.putSectionGroup(groupId, sectionId, section, options).then((request) => request(axios, basePath));
         },
         /**
          * Put User
@@ -1444,6 +2287,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         putUsersUserIDCourseCourseID(userID: string, courseID: string, options?: any): AxiosPromise<void> {
             return localVarFp.putUsersUserIDCourseCourseID(userID, courseID, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary 
+         * @param {string} userid 
+         * @param {string} courseid 
+         * @param {string} groupid 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: any): AxiosPromise<LearnerInGroup> {
+            return localVarFp.putUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -1464,6 +2319,42 @@ export class DefaultApi extends BaseAPI {
      */
     public deleteCoursesCourseIDUsersUserID(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).deleteCoursesCourseIDUsersUserID(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary delete a group
+     * @param {string} id The id of the group to work with
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public deleteGroup(id: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteGroup(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete section in a course
+     * @param {string} courseId The id of the course
+     * @param {string} sectionId The id of the section
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public deleteSectionCourse(courseId: string, sectionId: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteSectionCourse(courseId, sectionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete section in a group
+     * @param {string} groupId The id of the group
+     * @param {string} sectionId The id of the section
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public deleteSectionGroup(groupId: string, sectionId: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteSectionGroup(groupId, sectionId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1491,6 +2382,20 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * 
+     * @summary 
+     * @param {string} userid 
+     * @param {string} courseid 
+     * @param {string} groupid 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public deleteUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Get courses
      * @param {string} [name] The name to filter courses by
      * @param {*} [options] Override http request option.
@@ -1513,6 +2418,17 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * Get a Group by Id
+     * @param {string} id The id of the group to work with
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getGroupId(id: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getGroupId(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Get Users
      * @param {string} [name] The name to filter users by
      * @param {*} [options] Override http request option.
@@ -1532,6 +2448,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getUsersId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getUsersId(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Your GET endpoint
+     * @param {string} userid 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getUsersUseridGroups(userid: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getUsersUseridGroups(userid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1569,14 +2497,38 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
-     * @param {Group} [group] 
+     * @summary Post group
+     * @param {Group} group 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public postGroups(group?: Group, options?: AxiosRequestConfig) {
+    public postGroups(group: Group, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).postGroups(group, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create section in course
+     * @param {string} id The id of the course
+     * @param {Section} section The Section Object to create
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public postSectionCourse(id: string, section: Section, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postSectionCourse(id, section, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create section in group
+     * @param {string} id The id of the group
+     * @param {Section} section The Section Object to create
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public postSectionGroup(id: string, section: Section, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postSectionGroup(id, section, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1602,6 +2554,45 @@ export class DefaultApi extends BaseAPI {
      */
     public putCourse(id: string, course?: Course, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).putCourse(id, course, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary update a group
+     * @param {string} id The id of the group to work with
+     * @param {Group} [group] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putGroup(id: string, group?: Group, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putGroup(id, group, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update section in a course
+     * @param {string} courseId The id of the course
+     * @param {string} sectionId The id of the section
+     * @param {Section} [section] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putSectionCourse(courseId, sectionId, section, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update section in a group
+     * @param {string} groupId The id of the group
+     * @param {string} sectionId The id of the section
+     * @param {Section} [section] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putSectionGroup(groupId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putSectionGroup(groupId, sectionId, section, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1631,6 +2622,20 @@ export class DefaultApi extends BaseAPI {
      */
     public putUsersUserIDCourseCourseID(userID: string, courseID: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).putUsersUserIDCourseCourseID(userID, courseID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 
+     * @param {string} userid 
+     * @param {string} courseid 
+     * @param {string} groupid 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putUsersUseridCourseCourseidGroupGroupid(userid: string, courseid: string, groupid: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -5,16 +5,22 @@ import {
   ManyToOne,
   ManyToMany,
   OneToMany,
-  Property, Unique, Filter,
+  Property,
+  Unique,
+  Filter,
 } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
-import { CourseSection } from "./CourseSection";
+import { Section } from "./Section";
 import { Quiz } from "./Quiz";
 import { LearnerInCourse } from "./LearnerInCourse";
+import { Group } from "./Group";
 
 @Entity()
-@Filter({ name: 'name', cond: args => ({ name: { $ilike: `%${args.name}%` } }) })
+@Filter({
+  name: "name",
+  cond: (args) => ({ name: { $ilike: `%${args.name}%` } }),
+})
 export class Course extends BaseEntity {
   @Property()
   @Unique()
@@ -29,12 +35,15 @@ export class Course extends BaseEntity {
   @ManyToMany({
     entity: () => User,
     pivotEntity: () => LearnerInCourse,
-    mappedBy: (e) => e.joinedCourses
+    mappedBy: (e) => e.joinedCourses,
   })
   participants = new Collection<User>(this);
 
-  @OneToMany(() => CourseSection, (e) => e.course)
-  sections? = new Collection<CourseSection>(this);
+  @OneToMany(() => Section, (e) => e.course)
+  sections? = new Collection<Section>(this);
+
+  @OneToMany(() => Group, (e) => e.course)
+  groups? = new Collection<Group>(this);
 
   @OneToMany(() => Quiz, (e) => e.course)
   quizzes? = new Collection<Quiz>(this);
@@ -56,6 +65,6 @@ export type CreateCourseDTO = {
   name: string;
   description: string;
   lecturer: User;
-  participants?: User[]
-  sections?: CourseSection[]
+  participants?: User[];
+  sections?: Section[];
 };

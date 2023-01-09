@@ -1,4 +1,5 @@
 import {
+  Cascade,
   Collection,
   Entity,
   ManyToMany,
@@ -18,10 +19,10 @@ export class LearnerInCourse {
   @Unique()
   id: string = v4();
 
-  @ManyToOne({ primary: true, entity: () => User, })
+  @ManyToOne({ primary: true, entity: () => User, onDelete: 'cascade'})
   learner: User;
 
-  @ManyToOne({ primary: true, entity: () => Course  })
+  @ManyToOne({ primary: true, entity: () => Course, onDelete: 'cascade'})
   course: Course;
 
   @ManyToMany({

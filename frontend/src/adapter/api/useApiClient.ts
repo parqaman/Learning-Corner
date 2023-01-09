@@ -11,6 +11,15 @@ export const useApiClient = () => {
       ? { Authorization: accessToken }
       : {};
     const axiosInstance = axios.create({ headers: authHeaders });
+    axiosInstance.interceptors.response.use(
+        response => response,
+        error => {
+          if(401 === error.response.status) {
+            window.location.href = '/auth/login'
+          }
+          return Promise.reject(error)
+        }
+    )
     const config = new Configuration({ basePath });
     return new DefaultApi(config, basePath, axiosInstance);
   }, [accessToken]);

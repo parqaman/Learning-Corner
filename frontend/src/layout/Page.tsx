@@ -8,6 +8,7 @@ export const Page = ({ children, ...boxProps }: PageProps) => (
     minH={'90vh'}
     {...boxProps}
     color='black'
+    p={'0 5rem'}
   >
     {children}
   </chakra.main>

@@ -6,21 +6,22 @@ import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
-import { Group, User } from '../adapter/api/__generated'
+import { Group } from '../adapter/api/__generated'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
 import { SectionList } from '../components/SectionList'
 import { GroupList } from '../components/group_components/GroupList'
+import { ActionClose } from '../components/ChatWindow'
 
 interface CourseDescProps {
     course: Course;
-    setCourse: React.Dispatch<React.SetStateAction<Course | undefined>>
+    updateCourse: React.Dispatch<React.SetStateAction<Course>>
     updateHandler: (e: React.FormEvent<HTMLFormElement>) => void
     isOwner: boolean
 }
 
-const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: CourseDescProps) => {
+const CourseDescriptionSection = ({course, updateCourse, updateHandler, isOwner}: CourseDescProps) => {
     const [editMode, setEditMode] = useState(false);
 
     const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,7 +49,7 @@ const CourseDescriptionSection = ({course, setCourse, updateHandler, isOwner}: C
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>setCourse({name: course.name, lecturer: course.lecturer, description: e.target.value})} />
+                    <Textarea value={course.description} resize='none' height={'10rem'} onChange={(e)=>updateCourse((prev) => {return {...prev, description: e.target.value}})} />
                     <Box mt={'1rem'}>
                         <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                             <AiOutlineCheck/>
@@ -76,25 +77,33 @@ export const CourseDetailPage = () => {
     const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
-    const [course, setCourse] = useState<Course>()
+    const [course, setCourse] = useState<Course>({
+        name: "",
+        description: "",
+        lecturer: currentUser!
+    })
+    const [sections, setSections] = useState<Section[]>()
     const [newSection, setNewSection] = useState<Section>({
-        heading: "", content: ""
+        heading: "", description: "", text: "section text" //text dari sebuah section
     })
+    const [groups, setGroups] = useState<Group[]>();
     const [newGroup, setNewGroup] = useState<Group>({
-        name: "", description: ""
+        name: "", description: "", course: course
     })
-    const [oldCourse, setOldCourse] = useState<Course>()
+    const [oldCourse, setOldCourse] = useState<Course>(course)
     const toast = useToast();
     const navigate = useNavigate()
     const newSectionDisclosure = useDisclosure()
     const newGroupDisclosure = useDisclosure()
 
-    const fetchData = async () => {        
-        const theCourse = await apiClient.getCoursesId(id!)
+    const fetchData = async () => {
+        await apiClient.getCoursesId(id!)
         .then((res)=>{
             const theCourse = res.data
             setCourse(theCourse)
             setOldCourse(theCourse)
+            setSections(theCourse.sections)
+            setGroups(theCourse.groups)
             
             if(theCourse.lecturer.id === currentUser?.id){
                 setIsOwner(true)
@@ -122,6 +131,7 @@ export const CourseDetailPage = () => {
         await apiClient.putCourse(id!, course)
         .then(()=>{
             setOldCourse(course)
+            setCourse(course)
             toast({
                 title: "Updated",
                 description: <Text>Course sucessfully updated</Text>,
@@ -167,38 +177,62 @@ export const CourseDetailPage = () => {
         }
     }
 
-    const handleNewSection = () => {
+    const handleNewSection = async () => {
         if(course) {
-            const mergedSections = [...course.sections!, newSection]
-            course.sections = mergedSections            
             setNewSection({
                 heading: "",
-                content: ""
+                description: "",
+                text: newSection.text
             })
-            newSectionDisclosure.onClose()
-
-            //send post section to backend
+            
+            if(course && course.id){
+                await apiClient.postSectionCourse(course.id, newSection)
+                .then((response)=>{
+                    const theSection = response.data
+                    const mergedSections = [...sections!, theSection]
+                    setSections(mergedSections)
+                    newSectionDisclosure.onClose()
+                })
+                .catch((e)=> {
+                    console.log(e);
+                })
+            }        
         }
     }
 
-    const handleNewGroup = () => {
-        if(newGroup && course) {
-            if(course.groups) { //case: course already has groups
-                const mergedGroups = [...course.groups, newGroup];
-                course.groups = mergedGroups
-            }
-            else { //case: course does not have any groups yet
-                course.groups = [newGroup]
-            }
-            setNewGroup({
-                name: "",
-                description: ""
+    const handleNewGroup = async () => {
+        if(newGroup) {
+            await apiClient.postGroups(newGroup)
+            .then((res) => {
+                const theGroup = res.data;
+                const mergedGroupList = [...groups!, theGroup];
+                setGroups(mergedGroupList)
+                setNewGroup({
+                    name: "",
+                    description: "",
+                    course: course
+                })
+                
+                const joinGroup = async () => {
+                    if(currentUser && course && course.id && theGroup && theGroup.id) {
+                        await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id!, course.id, theGroup.id)
+                    }
+                } 
+
+                joinGroup();
+
+                toast({
+                    title: "Created",
+                    description: <Text>Group sucessfully created</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                setJoined(true)
+
+                newGroupDisclosure.onClose()
             })
-            newGroupDisclosure.onClose()
-
-            //send post group to backend
         }
-
     }
         
     const joinCourse = async () => {
@@ -230,6 +264,7 @@ export const CourseDetailPage = () => {
         if(course && currentUser) {
             const res = await apiClient.deleteUsersUserIDCourseCourseID(currentUser.id, course.id!)
             .then(()=>{
+                ActionClose('course-card')
                 toast({
                     title: "Left",
                     description: <Text>Course sucessfully left</Text>,
@@ -253,7 +288,7 @@ export const CourseDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <CourseCard>
+        <CourseCard joined={joined} >
             <Flex id='course-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='course-info' maxW={'36rem'}>
@@ -299,106 +334,111 @@ export const CourseDetailPage = () => {
             </Flex>
             {
                 //course description section
-                course? (
-                    <CourseDescriptionSection course={course} setCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
+                course ? (
+                    <CourseDescriptionSection course={course} updateCourse={setCourse} updateHandler={handleEditCourseInfo} isOwner={isOwner}/>
                 ) : (
                     <Box>Course Desciption not available</Box>
                 )
             }
             {/** Section List  **/}
-            <Box mt={'2rem'}>
-                <Text fontSize={'2xl'} fontWeight='normal'>
-                    Sections
-                </Text>
-                { isOwner &&
-                    <Box mb={'1rem'}>
-                        <Button onClick={newSectionDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
-                            Add new section
+            { (joined || isOwner) && 
+                <Box mt={'2rem'}>
+                    <Text fontSize={'2xl'} fontWeight='normal'>
+                        Sections
+                    </Text>
+                    { isOwner &&
+                        <Box mb={'1rem'}>
+                            <Button onClick={newSectionDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
+                                Add new section
+                            </Button>
+                            <Modal blockScrollOnMount={false} isOpen={newSectionDisclosure.isOpen} onClose={newSectionDisclosure.onClose}>
+                                <ModalOverlay />
+                                <ModalContent>
+                                <ModalHeader>New Section</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
+                                    <Flex mb={'0.5rem'}>
+                                        <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
+                                            <Input placeholder='Section title' value={newSection?.heading} onChange={(e)=>setNewSection({
+                                                heading: e.target.value,
+                                                description: newSection!.description,
+                                                text: newSection!.text
+                                            })}/>
+                                            <Textarea placeholder='Section description' value={newSection?.description} onChange={(e)=>setNewSection({
+                                                heading: newSection!.heading, 
+                                                description: e.target.value,
+                                                text: newSection!.text
+                                            })}/>
+                                        </form>
+                                    </Flex>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button colorScheme='blue' mr={3} onClick={()=>handleNewSection()}>
+                                        Add
+                                    </Button>
+                                    <Button variant='ghost' onClick={newSectionDisclosure.onClose}>
+                                        Cancel
+                                    </Button>
+                                </ModalFooter>
+                                </ModalContent>
+                            </Modal>
+                        </Box>
+                    }
+                    {
+                        course &&
+                        <SectionList course={course} sections={sections} setSections={setSections} isOwner={isOwner}/>
+                    }
+                </Box>
+            }
+            {/** Groups list */}
+            { (joined || isOwner) &&
+                <Box mt={'2rem'}>
+                    <Text fontSize={'2xl'} fontWeight='normal'>
+                        Group area
+                    </Text>
+                    <Box mb={'1rem'}> {/** New group modal */}
+                        <Button onClick={newGroupDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'rgba(0, 0, 0, 1)'} color='white' fontWeight={'medium'}>
+                            Create a new group
                         </Button>
-                        <Modal blockScrollOnMount={false} isOpen={newSectionDisclosure.isOpen} onClose={newSectionDisclosure.onClose}>
+                        <Modal blockScrollOnMount={false} isOpen={newGroupDisclosure.isOpen} onClose={newGroupDisclosure.onClose}>
                             <ModalOverlay />
                             <ModalContent>
-                            <ModalHeader>New Section</ModalHeader>
+                            <ModalHeader>New Group</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
                                 <Flex mb={'0.5rem'}>
                                     <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
-                                        <Input placeholder='Section title' value={newSection?.heading} onChange={(e)=>setNewSection({
-                                            heading: e.target.value,
-                                            content: newSection!.content
+                                        <Input placeholder='Group name' value={newGroup?.name} onChange={(e)=>setNewGroup({
+                                            name: e.target.value,
+                                            description: newGroup.description,
+                                            course: course
                                         })}/>
-                                        <Textarea placeholder='Section description' value={newSection?.content} onChange={(e)=>setNewSection({
-                                            heading: newSection!.heading, 
-                                            content: e.target.value
+                                        <Textarea placeholder='Group description' value={newGroup?.description} onChange={(e)=>setNewGroup({
+                                            name: newGroup.name,
+                                            description: e.target.value,
+                                            course: course
                                         })}/>
                                         
                                     </form>
                                 </Flex>
                             </ModalBody>
-
                             <ModalFooter>
-                                <Button colorScheme='blue' mr={3} onClick={()=>handleNewSection()}>
-                                    Add
+                                <Button colorScheme='blue' mr={3} onClick={()=>handleNewGroup()}>
+                                    Create
                                 </Button>
-                                <Button variant='ghost' onClick={newSectionDisclosure.onClose}>
+                                <Button variant='ghost' onClick={newGroupDisclosure.onClose}>
                                     Cancel
                                 </Button>
                             </ModalFooter>
                             </ModalContent>
                         </Modal>
                     </Box>
-                }
-                {
-                    course && course.sections &&
-                    <SectionList sections={course.sections}/>
-                }
-            </Box>
-            {/** Groups list */}
-            <Box mt={'2rem'}>
-                <Text fontSize={'2xl'} fontWeight='normal'>
-                    Group area
-                </Text>
-                <Box mb={'1rem'}> {/** New group modal */}
-                    <Button onClick={newGroupDisclosure.onOpen} variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'rgba(0, 0, 0, 1)'} color='white' fontWeight={'medium'}>
-                        Create a new group
-                    </Button>
-                    <Modal blockScrollOnMount={false} isOpen={newGroupDisclosure.isOpen} onClose={newGroupDisclosure.onClose}>
-                        <ModalOverlay />
-                        <ModalContent>
-                        <ModalHeader>New Group</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                            <Flex mb={'0.5rem'}>
-                                <form style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%'}}>
-                                    <Input placeholder='Group name' value={newGroup?.name} onChange={(e)=>setNewGroup({
-                                        name: e.target.value,
-                                        description: newGroup.description
-                                    })}/>
-                                    <Textarea placeholder='Group description' value={newGroup?.description} onChange={(e)=>setNewGroup({
-                                        name: newGroup.name,
-                                        description: e.target.value,
-                                    })}/>
-                                    
-                                </form>
-                            </Flex>
-                        </ModalBody>
-
-                        <ModalFooter>
-                            <Button colorScheme='blue' mr={3} onClick={()=>handleNewGroup()}>
-                                Create
-                            </Button>
-                            <Button variant='ghost' onClick={newGroupDisclosure.onClose}>
-                                Cancel
-                            </Button>
-                        </ModalFooter>
-                        </ModalContent>
-                    </Modal>
+                    {
+                        course &&
+                            <GroupList course={course} groups={groups} />
+                    }
                 </Box>
-                {
-                    course && course.groups &&
-                        <GroupList course={course} groups={course.groups}/>
-                }
-            </Box>
+            }
             <Box display={'flex'} justifyContent='center' mt={'3rem'}>
             {
                 isOwner &&

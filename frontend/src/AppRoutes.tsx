@@ -6,9 +6,11 @@ import {
     useLocation,
   } from "react-router-dom";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
+import { GroupDetailPage } from "./pages/GroupDetailPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
+import { MyGroupsPage } from "./pages/MyGroupsPage";
 import { NewCoursePage } from "./pages/NewCoursePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -56,9 +58,19 @@ export const routes: RouteConfig[] = [
     element: <MyCoursesPage/>,
   },
   {
+    path: "/mygroups",
+    isPrivate: true,
+    element: <MyGroupsPage/>,
+  },
+  {
     path: "/courses/:id",
     isPrivate: true,
     element: <CourseDetailPage />,
+  },
+  {
+    path: "/courses/:courseID/groups/:groupID",
+    isPrivate: true,
+    element: <GroupDetailPage />,
   },
   {
     path: "/courses/newcourse",
@@ -69,6 +81,11 @@ export const routes: RouteConfig[] = [
     path: "/searchresult/:name",
     isPrivate: true,
     element: <SearchPage />,
+  },
+  {
+    path: "/courses/:courseID/groups/:groupID",
+    isPrivate: true,
+    element: <GroupDetailPage />,
   },
 ];
   
