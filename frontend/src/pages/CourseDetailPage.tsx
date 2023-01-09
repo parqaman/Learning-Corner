@@ -211,10 +211,27 @@ export const CourseDetailPage = () => {
                     description: "",
                     course: course
                 })
+                
+                const joinGroup = async () => {
+                    if(currentUser && course && course.id && theGroup && theGroup.id) {
+                        await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id!, course.id, theGroup.id)
+                    }
+                } 
+
+                joinGroup();
+
+                toast({
+                    title: "Created",
+                    description: <Text>Group sucessfully created</Text>,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                    });
+                setJoined(true)
+
                 newGroupDisclosure.onClose()
             })
         }
-
     }
         
     const joinCourse = async () => {
