@@ -126,7 +126,7 @@ router.delete("/:groupId", async (req, res) => {
       return res.status(401).send({ message: "User not authorized" });
     }
 
-    course.sections?.getItems().map(section => {
+    group.sections?.getItems().map(section => {
       if(section.files.length > 0) {
         const files = section.files.getItems()
         deleteSectionFiles(files, section.id);

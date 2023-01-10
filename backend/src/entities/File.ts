@@ -8,7 +8,7 @@ export class File extends BaseEntity {
   @Property()
   name: string;
 
-  @ManyToOne({entity: () => Section})
+  @ManyToOne({entity: () => Section, onDelete: "cascade"})
   section: Section;
 
   constructor({ name, section }: CreateFileDTO) {
