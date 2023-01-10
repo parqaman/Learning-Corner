@@ -115,7 +115,9 @@ export const GroupDetailPage = () => {
             await apiClient.getGroupId(param.groupID)
             .then((res)=>{
                 const theGroup = res.data
-                setSections(theGroup.sections)
+                if(theGroup.sections) {
+                    setSections(theGroup.sections)
+                }
                 setGroup(theGroup)
                 setOldGroup(theGroup)
     
@@ -196,14 +198,12 @@ export const GroupDetailPage = () => {
             await apiClient.postSectionGroup(group.id, newSection)
             .then((response)=>{
                 const theSection = response.data
-                if(sections) {
-                    if(sections.length > 0) {
-                        const mergedSections = [...sections, theSection]
-                        setSections(mergedSections)
-                    }
-                    else if(sections){
-                        setSections([newSection])
-                    }
+                if(sections && sections.length > 0) {
+                    const mergedSections = [...sections, theSection]
+                    setSections(mergedSections)
+                }
+                else {
+                    setSections([theSection])
                 }
                 newSectionDisclosure.onClose()
                 setNewSection({
@@ -270,7 +270,7 @@ export const GroupDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <GroupCard joined={joined} groupID={course.id! + group.id!} >
+        <GroupDetailCard joined={joined} groupID={course.id! + group.id!} >
             <Flex id='group-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='group-info' maxW={'36rem'}>
@@ -386,7 +386,7 @@ export const GroupDetailPage = () => {
                         </Box>
                     }
                     {
-                        course &&
+                        group &&
                         <GroupSectionList group={group} sections={sections} setSections={setSections} isOwner={joined}/>
                     }
                 </Box>
@@ -399,7 +399,7 @@ export const GroupDetailPage = () => {
                 </Button>
             }
             </Box>
-        </GroupCard>
+        </GroupDetailCard>
     </AppLayout>
   )
 }
