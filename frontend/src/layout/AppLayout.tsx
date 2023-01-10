@@ -116,6 +116,6 @@ export const AppLayout = (props: AppLayoutProps) => {
   //check whether user is logged in or not, since navbar buttons are different for logged in user
   const { isLoggedIn } = useAuth();
   const HeaderRightMenu = isLoggedIn ? navigationItems : null;
-  
+  if(!isLoggedIn && ( window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register' )) window.location.href = '/auth/login';
   return <BaseLayout headerRightMenu={HeaderRightMenu} {...props}/>
 }

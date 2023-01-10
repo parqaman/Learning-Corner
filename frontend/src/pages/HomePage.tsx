@@ -43,7 +43,8 @@ export const SearchBar = ({searchVal, setSearchVal}: SearchBarProps) => {
 }
 
 export const HomePage = () => {
-  const user = useAuth().user;
+  const auth = useAuth();
+  const user = auth.user;
   const [searchVal, setSearchVal] = useState("");
   const [courses, setCourses] = useState<Course[]>();
   const apiClient = useApiClient();

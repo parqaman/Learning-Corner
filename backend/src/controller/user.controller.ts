@@ -2,13 +2,7 @@ import { Router } from "express";
 import { DI } from "../";
 import { wrap } from "@mikro-orm/core";
 import { uploadProfilePicture } from "../middleware/file.middleware";
-import * as fs from "fs";
-import path from "path";
-
-const uploadPath = path.join(
-  __dirname,
-  process.env.STORAGE_PATH || "../../upload/tmp"
-);
+import { deleteProfilePicture } from "../helpers/file.helper";
 
 const router = Router({ mergeParams: true });
 
@@ -66,7 +60,6 @@ router.put("/:id", uploadProfilePicture, async (req, res) => {
     }
 
     wrap(user).assign({ ...req.body });
-
     const files = req.files as Express.Multer.File[];
 
     if (
@@ -75,8 +68,7 @@ router.put("/:id", uploadProfilePicture, async (req, res) => {
       files[0].filename &&
       files[0].filename !== user.photo
     ) {
-      if (user.photo !== null && user.photo !== "profile_empty.png")
-        fs.unlinkSync(path.join(uploadPath, user.photo));
+      deleteProfilePicture(user)
       wrap(user).assign({ photo: files[0].filename });
     }
     await DI.userRepository.flush();
@@ -92,6 +84,7 @@ router.delete("/:id", async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
+    deleteProfilePicture(user);
     await DI.userRepository.remove(user).flush();
     return res.status(204).send({});
   } catch (e: any) {

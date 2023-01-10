@@ -1,16 +1,9 @@
-import {
-  Cascade,
-  Collection,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  Property,
-} from "@mikro-orm/core";
-import { object, string } from "yup";
-import { BaseEntity } from "./BaseEntity";
-import { Course } from "./Course";
-import { File } from "./File";
-import { Group } from "./Group";
+import {Cascade, Collection, Entity, ManyToOne, OneToMany, Property,} from "@mikro-orm/core";
+import {object, string} from "yup";
+import {BaseEntity} from "./BaseEntity";
+import {Course} from "./Course";
+import {File} from "./File";
+import {Group} from "./Group";
 
 @Entity()
 export class Section extends BaseEntity {
@@ -29,7 +22,7 @@ export class Section extends BaseEntity {
   @ManyToOne({entity: () => Group, nullable: true, onDelete: 'cascade'})
   group?: Group;
 
-  @OneToMany(() => File, (e) => e.section)
+  @OneToMany({ entity: () => File, mappedBy: (e) => e.section, nullable: true, cascade: [Cascade.ALL]})
   files = new Collection<File>(this);
 
   constructor({ heading, description, text, course, group }: CreateSectionDTO) {

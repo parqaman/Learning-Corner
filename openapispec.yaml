@@ -377,10 +377,25 @@ paths:
                   message:
                     type: string
       requestBody:
+        description: The Section Object to be updated
+        required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Section'
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+                text:
+                  type: string
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+
       security:
         - Bearer: []
     delete:
@@ -822,6 +837,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LearnerInGroup'
+  '/sections/{sectionId}/file':
+    parameters:
+      - in: path
+        name: sectionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The id of the section
+    post:
+      description: Add file to section
+      operationId: post-section-file
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Error while creating
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+        '404':
+          description: Invalid Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        description: The File to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      security:
+        - Bearer: [ ]
 components:
   schemas:
     User:
@@ -963,12 +1039,9 @@ components:
           format: uuid
         name:
           type: string
-        content:
-          type: string
-        owner:
-          oneOf:
-            - $ref: '#/components/schemas/Course'
-            - $ref: '#/components/schemas/Group'
+        section:
+          type:
+            - $ref: '#/components/schemas/Section'
         createdAt:
           type: string
           format: date-time
@@ -977,7 +1050,8 @@ components:
           format: date-time
       required:
         - name
-        - course
+        - path
+        - owner
       x-stoplight:
         id: c00d5a960f6ee
     Section:
