@@ -122,6 +122,14 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState<string>('')
 
+  const scrollToBottom = () => {
+    const lM = messages[messages.length - 1];
+    if(lM){
+      const lastMessage = document.getElementById(lM.time.toString())
+      lastMessage?.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   useEffect(() => {
     if(!socket) {
       let s = io.connect('http://localhost:4000', {
@@ -149,6 +157,10 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
     }
   }, [socket])
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages])
+
   function handleEnterKeyPress<T = Element>(f: () => void){
     return handleKeyPress<T>(f, "Enter")
   }
@@ -160,7 +172,6 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
       }
     }
   }
-
   const handleOnClick = () => {
     if(!newMessage) return;
     socket?.emit("message", {room: roomID, message: newMessage})
@@ -198,8 +209,8 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
           width={'100%'}
       >
         {
-          messages.map((val, index)=>(
-            <Box key={index}>
+          messages.map((val)=>(
+            <Box key={val.time} id={val.time.toString()}>
               {val.sender.id === user.id ? <OutcomingSingleChatTile message={val} /> : <IncomingSingleChatTile message={val} /> }
             </Box>
           ))
