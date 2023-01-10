@@ -288,7 +288,7 @@ export const CourseDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <CourseCard joined={joined} >
+        <CourseCard joined={joined} courseID={course.id!} >
             <Flex id='course-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='course-info' maxW={'36rem'}>

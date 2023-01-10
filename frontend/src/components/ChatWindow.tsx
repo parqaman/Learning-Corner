@@ -2,6 +2,12 @@ import { Box, Flex, Input, Text } from '@chakra-ui/react'
 import { BsFillChatDotsFill } from 'react-icons/bs'
 import { AiOutlineMinus } from 'react-icons/ai';
 import { BiSend } from 'react-icons/bi';
+import {useEffect, useState} from "react";
+import * as io from "socket.io-client";
+import {Socket} from "socket.io-client";
+import {useAuth} from "../providers/AuthProvider";
+import {User} from "../adapter/api/__generated";
+import {KeyboardEvent} from "react"
 
 
 const remToPixel = (val: any) => {
@@ -88,7 +94,7 @@ const mockup_chat = [
   },
 ]
 
-export const IncomingSingleChatTile = ({content}: {content: string}) => {
+export const IncomingSingleChatTile = ({message}: { message: ChatMessage }) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-start'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-start'>
@@ -97,17 +103,17 @@ export const IncomingSingleChatTile = ({content}: {content: string}) => {
         p='0.25rem 0.75rem'
         borderRadius={'0 1.2rem 1.2rem 1.2rem'}
         >
-          {content}
+          {message.message}
         </Text>
         <Text as={'span'} alignSelf={'flex-start'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          Admin
+          {message.sender.firstName} - {new Date(message.time).toLocaleTimeString()}
         </Text>
       </Flex>
     </Flex>
   )
 }
 
-export const OutcomingSingleChatTile = ({content}: {content: string}) => {
+export const OutcomingSingleChatTile = ({message}: { message: ChatMessage }) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-end'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-end'>
@@ -117,10 +123,10 @@ export const OutcomingSingleChatTile = ({content}: {content: string}) => {
         borderRadius={'1.2rem 1.2rem 0 1.2rem'}
         flex={1}
         >
-          {content}
+          {message.message}
         </Text>
         <Text as={'span'} alignSelf={'flex-end'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          You
+          You - {new Date(message.time).toLocaleTimeString()}
         </Text>
       </Flex>
     </Flex>
@@ -145,7 +151,65 @@ export const ChatDisclosureButton = ({cardID}: {cardID: string}) => {
   )
 }
 
-export const ChatWindow = ({cardID}: {cardID: string}) => {
+interface ChatMessage {
+  message: string
+  time: number,
+  sender: User
+}
+
+export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) => {
+
+  const auth = useAuth();
+  const user = auth.user as User;
+  const [socket, setSocket] = useState<Socket | null>(null)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [newMessage, setNewMessage] = useState<string>('')
+
+  useEffect(() => {
+    if(!socket) {
+      let s = io.connect('http://localhost:4000', {
+        auth:{
+          user: user,
+          token: auth.accessToken
+        }
+      });
+      setSocket(s)
+    } else {
+      if(!socket.connected) socket.connect();
+      socket.on('connect',() =>{
+        socket.emit("helloRoom", {user: user, room: roomID})
+      });
+
+      socket.on('message', (args: ChatMessage) => {
+        console.log('message:', args)
+        setMessages((messages) => {
+          return [...messages, args]
+        })
+      });
+    }
+    return () => {
+      socket?.disconnect();
+    }
+  }, [socket])
+
+  function handleEnterKeyPress<T = Element>(f: () => void){
+    return handleKeyPress<T>(f, "Enter")
+  }
+
+  function handleKeyPress<T = Element>(f: () => void, key: string){
+    return (e: KeyboardEvent<T>) => {
+      if(e.key === key){
+        f()
+      }
+    }
+  }
+
+  const handleOnClick = () => {
+    if(!newMessage) return;
+    socket?.emit("message", {room: roomID, message: newMessage})
+    setNewMessage('')
+  }
+
   return (
     <Flex
     id='chat-window'
@@ -178,10 +242,9 @@ export const ChatWindow = ({cardID}: {cardID: string}) => {
           width={'100%'}
       >
         {
-          mockup_chat.map((val)=>(
-            <Box key={val.id}>
-              <OutcomingSingleChatTile content={val.content} />
-              <IncomingSingleChatTile content={val.content} />
+          messages.map((val, index)=>(
+            <Box key={index}>
+              {val.sender.id === user.id ? <OutcomingSingleChatTile message={val} /> : <IncomingSingleChatTile message={val} /> }
             </Box>
           ))
         }
@@ -197,9 +260,13 @@ export const ChatWindow = ({cardID}: {cardID: string}) => {
         <Input 
         alignItems={'center'}
         pl='0.5rem'
-        variant='unstyled'/>
+        variant='unstyled'
+        value={newMessage}
+        onChange={(args) => setNewMessage(args.target.value)}
+        onKeyDown={handleEnterKeyPress(handleOnClick)}
+        />
         <Text fontSize={'2xl'} cursor={'pointer'} alignSelf='center' bg={'#0194F3'} p='0.25rem' borderRadius={'100%'} >
-          <BiSend/>
+          <BiSend onClick={handleOnClick}/>
         </Text>
       </Flex>
     </Flex>

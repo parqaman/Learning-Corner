@@ -239,7 +239,7 @@ export const GroupDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <GroupDetailCard>
+        <GroupCard joined={joined} groupID={course.id! + group.id!} >
             <Flex id='group-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='group-info' maxW={'36rem'}>
@@ -319,7 +319,7 @@ export const GroupDetailPage = () => {
                 </Button>
             }
             </Box>
-        </GroupDetailCard>
+        </GroupCard>
     </AppLayout>
   )
 }

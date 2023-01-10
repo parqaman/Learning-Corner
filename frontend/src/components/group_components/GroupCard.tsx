@@ -2,7 +2,7 @@ import { SlideFade, Box, Flex, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { ChatWindow, ChatDisclosureButton } from '../ChatWindow'
 
-export const GroupCard = ({ children, joined }: { children: React.ReactNode; joined: boolean }) => {
+export const GroupCard = ({ children, joined, groupID }: { children: React.ReactNode; joined: boolean; groupID: string; }) => {
   const { getDisclosureProps, getButtonProps } = useDisclosure()
   const buttonProps = getButtonProps()
   const disclosureProps = getDisclosureProps()
@@ -37,7 +37,7 @@ export const GroupCard = ({ children, joined }: { children: React.ReactNode; joi
           borderRadius={'1rem'}
           >
             <Box>
-              <ChatWindow cardID={'group-card'} />
+              <ChatWindow cardID={'group-card'} roomID={groupID} />
             </Box>
             <Box >
               <ChatDisclosureButton cardID={'group-card'} />
