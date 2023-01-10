@@ -74,9 +74,9 @@ export const HomePage = () => {
               All courses
             </Heading>
             <CourseList courses={courses!}/>
-            <Flex justifyContent={'center'}>
+            {/* <Flex justifyContent={'center'}>
               <MockupCourses/>
-            </Flex>
+            </Flex> */}
           </Box>
         </Box>
       </SlideFade>

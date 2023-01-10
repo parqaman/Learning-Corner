@@ -29,7 +29,7 @@ export class Course extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne({entity: () => User, onDelete: "cascade"})
   lecturer: User;
 
   @ManyToMany({

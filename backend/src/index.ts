@@ -22,6 +22,7 @@ import { CourseController } from "./controller/course.controller";
 import { GroupController } from "./controller/group.controller";
 import { UploadController } from "./controller/upload.controller";
 import * as path from "path";
+import { TestSeeder } from "./seeders/TestSeeder";
 import * as socketIo from "socket.io";
 import {Socket} from "socket.io";
 
@@ -59,13 +60,21 @@ export const initializeServer = async () => {
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.userRepository = DI.orm.em.getRepository(User);
 
+  const numUser = await DI.userRepository.count();
+  const numCourse = await DI.courseRepository.count();
+  if (numUser === 0 && numCourse === 0) {
+    const seeder = DI.orm.getSeeder();
+    await seeder.seed(TestSeeder);
+  }
+
   // global middleware
-  app.use(express.json({limit: '5mb'}));
+  app.use(express.json({ limit: "5mb" }));
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
   app.use(Auth.prepareAuthentication);
 
   // routes
 
+  app.use("/upload/tmp", express.static(path.join(__dirname, "../upload/tmp")));
   app.use("/upload/profile", express.static(path.join(__dirname, '../upload/profile')))
   app.use("/upload/files", express.static(path.join(__dirname, '../upload/files')))
 
