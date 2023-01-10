@@ -48,7 +48,7 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, joined}: Gr
             </Flex>
             { editMode ? (
                 <form onSubmit={(e)=>handleEditSection(e)} style={{display: 'flex', gap: '0.75rem'}}>
-                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup({...group, description: e.target.value})} />
+                    <Textarea value={group.description} resize='none' height={'10rem'} onChange={(e)=>updateGroup((prev) => {return {course: prev.course, name: prev.name, description: e.target.value}})} />
                     <Box mt={'1rem'}>
                         <Button type='submit' variant={'solid'} _hover={{}} _active={{}} size='xs' bg={'black'} color='white' fontWeight={'medium'}>
                             <AiOutlineCheck/>
