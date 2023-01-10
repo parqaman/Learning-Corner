@@ -20,7 +20,7 @@ router.get("/:groupId", async (req, res) => {
     id: req.params.groupId 
   },
   {
-    populate: ["course", "members", "members.learner", "sections"]
+    populate: ["course", "members", "members.learner", "sections", "sections.files"]
   });
   if (!group) return res.status(404).send({ message: "Group not found" });
   return res.status(200).send(group);
