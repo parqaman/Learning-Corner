@@ -1,15 +1,8 @@
-import { object, string } from "yup";
-import {
-  Cascade,
-  Collection,
-  Entity,
-  Property,
-  ManyToMany,
-  OneToMany,
-} from "@mikro-orm/core";
-import { BaseEntity } from "./BaseEntity";
-import { Course } from "./Course";
-import { LearnerInCourse } from "./LearnerInCourse";
+import {object, string} from "yup";
+import {Cascade, Collection, Entity, ManyToMany, OneToMany, Property,} from "@mikro-orm/core";
+import {BaseEntity} from "./BaseEntity";
+import {Course} from "./Course";
+import {LearnerInCourse} from "./LearnerInCourse";
 
 @Entity()
 export class User extends BaseEntity {
@@ -28,7 +21,7 @@ export class User extends BaseEntity {
   @Property({length: 5242880}) //photo max 5 mb
   photo: string;
 
-  @OneToMany(() => Course, (e) => e.lecturer)
+  @OneToMany({ entity: () => Course, mappedBy: (e) => e.lecturer, cascade: [Cascade.ALL] })
   courses = new Collection<Course>(this);
 
   @ManyToMany({

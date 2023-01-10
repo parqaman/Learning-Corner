@@ -1,10 +1,8 @@
-import { Box, Button, Flex, Image, Input, Text, Textarea } from '@chakra-ui/react'
+import {Box, Button, Flex, Image, Input, Link, Text, Textarea} from '@chakra-ui/react'
 import { AiFillEdit, AiOutlineCheck, AiFillFile } from 'react-icons/ai'
 import React, { useRef, useState } from 'react'
 import { Course, Group, ModelFile, Section } from '../adapter/api/__generated';
 import { RxCross1 } from 'react-icons/rx';
-import profile_empty  from '../assets/profile_empty.png'
-import axios from 'axios';
 import { IoTrash } from 'react-icons/io5';
 import { useApiClient } from '../adapter/api/useApiClient';
 
@@ -13,55 +11,32 @@ interface SectionProps {
     deleteHandler: (sectionID: string) => void;
     updateHandler: (e: React.FormEvent<HTMLFormElement>, section: Section, setEditMode: React.Dispatch<React.SetStateAction<boolean>>) => void;
     isOwner: boolean;
+    parent: Course | Group;
 }
 
 const SingleSectionTile = (sectionProp: SectionProps) => {
     const [editMode, setEditMode] = useState(false);
     const [editSection, setEditSection] = useState<Section>(sectionProp.section);
-    const [files, setFiles] = useState<ModelFile[]>()
+    const [files, setFiles] = useState<ModelFile[]>(sectionProp.section.files!)
     const MAX_FILE_SIZE = 5242880;
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const apiClient = useApiClient();
     
-    const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
         if(e.target.files){
+            console.log("File: ", e.target.files)
             const inputedFile = e.target.files[0];
             if(inputedFile.size > MAX_FILE_SIZE){
                 alert("file size too big")
             }
             else {
-                const reader = new FileReader()
-                reader.readAsDataURL(inputedFile);
-                reader.onload = () => {
-                    if(reader.result){
-                        const theFile: ModelFile = {
-                            name: inputedFile.name,
-                            content: reader.result.toString()
-                        }                        
-                        if(files) {
-                            const mergedFileList: ModelFile[] = [...files, theFile]
-                            sectionProp.section.files = mergedFileList
-                            setFiles(mergedFileList)
-                        }
-                        else{
-                            const mergedFileList: ModelFile[] = [theFile]
-                            sectionProp.section.files = mergedFileList
-                            setFiles(mergedFileList)
-                        }
-                    }
-                }
                 //posting file to server's file folder
-                const formData = new FormData();
-                formData.append("myFile", inputedFile);
-
-                axios.post(profile_empty, formData, {
-                headers: {
-                    "content-type": "multipart/form-data",
-                },
-                });
+                const updatedSection = await apiClient.postSectionFile(sectionProp.section.id!, inputedFile)
+                setFiles(updatedSection.data.files!);
             }
           }
-    }        
+    }
 
     return (
         <Box mt={'1.5rem'} mb='1.5rem'>
@@ -132,9 +107,13 @@ const SingleSectionTile = (sectionProp: SectionProps) => {
             <Flex id='files-list' flexDir={'column'}>
                 { files &&
                     files.map((file) => (
-                        <Flex pl={'0.5rem'} mt='1rem' mb='1rem' alignItems={'center'} gap='0.25rem'>
-                            <AiFillFile/>
-                            <Text>File name</Text>
+                        <Flex key={file.name} pl={'0.5rem'} mt='1rem' mb='1rem' alignItems={'center'} gap='0.25rem'>
+                            <Link href={`http://localhost:4000/upload/files/${sectionProp.section.id}/${file.name}`}>
+                                <Flex alignItems={'center'} gap='0.25rem'>
+                                    <AiFillFile/>
+                                    <Text>{file.name}</Text>
+                                </Flex>
+                            </Link>
                         </Flex>
                     ))
                 }
@@ -164,7 +143,7 @@ export const SectionList = ({course, sections, setSections, isOwner}: SectionLis
 
     const handleUpdateSection = async (e: React.FormEvent<HTMLFormElement>, section: Section, setEditMode: React.Dispatch<React.SetStateAction<boolean>>) => {
         e.preventDefault()
-        await apiClient.putSectionCourse(course!.id!, section.id!, section)
+        await apiClient.putSectionCourse(course!.id!, section.id!, section.heading, section.description, section.text, section.files)
         .then(()=>{
             setEditMode(false)
         })
@@ -179,7 +158,7 @@ export const SectionList = ({course, sections, setSections, isOwner}: SectionLis
                             sections
                             .sort((a, b) => a.createdAt! > b.createdAt! ? 1 : -1)
                             .map((section)=>(
-                                <SingleSectionTile key={section.id!} section={section} isOwner={isOwner} updateHandler={handleUpdateSection} deleteHandler={handleDeleteSection} />
+                                <SingleSectionTile parent={course} key={section.id!} section={section} isOwner={isOwner} updateHandler={handleUpdateSection} deleteHandler={handleDeleteSection} />
                             ))
                         }
                     </Box>

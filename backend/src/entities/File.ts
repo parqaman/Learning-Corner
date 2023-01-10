@@ -8,27 +8,21 @@ export class File extends BaseEntity {
   @Property()
   name: string;
 
-  @Property()
-  description: string;
-
-  @ManyToOne(() => Section)
+  @ManyToOne({entity: () => Section})
   section: Section;
 
-  constructor({ name, description, section }: CreateFileDTO) {
+  constructor({ name, section }: CreateFileDTO) {
     super();
     this.name = name;
-    this.description = description;
     this.section = section;
   }
 }
 
 export const CreateFileSchema = object({
   name: string().required(),
-  description: string(),
 });
 
 export type CreateFileDTO = {
   name: string;
-  description: string;
   section: Section;
 };

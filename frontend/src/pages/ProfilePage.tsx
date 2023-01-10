@@ -153,7 +153,7 @@ export const ProfilePage = () => {
     }
     if(user?.photo){
       return (
-          <Image src={ 'http://localhost:4000/upload/tmp/' + user?.photo } h={'7.5rem'} w={'7.5rem'} objectFit={'cover'}/>
+          <Image src={ 'http://localhost:4000/upload/profile/' + user?.photo } h={'7.5rem'} w={'7.5rem'} objectFit={'cover'}/>
       )
     }
     return <Spinner/>
