@@ -9,6 +9,7 @@ import {
   Section,
 } from "../entities";
 import { wrap } from "@mikro-orm/core";
+import { deleteSectionFiles } from '../helpers/file.helper';
 
 const router = Router({ mergeParams: true });
 
@@ -20,14 +21,14 @@ router.get("/", async (req, res) => {
         {},
         {
           filters: { name: { name: courseName } },
-          populate: ["sections", "participants", "lecturer", 'groups'],
+          populate: ["sections", "sections.files", "participants", "lecturer", 'groups'],
         }
       )
     );
   }
   return res.json(
     await DI.courseRepository.findAll({
-      populate: ["sections", "participants", "lecturer", 'groups'],
+      populate: ["sections", "sections.files", "participants", "lecturer", 'groups'],
     })
   );
 });
@@ -36,7 +37,7 @@ router.get("/:id", async (req, res) => {
   const course = await DI.courseRepository.findOne(
     { id: req.params.id },
     {
-      populate: ["sections", "participants", "lecturer", "groups", 'groups.members'],
+      populate: ["sections", "sections.files", "participants", "lecturer", "groups", 'groups.members'],
     }
   );
   if (!course) return res.status(404).send({ message: "Course not found" });
@@ -117,13 +118,21 @@ router.put("/:courseId", async (req, res) => {
 // Delete a course
 router.delete("/:courseId", async (req, res) => {
   try {
-    const course = await DI.courseRepository.findOne(req.params.courseId);
+    const course = await DI.courseRepository.findOne(req.params.courseId, { populate: ['sections', 'sections.files'] });
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
     }
     if (course.lecturer !== req.user) {
       return res.status(401).send({ message: "User not authorized" });
     }
+
+    course.sections?.getItems().map(section => {
+      if(section.files.length > 0) {
+        const files = section.files.getItems()
+        deleteSectionFiles(files, section.id);
+      }
+    })
+
     await DI.courseRepository.removeAndFlush(course);
     return res.status(204).send({ message: "Course deleted" });
   } catch (e: any) {
@@ -203,13 +212,18 @@ router.delete("/:courseId/section/:sectionId", async (req, res) => {
       return res.status(401).send({ message: "User not authorized" });
     }
 
-    const section = await DI.sectionRepository.findOne(req.params.sectionId);
+    const section = await DI.sectionRepository.findOne(req.params.sectionId, {populate: ['files']});
     if (!section) {
       return res.status(404).send({ message: "Section not found" });
     }
 
     if (section.course !== course) {
       return res.status(400).send({ message: "Section is not in the course" });
+    }
+
+    if(section.files.length > 0) {
+      const files = section.files.getItems()
+      deleteSectionFiles(files, req.params.sectionId);
     }
 
     await DI.sectionRepository.removeAndFlush(section);

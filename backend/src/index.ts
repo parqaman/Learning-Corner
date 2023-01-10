@@ -20,6 +20,7 @@ import { AuthController } from "./controller/auth.controller";
 import { UserController } from "./controller/user.controller";
 import { CourseController } from "./controller/course.controller";
 import { GroupController } from "./controller/group.controller";
+import { UploadController } from "./controller/upload.controller";
 import * as path from "path";
 import * as socketIo from "socket.io";
 import {Socket} from "socket.io";
@@ -65,7 +66,8 @@ export const initializeServer = async () => {
 
   // routes
 
-  app.use("/upload/tmp", express.static(path.join(__dirname, '../upload/tmp')))
+  app.use("/upload/profile", express.static(path.join(__dirname, '../upload/profile')))
+  app.use("/upload/files", express.static(path.join(__dirname, '../upload/files')))
 
   app.get("/", (req, res) => {
     res.send("GET request to the homepage");
@@ -74,6 +76,7 @@ export const initializeServer = async () => {
   app.use("/users", Auth.verifyAccess, UserController);
   app.use("/courses", CourseController);
   app.use("/groups", GroupController);
+  app.use("/sections", UploadController)
 
   const server = http.createServer(app)
   const io = new socketIo.Server(server, {
