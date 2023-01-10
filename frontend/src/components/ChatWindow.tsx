@@ -51,49 +51,6 @@ export const ActionClose = (cardID: string) => {
   }
 }
 
-const mockup_chat = [
-  {
-    "id": 1,
-    "content": "hallo"
-  },
-  {
-    "id": 2,
-    "content": "mein"
-  },
-  {
-    "id": 3,
-    "content": "name"
-  },
-  {
-    "id": 4,
-    "content": "ist"
-  },
-  {
-    "id": 5,
-    "content": "jsadscnvjfpodenkvwdjfdqknldsjvipd asdoiasnklf avpfnkwel mvdsnf andspckl vwfenqpsdk wefpinvdkl wefnqpadc adsnpkqwdeaf"
-  },
-  {
-    "id": 6,
-    "content": "hallo"
-  },
-  {
-    "id": 7,
-    "content": "mein"
-  },
-  {
-    "id": 8,
-    "content": "name"
-  },
-  {
-    "id": 9,
-    "content": "ist"
-  },
-  {
-    "id": 10,
-    "content": "jsadscnvjfpodenkvwdjfdqknldsjvipd asdoiasnklf avpfnkwel mvdsnf andspckl vwfenqpsdk wefpinvdkl wefnqpadc adsnpkqwdeaf"
-  },
-]
-
 export const IncomingSingleChatTile = ({message}: { message: ChatMessage }) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-start'}>
@@ -235,7 +192,6 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
       </Flex>
       <Box
           id='chat-contents'
-          maxH={'31rem'}
           overflowY='scroll'
           m='0.5rem auto'
           flex={1}

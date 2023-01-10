@@ -31,7 +31,7 @@ export const CourseCard = ({ children, joined, courseID }: { children: React.Rea
           id='chat-area'
           position={'static'}
           right={'10rem'}
-          height={'80vh'}
+          height={'40rem'}
           overflowY = {'hidden'}
           borderRadius={'1rem'}
           >

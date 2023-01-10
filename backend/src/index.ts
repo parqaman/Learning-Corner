@@ -90,7 +90,7 @@ export const initializeServer = async () => {
   const server = http.createServer(app)
   const io = new socketIo.Server(server, {
     cors: {
-      origin: "http://127.0.0.1:3000",
+      origin: "http://localhost:3000",
       methods: ["GET", "POST"]
     }
   })
