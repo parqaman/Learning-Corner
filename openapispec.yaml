@@ -377,24 +377,10 @@ paths:
                   message:
                     type: string
       requestBody:
-        description: The Section Object to be updated
-        required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              properties:
-                heading:
-                  type: string
-                description:
-                  type: string
-                text:
-                  type: string
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
+              $ref: '#/components/schemas/Section'
 
       security:
         - Bearer: []

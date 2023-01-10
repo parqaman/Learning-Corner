@@ -1504,14 +1504,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * Update section in a course
          * @param {string} courseId The id of the course
          * @param {string} sectionId The id of the section
-         * @param {string} [heading] 
-         * @param {string} [description] 
-         * @param {string} [text] 
-         * @param {Array<File>} [files] 
+         * @param {Section} [section] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putSectionCourse: async (courseId: string, sectionId: string, heading?: string, description?: string, text?: string, files?: Array<File>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        putSectionCourse: async (courseId: string, sectionId: string, section?: Section, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'courseId' is not null or undefined
             assertParamExists('putSectionCourse', 'courseId', courseId)
             // verify required parameter 'sectionId' is not null or undefined
@@ -1529,38 +1526,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (heading !== undefined) { 
-                localVarFormParams.append('heading', heading as any);
-            }
     
-            if (description !== undefined) { 
-                localVarFormParams.append('description', description as any);
-            }
-    
-            if (text !== undefined) { 
-                localVarFormParams.append('text', text as any);
-            }
-                if (files) {
-                files.forEach((element) => {
-                    localVarFormParams.append('files', element as any);
-                })
-            }
+            localVarHeaderParameter['Content-Type'] = 'application/json';
 
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(section, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2021,15 +1999,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * Update section in a course
          * @param {string} courseId The id of the course
          * @param {string} sectionId The id of the section
-         * @param {string} [heading] 
-         * @param {string} [description] 
-         * @param {string} [text] 
-         * @param {Array<File>} [files] 
+         * @param {Section} [section] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async putSectionCourse(courseId: string, sectionId: string, heading?: string, description?: string, text?: string, files?: Array<File>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.putSectionCourse(courseId, sectionId, heading, description, text, files, options);
+        async putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Section>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putSectionCourse(courseId, sectionId, section, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2324,15 +2299,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * Update section in a course
          * @param {string} courseId The id of the course
          * @param {string} sectionId The id of the section
-         * @param {string} [heading] 
-         * @param {string} [description] 
-         * @param {string} [text] 
-         * @param {Array<File>} [files] 
+         * @param {Section} [section] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        putSectionCourse(courseId: string, sectionId: string, heading?: string, description?: string, text?: string, files?: Array<File>, options?: any): AxiosPromise<Section> {
-            return localVarFp.putSectionCourse(courseId, sectionId, heading, description, text, files, options).then((request) => request(axios, basePath));
+        putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: any): AxiosPromise<Section> {
+            return localVarFp.putSectionCourse(courseId, sectionId, section, options).then((request) => request(axios, basePath));
         },
         /**
          * Update section in a group
@@ -2668,16 +2640,13 @@ export class DefaultApi extends BaseAPI {
      * Update section in a course
      * @param {string} courseId The id of the course
      * @param {string} sectionId The id of the section
-     * @param {string} [heading] 
-     * @param {string} [description] 
-     * @param {string} [text] 
-     * @param {Array<File>} [files] 
+     * @param {Section} [section] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public putSectionCourse(courseId: string, sectionId: string, heading?: string, description?: string, text?: string, files?: Array<File>, options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).putSectionCourse(courseId, sectionId, heading, description, text, files, options).then((request) => request(this.axios, this.basePath));
+    public putSectionCourse(courseId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putSectionCourse(courseId, sectionId, section, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
