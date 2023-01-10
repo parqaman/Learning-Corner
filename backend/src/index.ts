@@ -8,8 +8,8 @@ import {
 } from "@mikro-orm/core";
 import {
   Course,
-  CourseFile,
-  CourseSection,
+  File,
+  Section,
   Group,
   LearnerInCourse,
   LearnerInGroup,
@@ -32,8 +32,8 @@ export const DI = {} as {
   orm: MikroORM;
   em: EntityManager;
   courseRepository: EntityRepository<Course>;
-  courseFileRepository: EntityRepository<CourseFile>;
-  courseSectionRepository: EntityRepository<CourseSection>;
+  fileRepository: EntityRepository<File>;
+  sectionRepository: EntityRepository<Section>;
   groupRepository: EntityRepository<Group>;
   learnerInCourseRepository: EntityRepository<LearnerInCourse>;
   learnerInGroupRepository: EntityRepository<LearnerInGroup>;
@@ -51,8 +51,8 @@ export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
   DI.em = DI.orm.em;
   DI.courseRepository = DI.orm.em.getRepository(Course);
-  DI.courseFileRepository = DI.orm.em.getRepository(CourseFile);
-  DI.courseSectionRepository = DI.orm.em.getRepository(CourseSection);
+  DI.fileRepository = DI.orm.em.getRepository(File);
+  DI.sectionRepository = DI.orm.em.getRepository(Section);
   DI.groupRepository = DI.orm.em.getRepository(Group);
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
