@@ -68,14 +68,9 @@ const GroupDescriptionSection = ({group, updateGroup, updateHandler, joined}: Gr
     )
 }
 
-interface GroupMembProps {
-    group: Group;
-}
-
-const MemberList = ({group}:GroupMembProps) => {
-    const members = group.members?.map((obj:any) => obj.learner)
-    let name  = new Array(); 
-    members?.forEach(i => {
+const MemberList = ({members}: {members: User[]}) => {
+    let name  = new Array();
+    members.forEach(i => {
         name.push(i.firstName + " " + i.lastName);
     });
     return <>{
@@ -104,6 +99,7 @@ export const GroupDetailPage = () => {
     const [newSection, setNewSection] = useState<Section>({
         heading: "", description: "", text: "section text" //text von einem Section
     })
+    const [members, setMembers] = useState<User[]>();
     const [sections, setSections] = useState<Section[]>()
     const [oldGroup, setOldGroup] = useState<Group>(group)
     const toast = useToast();
@@ -122,11 +118,14 @@ export const GroupDetailPage = () => {
                 setOldGroup(theGroup)
     
                 // Check if user is member of the group
-                const members = theGroup.members!.map((obj:any) => obj.learner.id);
-                
-                if(members.includes(currentUser?.id)){
-                    setJoined(true)
+                if(theGroup.members){
+                    const members = theGroup.members.map((obj:any) => obj.learner.id);
+                    setMembers(theGroup.members!.map((obj:any) => obj.learner));
+                    if(currentUser && members.includes(currentUser.id)){
+                        setJoined(true)
+                    }
                 }
+                
                     
             })
             .catch((e)=>{
@@ -337,7 +336,14 @@ export const GroupDetailPage = () => {
                 </Flex>
                 <Box pl={'0.5rem'} pr={'0.5rem'} mt='0.5rem'>
                     <UnorderedList>
-                    <MemberList group={group} />
+                        {
+                            members && members.length > 0 ? (
+                                <MemberList members={members} />
+
+                            ) : (
+                                <Text>No members found</Text>
+                            )
+                        }
                     </UnorderedList>
                 </Box>
             </Box>
