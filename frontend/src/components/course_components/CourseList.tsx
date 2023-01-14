@@ -4,7 +4,7 @@ import { SingleCourse } from "./SingleCourse";
 
 export const CourseList = ({courses}: {courses: Course[] | undefined}) => {
     return (
-            <Flex minW={'47rem'} flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
+            <Flex w={'47rem'} flexDir={'column'} alignItems={'center'} mt='0.25rem' mb={'1.5rem'}>
                 {
                     courses && courses.length > 0 ? (
                         <Grid templateColumns={'repeat(3, 1fr)'} gap='1rem'>

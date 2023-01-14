@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Input, SlideFade, Text } from '@chakra-ui/react'
+import { Box, Heading, Input, SlideFade } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { AppLayout } from '../layout/AppLayout'
 import { useAuth } from '../providers/AuthProvider'
@@ -6,8 +6,8 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { CourseList } from '../components/course_components/CourseList'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { Course } from '../adapter/api/__generated/api'
-import { MockupCourses } from '../mockup/mockup_course'
 import { useNavigate } from 'react-router-dom'
+import { FavoriteCourseList } from '../components/course_components/FavoriteCourseList'
 
 interface SearchBarProps {
   searchVal: string;
@@ -42,12 +42,46 @@ export const SearchBar = ({searchVal, setSearchVal}: SearchBarProps) => {
   )
 }
 
+
 export const HomePage = () => {
   const auth = useAuth();
   const user = auth.user;
   const [searchVal, setSearchVal] = useState("");
   const [courses, setCourses] = useState<Course[]>();
   const apiClient = useApiClient();
+
+  const mockupFavs: Course[] = [
+    {
+      id: "1",
+      name: "test 1",
+      description: "test course",
+      lecturer: user!
+    },
+    {
+      id: "2",
+      name: "test 2",
+      description: "test course",
+      lecturer: user!
+    },
+    {
+      id: "3",
+      name: "test 3",
+      description: "test course",
+      lecturer: user!
+    },
+    {
+      id: "4",
+      name: "test 4",
+      description: "test course",
+      lecturer: user!
+    },
+    {
+      id: "5",
+      name: "test 5",
+      description: "test course",
+      lecturer: user!
+    },
+  ]
 
   const fetchData = async () => {
     const res = await apiClient.getCourses();
@@ -71,12 +105,15 @@ export const HomePage = () => {
           <SearchBar searchVal={searchVal} setSearchVal={setSearchVal}/>
           <Box display={'flex'} flexDir='column' gap='0.25rem' mt={'4rem'}>
             <Heading fontSize={'xl'} fontWeight={'medium'} borderBottom={'solid 0.075rem'} borderBottomColor={'#0194F3'}>
+              Favorite courses
+            </Heading>
+            <FavoriteCourseList courses={mockupFavs}/>
+          </Box>
+          <Box display={'flex'} flexDir='column' gap='0.25rem' mt={'3rem'}>
+            <Heading fontSize={'xl'} fontWeight={'medium'} borderBottom={'solid 0.075rem'} borderBottomColor={'#0194F3'}>
               All courses
             </Heading>
             <CourseList courses={courses!}/>
-            {/* <Flex justifyContent={'center'}>
-              <MockupCourses/>
-            </Flex> */}
           </Box>
         </Box>
       </SlideFade>
