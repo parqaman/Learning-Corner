@@ -145,10 +145,13 @@ export const CourseSectionList = ({course, sections, setSections, isOwner}: Sect
 
     const handleUpdateSection = async (e: React.FormEvent<HTMLFormElement>, section: Section, setEditMode: React.Dispatch<React.SetStateAction<boolean>>) => {
         e.preventDefault()
-        await apiClient.putSectionCourse(course!.id!, section.id!, section.heading, section.description, section.text, section.files)
-        .then(()=>{
-            setEditMode(false)
-        })
+        if(course && course.id && section.id){
+            await apiClient.putSectionCourse(course.id, section.id)
+            .then(()=>{
+                setEditMode(false)
+            })
+            .catch((e)=>console.log(e))
+        }
     }
 
     return (
