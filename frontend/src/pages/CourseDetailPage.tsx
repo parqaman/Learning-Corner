@@ -2,7 +2,7 @@ import { Box, Button, Flex, Heading, HStack, Input, Modal, ModalBody, ModalClose
 import { CourseCard } from '../components/course_components/CourseCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
-import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
+import { AiFillEdit, AiFillStar, AiOutlineCheck, AiOutlineStar } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
@@ -87,6 +87,7 @@ export const CourseDetailPage = () => {
         heading: "", description: "", text: "section text" //text von einem Section
     })
     const [groups, setGroups] = useState<Group[]>();
+    const [favorite, setFavorite] = useState(false)
     const [newGroup, setNewGroup] = useState<Group>({
         name: "", description: "", course: course
     })
@@ -285,6 +286,19 @@ export const CourseDetailPage = () => {
         }
     }
 
+    const handleFavorite = () => {
+        /** if favorite is atm true, then send delete request,
+         * since the user is trying to remove the course from the favorite list.
+         * otherwise send post request
+         * */
+        if(favorite) { 
+            //send delete request
+        } else {
+            //send post favorite to backend
+        }
+        setFavorite(!favorite)
+    }
+
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
         <CourseCard joined={joined} courseID={course.id!} >
@@ -304,12 +318,23 @@ export const CourseDetailPage = () => {
                                 </Flex>
                             </form>
                         ) : (
-                            <>
-                                <Heading>
-                                    {course?.name}
-                                </Heading>
+                            <Box>
+                                <Flex gap={'1rem'}>
+                                    <Heading>
+                                        {course?.name}
+                                    </Heading>
+                                    <Text onClick={handleFavorite} cursor={'pointer'} fontSize={'3xl'} color={'orange.300'} alignSelf='end' pb={'0.2rem'}>
+                                        {
+                                            favorite ? (
+                                                <AiFillStar/>
+                                            ) : (
+                                                <AiOutlineStar/>
+                                            )
+                                        }
+                                    </Text>
+                                </Flex>
                                 <Text>{course?.lecturer.firstName} {course?.lecturer.lastName}</Text>
-                            </>
+                            </Box>
                         )
                         }
                     </Box>
