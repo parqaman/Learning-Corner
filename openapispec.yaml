@@ -1223,6 +1223,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+        favoriteCourse:
+          type: boolean
     LearnerInGroup:
       title: LearnerInGroup
       x-stoplight:

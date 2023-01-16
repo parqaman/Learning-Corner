@@ -68,7 +68,7 @@ router.put("/:id", uploadProfilePicture, async (req, res) => {
       files[0].filename &&
       files[0].filename !== user.photo
     ) {
-      deleteProfilePicture(user)
+      deleteProfilePicture(user);
       wrap(user).assign({ photo: files[0].filename });
     }
     await DI.userRepository.flush();
@@ -222,13 +222,53 @@ router.delete("/:userId/course/:courseId/group/:groupId", async (req, res) => {
 
     await DI.learnerInGroupRepository.nativeDelete({
       member: learnerInCourse,
-      group: group
-    })
+      group: group,
+    });
 
     return res.status(204).send({ message: "Deleted user from group" });
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
   }
+});
+
+// Get all favorite courses from user
+router.get("/:userId/favorite", async (req, res) => {
+  const user = await DI.userRepository.findOne(req.params.userId);
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
+  }
+  const favorite = await DI.learnerInCourseRepository.find(
+    {
+      learner: user,
+      favoriteCourse: true,
+    },
+    { populate: ["course"] }
+  );
+  return res.status(200).json(favorite);
+});
+
+// Toogle favorite Course
+router.put("/:userId/course/:courseId/favorite", async (req, res) => {
+  const user = await DI.userRepository.findOne(req.params.userId);
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
+  }
+  const course = await DI.courseRepository.findOne(req.params.courseId);
+  if (!course) {
+    return res.status(404).send({ message: "Course not found" });
+  }
+  const learnerInCourse = await DI.learnerInCourseRepository.findOne({
+    learner: user,
+    course: course,
+  });
+  if (!learnerInCourse) {
+    return res.status(404).send({ message: "User is not in the course" });
+  }
+  wrap(learnerInCourse).assign({
+    favoriteCourse: !learnerInCourse.favoriteCourse,
+  });
+  await DI.learnerInCourseRepository.flush();
+  return res.status(200).send(learnerInCourse);
 });
 
 export const UserController = router;
