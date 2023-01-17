@@ -25,6 +25,9 @@ export class LearnerInCourse {
   @ManyToOne({ primary: true, entity: () => Course, onDelete: 'cascade'})
   course: Course;
 
+  @Property()
+  favoriteCourse?: boolean;
+
   @ManyToMany({
     entity: () => Group,
     pivotEntity: () => LearnerInGroup,
@@ -36,6 +39,7 @@ export class LearnerInCourse {
   constructor({ learner, course }: CreateLearnerInCourseDTO) {
     this.learner = learner;
     this.course = course;
+    this.favoriteCourse = false;
   }
 }
 
