@@ -84,17 +84,11 @@ export const GroupDetailPage = () => {
     const param = useParams()
     const currentUser = useAuth().user
     const apiClient = useApiClient();
-    const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
     const [group, setGroup] = useState<Group>({
         name: "",
         description: ""
-    })
-    const [course, setCourse] = useState<Course>({
-        name: "",
-        description: "",
-        lecturer: currentUser!
     })
     const [newSection, setNewSection] = useState<Section>({
         heading: "", description: "", text: "section text" //text von einem Section
@@ -269,7 +263,7 @@ export const GroupDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <GroupDetailCard joined={joined} groupID={course.id! + group.id!} >
+        <GroupDetailCard joined={joined} groupID={group.id!} >
             <Flex id='group-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='group-info' maxW={'36rem'}>
@@ -316,11 +310,11 @@ export const GroupDetailPage = () => {
                 </Flex>
             </Flex>
             {
-                //course description section
-                course ? (
+                //group description section
+                group ? (
                     <GroupDescriptionSection group={group} updateGroup={setGroup} updateHandler={handleEditGroupInfo} joined={joined}/>
                 ) : (
-                    <Box>Course Desciption not available</Box>
+                    <Box>Group Desciption not available</Box>
                 )
             }
             <Box mt={'2rem'}>

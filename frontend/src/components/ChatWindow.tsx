@@ -6,8 +6,9 @@ import {useEffect, useState} from "react";
 import * as io from "socket.io-client";
 import {Socket} from "socket.io-client";
 import {useAuth} from "../providers/AuthProvider";
-import {User} from "../adapter/api/__generated";
+import {Message, User} from "../adapter/api/__generated";
 import {KeyboardEvent} from "react"
+import { useApiClient } from '../adapter/api/useApiClient';
 
 
 const remToPixel = (val: any) => {
@@ -51,7 +52,7 @@ export const ActionClose = (cardID: string) => {
   }
 }
 
-export const IncomingSingleChatTile = ({message}: { message: ChatMessage }) => {
+export const IncomingSingleChatTile = ({message}: { message: Message }) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-start'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-start'>
@@ -63,14 +64,14 @@ export const IncomingSingleChatTile = ({message}: { message: ChatMessage }) => {
           {message.message}
         </Text>
         <Text as={'span'} alignSelf={'flex-start'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          {message.sender.firstName} - {new Date(message.time).toLocaleTimeString()}
+          {message.sender && message.sender.firstName} - {message.time && new Date(parseInt(message.time)).toLocaleTimeString()}
         </Text>
       </Flex>
     </Flex>
   )
 }
 
-export const OutcomingSingleChatTile = ({message}: { message: ChatMessage }) => {
+export const OutcomingSingleChatTile = ({message}: { message: Message }) => {
   return(
     <Flex m={'0.75rem auto'} justifyContent={'flex-end'}>
       <Flex flexDir='column' display={'inline-flex'} alignItems='flex-end'>
@@ -83,7 +84,9 @@ export const OutcomingSingleChatTile = ({message}: { message: ChatMessage }) => 
           {message.message}
         </Text>
         <Text as={'span'} alignSelf={'flex-end'} p='0rem 0.5rem' fontSize={'small'} color={'rgba(0, 0, 0, 0.85)'} >
-          You - {new Date(message.time).toLocaleTimeString()}
+          You - {
+            message.time && new Date(parseInt(message.time)).toLocaleTimeString()
+          }
         </Text>
       </Flex>
     </Flex>
@@ -108,29 +111,43 @@ export const ChatDisclosureButton = ({cardID}: {cardID: string}) => {
   )
 }
 
-interface ChatMessage {
-  message: string
-  time: number,
-  sender: User
-}
 
 export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) => {
-
+  const apiClient = useApiClient()
   const auth = useAuth();
   const user = auth.user as User;
   const [socket, setSocket] = useState<Socket | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState<string>('')
 
   const scrollToBottom = () => {
     const lM = messages[messages.length - 1];
-    if(lM){
+    if(lM && lM.time){
       const lastMessage = document.getElementById(lM.time.toString())
       lastMessage?.scrollIntoView({ behavior: "smooth" });
     }
   }
 
-  useEffect(() => {
+  const getChatHistory = async () => {
+    if (cardID === 'course-card') {
+      await apiClient.getCourseMessage(roomID)
+      .then((res) => {
+        setMessages(res.data)
+      })
+    }
+    else {
+      await apiClient.getGroupMessage(roomID)
+      .then((res) => {
+        setMessages(res.data)
+      })
+    }
+  }
+
+  useEffect(()=>{
+    getChatHistory();
+  }, [])
+
+  useEffect(() => {    
     if(!socket) {
       let s = io.connect('http://localhost:4000', {
         auth:{
@@ -145,8 +162,7 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
         socket.emit("helloRoom", {user: user, room: roomID})
       });
 
-      socket.on('message', (args: ChatMessage) => {
-        console.log('message:', args)
+      socket.on('message', (args: Message) => {
         setMessages((messages) => {
           return [...messages, args]
         })
@@ -209,9 +225,9 @@ export const ChatWindow = ({cardID, roomID}: {cardID: string, roomID: string}) =
           width={'100%'}
       >
         {
-          messages.map((val)=>(
-            <Box key={val.time} id={val.time.toString()}>
-              {val.sender.id === user.id ? <OutcomingSingleChatTile message={val} /> : <IncomingSingleChatTile message={val} /> }
+          messages.map((message)=>(
+            <Box key={message.time} id={message.time}>
+              {message.sender && message.sender.id === user.id ? <OutcomingSingleChatTile message={message} /> : <IncomingSingleChatTile message={message} /> }
             </Box>
           ))
         }

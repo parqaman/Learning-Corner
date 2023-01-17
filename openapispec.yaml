@@ -1297,7 +1297,7 @@ components:
         message:
           type: string
         time:
-          type: integer
+          type: string
         roomId:
           type: string
   securitySchemes:

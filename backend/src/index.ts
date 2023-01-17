@@ -15,6 +15,7 @@ import {
   LearnerInGroup,
   Message,
   User,
+  CreateMessageDTO,
 } from "./entities";
 import { Auth } from "./middleware/auth.middleware";
 import { AuthController } from "./controller/auth.controller";
@@ -43,12 +44,6 @@ export const DI = {} as {
   messageRepository: EntityRepository<Message>;
   userRepository: EntityRepository<User>;
 };
-
-interface ChatMessage {
-  message: string;
-  time: number;
-  sender: User;
-}
 
 export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
@@ -115,34 +110,35 @@ export const initializeServer = async () => {
   });
 
   io.on("connection", async (socket: Socket) => {
-    console.log("Connection: ", socket);
+    // console.log("Connection: ", socket);
     socket.on("helloRoom", (args) => {
-      console.log("helloRoom: ", args);
       socket.join(args.room);
-      const message: ChatMessage = {
-        message:
-          args.user.firstName + " " + args.user.lastName + " joined the room!",
-        sender: socket.handshake.auth.user,
-        time: Date.now(),
-      };
-      socket.in(args.room).emit("message", message);
+      // console.log("helloRoom: ", args);
+      // const message: ChatMessage = {
+      //   message:
+      //     args.user.firstName + " " + args.user.lastName + " joined the room!",
+      //   sender: socket.handshake.auth.user,
+      //   time: Date.now(),
+      // };
+      // socket.in(args.room).emit("message", message);
     });
 
     socket.on("message", (args) => {
       console.log("message: ", args);
-      const message: ChatMessage = {
+      const message: CreateMessageDTO = {
         message: args.message,
         sender: socket.handshake.auth.user,
-        time: Date.now(),
+        time: Date.now().toString(),
+        roomId: args.room
       };
       io.in(args.room).emit("message", message);
-      // TODO: save message to the database
+      // save message to the database
       const em = DI.orm.em.fork();
       em.persistAndFlush(
         new Message({
           message: message.message,
           sender: message.sender,
-          time: BigInt(message.time),
+          time: message.time,
           roomId: args.room,
         })
       );

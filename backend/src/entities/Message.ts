@@ -14,7 +14,7 @@ export class Message {
   message: string;
 
   @Property()
-  time: BigInt;
+  time: string;
 
   @Property()
   roomId: string;
@@ -30,6 +30,6 @@ export class Message {
 export type CreateMessageDTO = {
   sender: User;
   message: string;
-  time: BigInt;
+  time: string;
   roomId: string;
 };

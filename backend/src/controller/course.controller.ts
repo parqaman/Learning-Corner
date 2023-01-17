@@ -250,7 +250,7 @@ router.get("/:courseId/message", async (req, res) => {
   }
   const messages = await DI.messageRepository.find(
     { roomId: course.id },
-    { populate: ["sender"] }
+    { populate: ["sender"], orderBy: {time: 'ASC'} },
   );
   return res.status(200).send(messages);
 });
