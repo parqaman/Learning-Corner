@@ -242,7 +242,7 @@ router.get("/:userId/favorite", async (req, res) => {
       learner: user,
       favoriteCourse: true,
     },
-    { populate: ["course"] }
+    { populate: ["course", "course.lecturer"] }
   );
   return res.status(200).json(favorite);
 });

@@ -823,6 +823,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LearnerInGroup'
+  '/users/{userId}/course/{courseId}/favorite':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: courseId
+        in: path
+        required: true
+    put:
+      summary: 'put a user favorite course'
+      operationId: put-user-favorite-course
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerInCourse'
+  '/users/{userId}/favorite':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: 'get user favorite course list'
+      operationId: get-user-favorite-courses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearnerInCourse'
   '/sections/{sectionId}/file':
     parameters:
       - in: path

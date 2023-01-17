@@ -4,7 +4,7 @@ import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import { Course } from '../../adapter/api/__generated/api';
 import { SingleCourse } from './SingleCourse';
 
-export const FavoriteCourseList = ({courses}: {courses: Course[]}) => {
+export const FavoriteCourseList = ({courses}: {courses: Course[] | undefined}) => {
     const MAX_NUM_OF_SHOWN_COURSES = 3
     const [shownCourses, setShownCourses] = useState<Course[]>()
     const [offset, setOffset] = useState(0)

@@ -48,6 +48,7 @@ export const HomePage = () => {
   const user = auth.user;
   const [searchVal, setSearchVal] = useState("");
   const [courses, setCourses] = useState<Course[]>();
+  const [favCourses, setFavCourses] = useState<Course[]>();
   const apiClient = useApiClient();
 
   const mockupFavs: Course[] = [
@@ -84,11 +85,23 @@ export const HomePage = () => {
   ]
 
   const fetchData = async () => {
-    const res = await apiClient.getCourses();
-    const data = res.data;
-    if(data){
-      setCourses(data)
-    }
+    await apiClient.getCourses()
+    .then(async (res) => {
+      const theCourses = res.data;
+      setCourses(theCourses);
+      if(user) {
+        await apiClient.getUserFavoriteCourses(user.id)
+        .then((res2) => {
+          const theFavCourses: Course[] = [];
+          res2.data.map((learner_in_course) => {
+            if(learner_in_course.course) {
+              theFavCourses.push(learner_in_course.course)
+            }
+          })     
+          setFavCourses(theFavCourses);
+        })
+      }
+    })
   }
 
   useEffect(() => {
@@ -107,7 +120,7 @@ export const HomePage = () => {
             <Heading fontSize={'xl'} fontWeight={'medium'} borderBottom={'solid 0.075rem'} borderBottomColor={'#0194F3'}>
               Favorite courses
             </Heading>
-            <FavoriteCourseList courses={mockupFavs}/>
+            <FavoriteCourseList courses={favCourses}/>
           </Box>
           <Box display={'flex'} flexDir='column' gap='0.25rem' mt={'3rem'}>
             <Heading fontSize={'xl'} fontWeight={'medium'} borderBottom={'solid 0.075rem'} borderBottomColor={'#0194F3'}>
