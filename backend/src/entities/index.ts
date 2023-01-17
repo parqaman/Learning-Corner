@@ -5,4 +5,5 @@ export * from "./Section";
 export * from "./Group";
 export * from "./LearnerInCourse";
 export * from "./LearnerInGroup";
+export * from "./Message";
 export * from "./User";
