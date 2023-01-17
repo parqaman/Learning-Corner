@@ -138,12 +138,14 @@ export const initializeServer = async () => {
       io.in(args.room).emit("message", message);
       // TODO: save message to the database
       const em = DI.orm.em.fork();
-      em.persistAndFlush(new Message({
-        message: message.message,
-        sender: message.sender,
-        time: BigInt(message.time),
-        roomId: args.room,
-      }));
+      em.persistAndFlush(
+        new Message({
+          message: message.message,
+          sender: message.sender,
+          time: BigInt(message.time),
+          roomId: args.room,
+        })
+      );
     });
 
     socket.on("disconnect", (reason) => {
