@@ -213,15 +213,24 @@ export const GroupDetailPage = () => {
 
     const joinGroup = async () => {
         if(group && currentUser) {
-            const res = await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
-            .then(()=>{
+            await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+            .then((res2)=>{
                 toast({
                     title: "Joined",
                     description: <Text>Group sucessfully joined</Text>,
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                    });
+                });
+                if(res2.data.member) {
+                    const newMember = res2.data.member.learner
+                    if(members && newMember) {
+                        setMembers([...members, newMember]);
+                    }
+                    else if(!members && newMember) {
+                        setMembers([newMember])
+                    }
+                }
                 setJoined(true)
             })
             .catch(error=>{             
@@ -238,7 +247,7 @@ export const GroupDetailPage = () => {
 
     const leaveGroup = async () => {
         if(group && currentUser) {
-            const res = await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+            await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
             .then(()=>{
                 toast({
                     title: "Left",
@@ -246,7 +255,10 @@ export const GroupDetailPage = () => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                    });
+                });
+                if(members) {
+                    setMembers(members.filter((member) => member.id !== currentUser.id))
+                }
                 setJoined(false)
             })
             .catch(error=>{             

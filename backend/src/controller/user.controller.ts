@@ -183,6 +183,7 @@ router.put("/:userId/course/:courseId/group/:groupId", async (req, res) => {
       member: learnerInCourse,
       group: group,
     });
+    await DI.learnerInGroupRepository.populate(newLearnerInGroup, ['member.learner']);
     await DI.learnerInGroupRepository.persistAndFlush(newLearnerInGroup);
     return res.status(200).send(newLearnerInGroup);
   } catch (e: any) {
