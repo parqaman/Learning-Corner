@@ -83,8 +83,9 @@ export const SingleGroup = ({course, group, myGroupPage}: {course: Course; group
             width={'100%'}
             justifyContent='space-between'
             alignItems={'center'}
+            onClick={()=>navigate('/courses/'+course.id+'/groups/'+group.id)} cursor='pointer'
             >
-                <Heading fontSize={'lg'} fontWeight={'medium'} onClick={()=>navigate('/courses/'+course.id+'/groups/'+group.id)} cursor='pointer'>
+                <Heading fontSize={'lg'} fontWeight={'medium'}>
                     {group.name}
                     {
                         myGroupPage &&
@@ -93,14 +94,14 @@ export const SingleGroup = ({course, group, myGroupPage}: {course: Course; group
                         </Text>
                     }
                 </Heading>
-                <Flex gap={'1rem'} id='course-buttons' flexDir={'row'} alignItems='center'>
+                <Flex gap={'1rem'} id='group-buttons' flexDir={'row'} alignItems='center'>
                     {
                         !joined &&
-                        <button onClick={()=>joinGroup()}><HStack><Text>Join group</Text><Text color='green.400' cursor='pointer' fontSize={'3xl'}><IoEnterOutline/></Text></HStack></button>
+                        <button onClick={(e)=>{e.stopPropagation();joinGroup();}}><HStack><Text>Join group</Text><Text color='green.400' cursor='pointer' fontSize={'3xl'}><IoEnterOutline/></Text></HStack></button>
                     }
                     {
                         joined &&
-                        <button onClick={()=>leaveGroup()}><HStack><Text>Leave group</Text><Text color='red.400' cursor='pointer' fontSize={'3xl'}><IoExitOutline/></Text></HStack></button>
+                        <button onClick={(e)=>{e.stopPropagation();leaveGroup();}}><HStack><Text>Leave group</Text><Text color='red.400' cursor='pointer' fontSize={'3xl'}><IoExitOutline/></Text></HStack></button>
                     }
                 </Flex>
             </Flex>

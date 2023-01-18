@@ -9,19 +9,26 @@ import {
   Group,
   Section,
 } from "../entities";
-import { deleteSectionFiles } from '../helpers/file.helper';
+import { deleteSectionFiles } from "../helpers/file.helper";
 
 const router = Router({ mergeParams: true });
 
-
 // Get group by ID
 router.get("/:groupId", async (req, res) => {
-  const group = await DI.groupRepository.findOne({
-    id: req.params.groupId 
-  },
-  {
-    populate: ["course", "members", "members.learner", "sections", "sections.files"]
-  });
+  const group = await DI.groupRepository.findOne(
+    {
+      id: req.params.groupId,
+    },
+    {
+      populate: [
+        "course",
+        "members",
+        "members.learner",
+        "sections",
+        "sections.files",
+      ],
+    }
+  );
   if (!group) return res.status(404).send({ message: "Group not found" });
   return res.status(200).send(group);
 });
@@ -44,7 +51,7 @@ router.post("/", async (req, res) => {
 
   // Check authorization
   const course = await DI.courseRepository.findOne({
-    id: createGroupDTO.course.id
+    id: createGroupDTO.course.id,
   });
 
   if (!course) {
@@ -74,7 +81,7 @@ router.put("/:groupId", async (req, res) => {
 
     // Check authorization
     const course = await DI.courseRepository.findOne({
-      id: group.course.id
+      id: group.course.id,
     });
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
@@ -102,14 +109,16 @@ router.put("/:groupId", async (req, res) => {
 // Delete group
 router.delete("/:groupId", async (req, res) => {
   try {
-    const group = await DI.groupRepository.findOne(req.params.groupId, { populate: ['sections', 'sections.files'] });
+    const group = await DI.groupRepository.findOne(req.params.groupId, {
+      populate: ["sections", "sections.files"],
+    });
     if (!group) {
       return res.status(404).send({ message: "Group not found" });
     }
 
     // Check authorization
     const course = await DI.courseRepository.findOne({
-      id: group.course.id
+      id: group.course.id,
     });
     if (!course) {
       return res.status(404).send({ message: "Course not found" });
@@ -126,12 +135,12 @@ router.delete("/:groupId", async (req, res) => {
       return res.status(401).send({ message: "User not authorized" });
     }
 
-    group.sections?.getItems().map(section => {
-      if(section.files.length > 0) {
-        const files = section.files.getItems()
+    group.sections?.getItems().map((section) => {
+      if (section.files.length > 0) {
+        const files = section.files.getItems();
         deleteSectionFiles(files, section.id);
       }
-    })
+    });
 
     await DI.groupRepository.removeAndFlush(group);
     return res.status(204).send({ message: "Group deleted" });
@@ -177,7 +186,7 @@ router.post("/:groupId/section", async (req, res) => {
 
   const createSectionDTO: CreateSectionDTO = {
     ...validatedData,
-    group: group
+    group: group,
   };
 
   const newSection = new Section(createSectionDTO);
@@ -257,7 +266,9 @@ router.delete("/:groupId/section/:sectionId", async (req, res) => {
       return res.status(401).send({ message: "User not authorized" });
     }
 
-    const section = await DI.sectionRepository.findOne(req.params.sectionId, {populate: ['files']});
+    const section = await DI.sectionRepository.findOne(req.params.sectionId, {
+      populate: ["files"],
+    });
     if (!section) {
       return res.status(404).send({ message: "Section not found" });
     }
@@ -266,8 +277,8 @@ router.delete("/:groupId/section/:sectionId", async (req, res) => {
       return res.status(400).send({ message: "Section is not in the group" });
     }
 
-    if(section.files.length > 0) {
-      const files = section.files.getItems()
+    if (section.files.length > 0) {
+      const files = section.files.getItems();
       deleteSectionFiles(files, req.params.sectionId);
     }
 
@@ -276,6 +287,40 @@ router.delete("/:groupId/section/:sectionId", async (req, res) => {
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
   }
+});
+
+// Get messages
+router.get("/:groupId/message", async (req, res) => {
+  const group = await DI.groupRepository.findOne(req.params.groupId);
+  if (!group) {
+    return res.status(404).send({ message: "Group not found" });
+  }
+
+  const course = await DI.courseRepository.findOne(group.course);
+  if (!course) {
+    return res.status(404).send({ message: "Course not found" });
+  }
+
+  const learnerInCourse = await DI.learnerInCourseRepository.findOne({
+    learner: req.user,
+    course: course,
+  });
+
+  const learnerInGroup = await DI.learnerInGroupRepository.findOne({
+    member: learnerInCourse,
+    group: group,
+  });
+
+  if (!learnerInGroup) {
+    return res
+      .status(401)
+      .send({ message: "You are not the member of this group" });
+  }
+  const messages = await DI.messageRepository.find(
+    { roomId: group.id },
+    { populate: ["sender"] }
+  );
+  return res.status(200).send(messages);
 });
 
 export const GroupController = router;

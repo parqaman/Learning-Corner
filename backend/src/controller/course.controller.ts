@@ -233,4 +233,26 @@ router.delete("/:courseId/section/:sectionId", async (req, res) => {
   }
 });
 
+// Get messages
+router.get("/:courseId/message", async (req, res) => {
+  const course = await DI.courseRepository.findOne({ id: req.params.courseId });
+  if (!course) {
+    return res.status(404).send({ message: "Course not found" });
+  }
+  const learnerInCourse = await DI.learnerInCourseRepository.findOne({
+    learner: req.user,
+    course: course,
+  });
+  if (!learnerInCourse) {
+    return res
+      .status(401)
+      .send({ message: "You are not the member of this course" });
+  }
+  const messages = await DI.messageRepository.find(
+    { roomId: course.id },
+    { populate: ["sender"], orderBy: {time: 'ASC'} },
+  );
+  return res.status(200).send(messages);
+});
+
 export const CourseController = router;

@@ -84,17 +84,11 @@ export const GroupDetailPage = () => {
     const param = useParams()
     const currentUser = useAuth().user
     const apiClient = useApiClient();
-    const [isOwner, setIsOwner] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [joined, setJoined] = useState(false)
     const [group, setGroup] = useState<Group>({
         name: "",
         description: ""
-    })
-    const [course, setCourse] = useState<Course>({
-        name: "",
-        description: "",
-        lecturer: currentUser!
     })
     const [newSection, setNewSection] = useState<Section>({
         heading: "", description: "", text: "section text" //text von einem Section
@@ -219,15 +213,24 @@ export const GroupDetailPage = () => {
 
     const joinGroup = async () => {
         if(group && currentUser) {
-            const res = await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
-            .then(()=>{
+            await apiClient.putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+            .then((res2)=>{
                 toast({
                     title: "Joined",
                     description: <Text>Group sucessfully joined</Text>,
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                    });
+                });
+                if(res2.data.member) {
+                    const newMember = res2.data.member.learner
+                    if(members && newMember) {
+                        setMembers([...members, newMember]);
+                    }
+                    else if(!members && newMember) {
+                        setMembers([newMember])
+                    }
+                }
                 setJoined(true)
             })
             .catch(error=>{             
@@ -244,7 +247,7 @@ export const GroupDetailPage = () => {
 
     const leaveGroup = async () => {
         if(group && currentUser) {
-            const res = await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+            await apiClient.deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
             .then(()=>{
                 toast({
                     title: "Left",
@@ -252,7 +255,10 @@ export const GroupDetailPage = () => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                    });
+                });
+                if(members) {
+                    setMembers(members.filter((member) => member.id !== currentUser.id))
+                }
                 setJoined(false)
             })
             .catch(error=>{             
@@ -269,7 +275,7 @@ export const GroupDetailPage = () => {
 
   return (
     <AppLayout display={'flex'} flexDir='column' alignItems='center' mt={'3rem'}>
-        <GroupDetailCard joined={joined} groupID={course.id! + group.id!} >
+        <GroupDetailCard joined={joined} groupID={group.id!} >
             <Flex id='group-heading' justifyContent={'space-between'}>
                 <Box display={'flex'} gap='1.5rem'>
                     <Box id='group-info' maxW={'36rem'}>
@@ -316,11 +322,11 @@ export const GroupDetailPage = () => {
                 </Flex>
             </Flex>
             {
-                //course description section
-                course ? (
+                //group description section
+                group ? (
                     <GroupDescriptionSection group={group} updateGroup={setGroup} updateHandler={handleEditGroupInfo} joined={joined}/>
                 ) : (
-                    <Box>Course Desciption not available</Box>
+                    <Box>Group Desciption not available</Box>
                 )
             }
             <Box mt={'2rem'}>

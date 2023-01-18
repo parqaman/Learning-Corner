@@ -42,12 +42,12 @@ export const AppLayout = (props: AppLayoutProps) => {
               Home
             </NavItem>
           </Link>
-          <Link to={'/courses'}>
+          <Link to={'/mycourses'}>
             <NavItem _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
                 My Courses
             </NavItem>
           </Link>
-          <Link to={'/groups'}>
+          <Link to={'/mygroups'}>
             <NavItem  _hover={{background: "rgba(0, 0, 0, 0.1)", borderRadius:"0.2rem"}}>
               My Groups
             </NavItem>

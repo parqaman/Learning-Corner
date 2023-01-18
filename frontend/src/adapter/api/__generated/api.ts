@@ -186,6 +186,12 @@ export interface LearnerInCourse {
      * @memberof LearnerInCourse
      */
     'groups'?: Array<Group>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LearnerInCourse
+     */
+    'favoriteCourse'?: boolean;
 }
 /**
  * 
@@ -205,6 +211,43 @@ export interface LearnerInGroup {
      * @memberof LearnerInGroup
      */
     'group'?: Group;
+}
+/**
+ * 
+ * @export
+ * @interface Message
+ */
+export interface Message {
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {User}
+     * @memberof Message
+     */
+    'sender'?: User;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'time'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'roomId'?: string;
 }
 /**
  * A File
@@ -885,6 +928,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCourseMessage: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getCourseMessage', 'id', id)
+            const localVarPath = `/courses/{id}/message`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get courses
          * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
@@ -984,6 +1065,78 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGroupMessage: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getGroupMessage', 'id', id)
+            const localVarPath = `/groups/{id}/message`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary get user favorite course list
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserFavoriteCourses: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserFavoriteCourses', 'userId', userId)
+            const localVarPath = `/users/{userId}/favorite`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -1591,6 +1744,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 
+         * @summary put a user favorite course
+         * @param {string} userId 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putUserFavoriteCourse: async (userId: string, courseId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('putUserFavoriteCourse', 'userId', userId)
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('putUserFavoriteCourse', 'courseId', courseId)
+            const localVarPath = `/users/{userId}/course/{courseId}/favorite`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Put User
          * @param {string} id The id of the user to work with
          * @param {string} [id2] 
@@ -1826,6 +2017,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCourseMessage(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Message>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCourseMessage(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Get courses
          * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
@@ -1853,6 +2055,28 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async getGroupId(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Group>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getGroupId(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getGroupMessage(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Message>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGroupMessage(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary get user favorite course list
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserFavoriteCourses(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LearnerInCourse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserFavoriteCourses(userId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2020,6 +2244,18 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary put a user favorite course
+         * @param {string} userId 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async putUserFavoriteCourse(userId: string, courseId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LearnerInCourse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.putUserFavoriteCourse(userId, courseId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Put User
          * @param {string} id The id of the user to work with
          * @param {string} [id2] 
@@ -2142,6 +2378,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.deleteUsersUseridCourseCourseidGroupGroupid(userid, courseid, groupid, options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCourseMessage(id: string, options?: any): AxiosPromise<Array<Message>> {
+            return localVarFp.getCourseMessage(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get courses
          * @param {string} [name] The name to filter courses by
          * @param {*} [options] Override http request option.
@@ -2167,6 +2413,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getGroupId(id: string, options?: any): AxiosPromise<Group> {
             return localVarFp.getGroupId(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGroupMessage(id: string, options?: any): AxiosPromise<Array<Message>> {
+            return localVarFp.getGroupMessage(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary get user favorite course list
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserFavoriteCourses(userId: string, options?: any): AxiosPromise<Array<LearnerInCourse>> {
+            return localVarFp.getUserFavoriteCourses(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * Get Users
@@ -2318,6 +2584,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.putSectionGroup(groupId, sectionId, section, options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary put a user favorite course
+         * @param {string} userId 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        putUserFavoriteCourse(userId: string, courseId: string, options?: any): AxiosPromise<LearnerInCourse> {
+            return localVarFp.putUserFavoriteCourse(userId, courseId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Put User
          * @param {string} id The id of the user to work with
          * @param {string} [id2] 
@@ -2451,6 +2728,18 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * 
+     * @summary Your GET endpoint
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getCourseMessage(id: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getCourseMessage(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Get courses
      * @param {string} [name] The name to filter courses by
      * @param {*} [options] Override http request option.
@@ -2481,6 +2770,30 @@ export class DefaultApi extends BaseAPI {
      */
     public getGroupId(id: string, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getGroupId(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Your GET endpoint
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getGroupMessage(id: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getGroupMessage(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary get user favorite course list
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getUserFavoriteCourses(userId: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getUserFavoriteCourses(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2660,6 +2973,19 @@ export class DefaultApi extends BaseAPI {
      */
     public putSectionGroup(groupId: string, sectionId: string, section?: Section, options?: AxiosRequestConfig) {
         return DefaultApiFp(this.configuration).putSectionGroup(groupId, sectionId, section, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary put a user favorite course
+     * @param {string} userId 
+     * @param {string} courseId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public putUserFavoriteCourse(userId: string, courseId: string, options?: AxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).putUserFavoriteCourse(userId, courseId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

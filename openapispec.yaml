@@ -421,6 +421,31 @@ paths:
                     type: string
       security:
         - Bearer: []
+  '/courses/{id}/message':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: get-course-message
+      security:
+        - Bearer: []
   /auth/register:
     post:
       description: Perform registration
@@ -770,6 +795,31 @@ paths:
                     type: string
       security:
         - Bearer: []
+  '/groups/{id}/message':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: get-group-message
+      security:
+        - Bearer: []
   '/users/{userid}/groups':
     parameters:
       - schema:
@@ -823,6 +873,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LearnerInGroup'
+  '/users/{userId}/course/{courseId}/favorite':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: courseId
+        in: path
+        required: true
+    put:
+      summary: 'put a user favorite course'
+      operationId: put-user-favorite-course
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerInCourse'
+  '/users/{userId}/favorite':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: 'get user favorite course list'
+      operationId: get-user-favorite-courses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearnerInCourse'
   '/sections/{sectionId}/file':
     parameters:
       - in: path
@@ -1223,6 +1314,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+        favoriteCourse:
+          type: boolean
     LearnerInGroup:
       title: LearnerInGroup
       x-stoplight:
@@ -1233,6 +1326,23 @@ components:
           $ref: '#/components/schemas/LearnerInCourse'
         group:
           $ref: '#/components/schemas/Group'
+    Message:
+      title: Message
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sender:
+          type:
+            $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/User'
+        message:
+          type: string
+        time:
+          type: string
+        roomId:
+          type: string
   securitySchemes:
     Bearer:
       type: http

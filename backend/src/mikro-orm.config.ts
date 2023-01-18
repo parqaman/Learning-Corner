@@ -5,6 +5,7 @@ import { Section } from "./entities/Section";
 import { Group } from "./entities/Group";
 import { LearnerInCourse } from "./entities/LearnerInCourse";
 import { LearnerInGroup } from "./entities/LearnerInGroup";
+import { Message } from "./entities/Message";
 import { User } from "./entities/User";
 
 const options: Options = {
@@ -22,6 +23,7 @@ const options: Options = {
     Group,
     LearnerInCourse,
     LearnerInGroup,
+    Message,
     User,
   ],
 };

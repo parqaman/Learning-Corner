@@ -13,7 +13,9 @@ import {
   Group,
   LearnerInCourse,
   LearnerInGroup,
+  Message,
   User,
+  CreateMessageDTO,
 } from "./entities";
 import { Auth } from "./middleware/auth.middleware";
 import { AuthController } from "./controller/auth.controller";
@@ -24,7 +26,7 @@ import { UploadController } from "./controller/upload.controller";
 import * as path from "path";
 import { TestSeeder } from "./seeders/TestSeeder";
 import * as socketIo from "socket.io";
-import {Socket} from "socket.io";
+import { Socket } from "socket.io";
 
 const PORT = 4000;
 const app = express();
@@ -39,15 +41,9 @@ export const DI = {} as {
   groupRepository: EntityRepository<Group>;
   learnerInCourseRepository: EntityRepository<LearnerInCourse>;
   learnerInGroupRepository: EntityRepository<LearnerInGroup>;
+  messageRepository: EntityRepository<Message>;
   userRepository: EntityRepository<User>;
 };
-
-interface ChatMessage {
-  message: string
-  time: number,
-  sender: User
-}
-
 
 export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
@@ -58,6 +54,7 @@ export const initializeServer = async () => {
   DI.groupRepository = DI.orm.em.getRepository(Group);
   DI.learnerInCourseRepository = DI.orm.em.getRepository(LearnerInCourse);
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
+  DI.messageRepository = DI.orm.em.getRepository(Message);
   DI.userRepository = DI.orm.em.getRepository(User);
 
   const numUser = await DI.userRepository.count();
@@ -75,8 +72,14 @@ export const initializeServer = async () => {
   // routes
 
   app.use("/upload/tmp", express.static(path.join(__dirname, "../upload/tmp")));
-  app.use("/upload/profile", express.static(path.join(__dirname, '../upload/profile')))
-  app.use("/upload/files", express.static(path.join(__dirname, '../upload/files')))
+  app.use(
+    "/upload/profile",
+    express.static(path.join(__dirname, "../upload/profile"))
+  );
+  app.use(
+    "/upload/files",
+    express.static(path.join(__dirname, "../upload/files"))
+  );
 
   app.get("/", (req, res) => {
     res.send("GET request to the homepage");
@@ -85,55 +88,65 @@ export const initializeServer = async () => {
   app.use("/users", Auth.verifyAccess, UserController);
   app.use("/courses", CourseController);
   app.use("/groups", GroupController);
-  app.use("/sections", UploadController)
+  app.use("/sections", UploadController);
 
-  const server = http.createServer(app)
+  const server = http.createServer(app);
   const io = new socketIo.Server(server, {
     cors: {
       origin: "http://localhost:3000",
-      methods: ["GET", "POST"]
-    }
-  })
+      methods: ["GET", "POST"],
+    },
+  });
 
   io.use((socket, next) => {
     const token = socket.handshake.auth.token;
     const res = Auth.verifyToken(token);
-    console.log('Socket-Auth:', res)
-    if(!res) {
+    console.log("Socket-Auth:", res);
+    if (!res) {
       const err = new Error("not authorized");
       next(err);
     }
-    next()
+    next();
   });
 
   io.on("connection", async (socket: Socket) => {
-    console.log('Connection: ', socket);
+    // console.log("Connection: ", socket);
     socket.on("helloRoom", (args) => {
-      console.log('helloRoom: ', args)
-      socket.join(args.room)
-      const message: ChatMessage = {
-        message: args.user.firstName + ' ' + args.user.lastName + ' joined the room!',
-        sender: socket.handshake.auth.user,
-        time: Date.now()
-      }
-      socket.in(args.room).emit('message', message)
-    })
+      socket.join(args.room);
+      // console.log("helloRoom: ", args);
+      // const message: ChatMessage = {
+      //   message:
+      //     args.user.firstName + " " + args.user.lastName + " joined the room!",
+      //   sender: socket.handshake.auth.user,
+      //   time: Date.now(),
+      // };
+      // socket.in(args.room).emit("message", message);
+    });
 
     socket.on("message", (args) => {
-      console.log('message: ', args)
-      const message: ChatMessage = {
+      console.log("message: ", args);
+      const message: CreateMessageDTO = {
         message: args.message,
         sender: socket.handshake.auth.user,
-        time: Date.now()
-      }
-      const clients = io.sockets.adapter.rooms.get(args.room);
-      io.in(args.room).emit('message', message)
-    })
+        time: Date.now().toString(),
+        roomId: args.room
+      };
+      io.in(args.room).emit("message", message);
+      // save message to the database
+      const em = DI.orm.em.fork();
+      em.persistAndFlush(
+        new Message({
+          message: message.message,
+          sender: message.sender,
+          time: message.time,
+          roomId: args.room,
+        })
+      );
+    });
 
     socket.on("disconnect", (reason) => {
-      console.log('disconnect: ', reason)
-    })
-
+      console.log("disconnect: ", reason);
+    });
   });
 
   DI.server = server.listen(PORT, () => {

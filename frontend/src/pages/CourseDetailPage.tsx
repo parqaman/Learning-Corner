@@ -99,7 +99,7 @@ export const CourseDetailPage = () => {
 
     const fetchData = async () => {
         await apiClient.getCoursesId(id!)
-        .then((res)=>{
+        .then( async (res)=>{
             const theCourse = res.data
             setCourse(theCourse)
             setOldCourse(theCourse)
@@ -115,6 +115,21 @@ export const CourseDetailPage = () => {
             if(participants.includes(currentUser?.id)){
                 setJoined(true)
             }
+
+            if(currentUser) {
+                await apiClient.getUserFavoriteCourses(currentUser.id)
+                .then((res) => {
+                    const theFavCourses: Course[] = [];
+                    res.data.map((learner_in_course) => {
+                      if(learner_in_course.course) {
+                        if(learner_in_course.course.id === theCourse.id) {
+                            setFavorite(true)
+                        }
+                      }
+                    })
+                })
+            }
+
                 
         })
         .catch((e)=>{
@@ -286,15 +301,9 @@ export const CourseDetailPage = () => {
         }
     }
 
-    const handleFavorite = () => {
-        /** if favorite is atm true, then send delete request,
-         * since the user is trying to remove the course from the favorite list.
-         * otherwise send post request
-         * */
-        if(favorite) { 
-            //send delete request
-        } else {
-            //send post favorite to backend
+    const handleFavorite = async () => {
+        if(currentUser && course && course.id) {
+            await apiClient.putUserFavoriteCourse(currentUser.id, course.id)
         }
         setFavorite(!favorite)
     }
@@ -323,7 +332,9 @@ export const CourseDetailPage = () => {
                                     <Heading>
                                         {course?.name}
                                     </Heading>
-                                    <Text onClick={handleFavorite} cursor={'pointer'} fontSize={'3xl'} color={'orange.300'} alignSelf='end' pb={'0.2rem'}>
+                                    {
+                                        joined &&
+                                        <Text onClick={handleFavorite} cursor={'pointer'} fontSize={'3xl'} color={'orange.300'} alignSelf='end' pb={'0.2rem'}>
                                         {
                                             favorite ? (
                                                 <AiFillStar/>
@@ -331,7 +342,8 @@ export const CourseDetailPage = () => {
                                                 <AiOutlineStar/>
                                             )
                                         }
-                                    </Text>
+                                        </Text>
+                                    }
                                 </Flex>
                                 <Text>{course?.lecturer.firstName} {course?.lecturer.lastName}</Text>
                             </Box>
