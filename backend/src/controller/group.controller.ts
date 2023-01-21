@@ -54,7 +54,9 @@ router.post("/", async (req, res) => {
     id: createGroupDTO.course.id,
   });
 
+  
   if (!course) {
+    console.log(createGroupDTO)
     return res.status(404).send({ message: "Course not found" });
   }
   const learnerInCourse = await DI.learnerInCourseRepository.findOne({
