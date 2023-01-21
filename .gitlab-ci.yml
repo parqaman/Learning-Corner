@@ -1,0 +1,46 @@
+image: node:latest
+stages:
+  - build
+  - test
+
+build-frontend-job:
+  stage: build
+  script:
+    - cd ./frontend
+    - npm install
+    - npm build
+  cache:
+    paths:
+      - frontend/node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: on_success
+    paths:
+      - frontend/node_modules/
+
+build-backend-job:
+  stage: build
+  script:
+    - cd ./backend
+    - npm install
+    - npm build
+  cache:
+    paths:
+      - backend/node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: on_success
+    paths:
+      - backend/node_modules/
+
+test-frontend-job:
+  stage: test
+  script:
+    - cd ./frontend
+    - npm test
+
+test-backend-job:
+  stage: test
+  script:
+    - cd ./backend
+    - npm test

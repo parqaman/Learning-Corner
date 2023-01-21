@@ -6,6 +6,7 @@
   "scripts": {
     "start-dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "start": "tsc && node ./dist/index.js",
+    "build": "tsc",
     "schema:fresh": "npx mikro-orm schema:fresh -r"
   },
   "keywords": [],
