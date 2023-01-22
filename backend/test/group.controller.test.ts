@@ -18,6 +18,7 @@ describe("Group Controller Test", () => {
   var falseUserId: string;
   var falseToken: string;
 
+  // Create user1 and course
   before((done) => {
     Request("localhost:4000")
       .post("/auth/register")
@@ -62,6 +63,7 @@ describe("Group Controller Test", () => {
       });
   });
 
+  // Create user2
   before((done) => {
     Request("localhost:4000")
       .post("/auth/register")
@@ -87,6 +89,7 @@ describe("Group Controller Test", () => {
       });
   });
 
+  // Delete user1
   after((done) => {
     Request("localhost:4000/users")
       .delete("/" + userId)
@@ -97,6 +100,7 @@ describe("Group Controller Test", () => {
       });
   });
 
+  // Delete user2
   after((done) => {
     Request("localhost:4000/users")
       .delete("/" + falseUserId)
@@ -166,7 +170,7 @@ describe("Group Controller Test", () => {
     });
   });
 
-  describe("Get a group with the provided ID", () => {
+  describe("Get a group by ID", () => {
     it("can successfully get a group", (done) => {
       Request(baseurl)
         .get("/" + group.id)
@@ -257,6 +261,7 @@ describe("Group Controller Test", () => {
   });
 
   describe("Create a section in a group", () => {
+    // Join group
     before((done) => {
       Request("localhost:4000")
         .put(`/users/${userId}/course/${course.id}/group/${group.id}`)

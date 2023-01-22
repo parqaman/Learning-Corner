@@ -7,6 +7,7 @@ describe("Auth Controller Test", () => {
   var userId: string;
   var token: string;
 
+  // Delete user
   after((done) => {
     Request("localhost:4000/users")
       .delete("/" + userId)
