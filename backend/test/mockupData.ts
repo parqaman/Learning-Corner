@@ -1,4 +1,4 @@
-import { Course, Message, Section, User } from "../src/entities";
+import { Course, Group, Message, Section, User } from "../src/entities";
 
 export const mockup_user = new User({
     firstName: "John",
@@ -20,6 +20,12 @@ export const mockup_course = new Course({
     name: "My Course",
     description: "A description",
     lecturer: mockup_user,
+});
+
+export const mockup_group = new Group({
+  name: "My Group",
+  description: "A description",
+  course: mockup_course,
 });
 
 export const mockup_section = new Section({
