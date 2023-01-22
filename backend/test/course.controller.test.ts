@@ -7,6 +7,7 @@ import {
   mockup_user_2,
 } from "./mockupData";
 import { Course, Section } from "../src/entities";
+import {describe} from 'mocha'
 
 describe("Course Controller Test", () => {
   const rootURL = "localhost:4000/courses";

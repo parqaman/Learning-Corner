@@ -9,6 +9,7 @@ import {
 import { Course, Section, User } from "../src/entities";
 import path from "path";
 import fs from "fs";
+import {describe} from 'mocha'
 
 describe("Upload Controller Test", () => {
   const rootURL = "localhost:4000/sections";

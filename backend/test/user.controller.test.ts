@@ -2,6 +2,7 @@ import Request from "supertest";
 import { expect } from "chai";
 import { mockup_course, mockup_group, mockup_user } from "./mockupData";
 import { Course } from "../src/entities";
+import {describe} from 'mocha'
 
 describe("User Controller Test", () => {
   const baseurl = "localhost:4000/users";

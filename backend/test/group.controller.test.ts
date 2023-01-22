@@ -7,6 +7,7 @@ import {
   mockup_user,
 } from "./mockupData";
 import { Course, Group, Section } from "../src/entities";
+import {describe} from 'mocha'
 
 describe("Group Controller Test", () => {
   const baseurl = "localhost:4000/groups";
