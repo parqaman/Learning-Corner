@@ -8,7 +8,7 @@ build-frontend-job:
   script:
     - cd ./frontend
     - npm install
-    - npm build
+    - npm run build
   cache:
     paths:
       - frontend/node_modules/
@@ -17,13 +17,16 @@ build-frontend-job:
     when: on_success
     paths:
       - frontend/node_modules/
+  rules:
+    - changes:
+        - frontend/**/*
 
 build-backend-job:
   stage: build
   script:
     - cd ./backend
     - npm install
-    - npm build
+    - npm run build
   cache:
     paths:
       - backend/node_modules/
@@ -32,15 +35,34 @@ build-backend-job:
     when: on_success
     paths:
       - backend/node_modules/
+  rules:
+    - changes:
+        - backend/**/*
 
 test-frontend-job:
   stage: test
   script:
     - cd ./frontend
-    - npm test
+    - npm run test:ci
+  rules:
+    - changes:
+        - frontend/**/*
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
 
 test-backend-job:
   stage: test
   script:
     - cd ./backend
-    - npm test
+    - npm run test:ci
+  rules:
+    - changes:
+        - backend/**/*
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
