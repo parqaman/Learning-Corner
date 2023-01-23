@@ -110,6 +110,6 @@ export const AppLayout = (props: AppLayoutProps) => {
   const { isLoggedIn } = useAuth();
   const HeaderRightMenu = isLoggedIn ? navigationItems : null;
   if (!isLoggedIn && window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register')
-    window.location.href = '/auth/login';
+    navigate('/auth/login')
   return <BaseLayout headerRightMenu={HeaderRightMenu} {...props} />;
 };

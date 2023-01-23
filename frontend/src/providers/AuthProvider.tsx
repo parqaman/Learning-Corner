@@ -18,7 +18,7 @@ export type LoginData = {
 };
 
 export type AuthContext = {
-  accessToken: string;
+  accessToken: string | null;
   user: User | null;
   isLoggedIn: boolean;
   actions: {
@@ -28,7 +28,18 @@ export type AuthContext = {
   };
 };
 
-export const authContext = React.createContext<AuthContext | null>(null);
+export const initialAuthContext = {
+  accessToken: null,
+  user: null,
+  isLoggedIn: false,
+  actions: {
+    login: () => undefined,
+    register: () => undefined,
+    logout: () => undefined,
+  },
+};
+
+export const authContext = React.createContext<AuthContext | null>(initialAuthContext);
 
 export type AuthProviderProps = { children: React.ReactNode };
 export const AuthProvider = ({ children }: AuthProviderProps) => {

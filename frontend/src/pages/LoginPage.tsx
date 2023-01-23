@@ -45,6 +45,7 @@ export const LoginPage = () => {
                       id="email"
                       name="email"
                       type="email"
+                      data-testid="email"
                     />
                     <FormErrorMessage>{errors.email}</FormErrorMessage>
                   </FormControl>
@@ -62,6 +63,7 @@ export const LoginPage = () => {
                       id="password"
                       name="password"
                       type="password"
+                      data-testid="password"
                     />
                     <FormErrorMessage>{errors.password}</FormErrorMessage>
                   </FormControl>
