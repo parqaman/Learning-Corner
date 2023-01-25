@@ -1,7 +1,26 @@
 image: node:latest
 stages:
+  - lint
   - build
   - test
+
+lint-frontend-job:
+  stage: lint
+  script:
+    - cd ./frontend
+    - npm run lint
+  rules:
+    - changes:
+        - frontend/**/*
+
+lint-backend-job:
+  stage: lint
+  script:
+    - cd ./backend
+    - npm run lint
+  rules:
+    - changes:
+        - backend/**/*
 
 build-frontend-job:
   stage: build
@@ -51,7 +70,7 @@ test-frontend-job:
     when: always
     reports:
       junit:
-        - junit.xml
+        - test-results.xml
 
 test-backend-job:
   stage: test
@@ -65,4 +84,4 @@ test-backend-job:
     when: always
     reports:
       junit:
-        - junit.xml
+        - test-results.xml
