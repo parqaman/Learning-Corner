@@ -34,6 +34,9 @@ lint-frontend-job:
   script:
     - cd ./frontend
     - npm run lint
+  cache:
+    paths:
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -43,6 +46,9 @@ lint-backend-job:
   script:
     - cd ./backend
     - npm run lint
+  cache:
+    paths:
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
@@ -52,6 +58,9 @@ build-frontend-job:
   script:
     - cd ./frontend
     - npm run build
+  cache:
+    paths:
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -61,6 +70,9 @@ build-backend-job:
   script:
     - cd ./backend
     - npm run build
+  cache:
+    paths:
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
@@ -70,6 +82,9 @@ test-frontend-job:
   script:
     - cd ./frontend
     - npm run test:ci
+  cache:
+    paths:
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -84,6 +99,9 @@ test-backend-job:
   script:
     - cd ./backend
     - npm run test:ci
+  cache:
+    paths:
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
