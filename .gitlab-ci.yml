@@ -14,7 +14,9 @@ install-frontend-job:
     - cd ./frontend
     - npm ci --cache .npm --prefer-offline
   cache:
-    key: $CI_COMMIT_REF_SLUG-frontend
+    key:
+      files:
+        - package-lock.json
     paths:
       - .npm/
   rules:
@@ -27,8 +29,11 @@ install-backend-job:
     - cd ./backend
     - npm ci --cache .npm --prefer-offline
   cache:
+    key:
+      files:
+        - package-lock.json
     paths:
-      - backend/node_modules/
+      - .npm/
   rules:
     - changes:
         - backend/**/*
