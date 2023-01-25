@@ -2,8 +2,8 @@ image: node:latest
 stages:
   - install
   - lint
-  - build
   - test
+  - build
 
 variables:
   CI: "false" 
@@ -30,6 +30,30 @@ install-backend-job:
     key: $CI_COMMIT_REF_SLUG-backend
     paths:
       - .npm/
+  rules:
+    - changes:
+        - backend/**/*
+
+lint-frontend-job:
+  stage: lint
+  script:
+    - cd ./frontend
+    - npm run lint
+  cache:
+    paths:
+      - frontend/node_modules/
+  rules:
+    - changes:
+        - frontend/**/*
+
+lint-backend-job:
+  stage: lint
+  script:
+    - cd ./backend
+    - npm run lint
+  cache:
+    paths:
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
