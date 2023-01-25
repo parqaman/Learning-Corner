@@ -1,8 +1,33 @@
 image: node:latest
 stages:
+  - install
   - lint
   - build
   - test
+
+install-frontend-job:
+  stage: install
+  script:
+    - cd ./frontend
+    - npm install
+  cache:
+    paths:
+      - frontend/node_modules/
+  rules:
+    - changes:
+        - frontend/**/*
+
+install-backend-job:
+  stage: install
+  script:
+    - cd ./backend
+    - npm run lint
+  cache:
+    paths:
+      - backend/node_modules/
+  rules:
+    - changes:
+        - backend/**/*
 
 lint-frontend-job:
   stage: lint
@@ -26,16 +51,7 @@ build-frontend-job:
   stage: build
   script:
     - cd ./frontend
-    - npm install
     - npm run build
-  cache:
-    paths:
-      - frontend/node_modules/
-  artifacts:
-    expire_in: 1 days
-    when: on_success
-    paths:
-      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -44,16 +60,7 @@ build-backend-job:
   stage: build
   script:
     - cd ./backend
-    - npm install
     - npm run build
-  cache:
-    paths:
-      - backend/node_modules/
-  artifacts:
-    expire_in: 1 days
-    when: on_success
-    paths:
-      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
