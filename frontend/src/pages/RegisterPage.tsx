@@ -50,6 +50,7 @@ export const RegisterPage = () => {
                       id="firstName"
                       name="firstName"
                       type="text"
+                      data-testid='firstName'
                     />
                     <FormErrorMessage>{errors.firstName}</FormErrorMessage>
                   </FormControl>
@@ -67,6 +68,7 @@ export const RegisterPage = () => {
                       id="lastName"
                       name="lastName"
                       type="text"
+                      data-testid='lastName'
                     />
                     <FormErrorMessage>{errors.lastName}</FormErrorMessage>
                   </FormControl>
@@ -84,6 +86,7 @@ export const RegisterPage = () => {
                       id="email"
                       name="email"
                       type="email"
+                      data-testid='email'
                     />
                     <FormErrorMessage>{errors.email}</FormErrorMessage>
                   </FormControl>
@@ -101,6 +104,7 @@ export const RegisterPage = () => {
                       id="password"
                       name="password"
                       type="password"
+                      data-testid='password'
                     />
                     <FormErrorMessage>{errors.password}</FormErrorMessage>
                   </FormControl>
@@ -112,8 +116,9 @@ export const RegisterPage = () => {
                     bg={'black'}
                     color={'white'}
                     borderRadius={'2rem'}
+                    data-testid='register-btn'
                   >
-                    Sign up
+                    Register
                   </Button>
                 </Box>
                 <Box>

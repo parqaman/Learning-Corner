@@ -1,10 +1,9 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { authContext, initialAuthContext } from '../providers/AuthProvider';
-import { LoginPage } from './LoginPage';
 import { BrowserRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils';
+import { RegisterPage } from './RegisterPage';
 
 // useNavigate mock
 const mockedUsedNavigate = jest.fn();
@@ -17,42 +16,50 @@ jest.mock('react-router-dom', () => ({
 global.scrollTo = jest.fn()
 
 // Create a mock login function
-const loginMock = jest.fn();
+const registerMock = jest.fn();
 
 // Create a test user
 const testUser = {
-  email: 'test@example.com',
-  password: 'password123'
+    firstName: "User",
+    lastName: "Test",
+    email: 'test@example.com',
+    password: 'password123',
+    photo: 'profile_empty.png'
 };
 
-test('login form submits successfully', async () => {
+test('register form submits successfully', async () => {
   // Render the login form
-  const { getByTestId, getByText } = render(
+  const { getByTestId } = render(
     <BrowserRouter>
     <authContext.Provider
-      value={{ ...initialAuthContext, actions: { ...initialAuthContext.actions, login: loginMock } }}
+      value={{ ...initialAuthContext, actions: { ...initialAuthContext.actions, register: registerMock } }}
     >
-      <LoginPage />
+      <RegisterPage />
     </authContext.Provider>
     ,
     </BrowserRouter>
   );
 
   act(() => {
-    // Simulate typing in the email and password fields
+    const firstNameInput = getByTestId('firstName');
+    fireEvent.change(firstNameInput, { target: { value: testUser.firstName } });
+
+    const lastNameInput = getByTestId('lastName');
+    fireEvent.change(lastNameInput, { target: { value: testUser.lastName } });
+
     const emailInput = getByTestId('email');
     fireEvent.change(emailInput, { target: { value: testUser.email } });
+
     const passwordInput = getByTestId('password');
     fireEvent.change(passwordInput, { target: { value: testUser.password } });
 
     // Simulate clicking the submit button
-    const submitButton = getByText(/Login/i);
+    const submitButton = getByTestId("register-btn");
     fireEvent.click(submitButton);
-
   })
 
-  // Wait for the login function to complete
+  // Wait for the register function to complete
   await waitFor(() => {
-    expect(loginMock).toHaveBeenCalledWith(testUser);
+    expect(registerMock).toHaveBeenCalledWith(testUser);
   });
 });
