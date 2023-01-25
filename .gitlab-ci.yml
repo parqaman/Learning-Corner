@@ -21,7 +21,7 @@ install-backend-job:
   stage: install
   script:
     - cd ./backend
-    - npm run lint
+    - npm install
   cache:
     paths:
       - backend/node_modules/
