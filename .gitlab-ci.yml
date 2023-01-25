@@ -34,6 +34,23 @@ install-backend-job:
     - changes:
         - backend/**/*
 
+lint-frontend-job:
+  stage: lint
+  script:
+    - cd ./frontend
+    - npm run lint
+  rules:
+    - changes:
+        - frontend/**/*
+
+lint-backend-job:
+  stage: lint
+  script:
+    - cd ./backend
+    - npm run lint
+  rules:
+    - changes:
+        - backend/**/*
 
 build-frontend-job:
   stage: build
@@ -58,6 +75,9 @@ test-frontend-job:
   script:
     - cd ./frontend
     - npm run test:ci
+  cache:
+    paths:
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -72,6 +92,9 @@ test-backend-job:
   script:
     - cd ./backend
     - npm run test:ci
+  cache:
+    paths:
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
