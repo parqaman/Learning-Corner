@@ -5,6 +5,9 @@ stages:
   - build
   - test
 
+variables:
+  CI: "false"
+
 install-frontend-job:
   stage: install
   script:
