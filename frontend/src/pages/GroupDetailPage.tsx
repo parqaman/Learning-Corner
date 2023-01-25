@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Heading, HStack, UnorderedList, ListItem, Text, Textarea, useDisclosure, useToast, Modal, Input, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
-import { GroupCard } from '../components/group_components/GroupCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
-import { AiFillEdit, AiOutlineCheck, AiFillFile } from 'react-icons/ai'
+import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
+import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
@@ -358,7 +358,7 @@ export const GroupDetailPage = () => {
                     <Link target={'_blank'} to={'./text-editor'}>
                         <Flex gap={'0.25rem'} alignItems='center'>
                             <Text>
-                                <AiFillFile/>
+                                <HiOutlineDocumentDuplicate/>
                             </Text>
                             <Text>
                                 Open group document
