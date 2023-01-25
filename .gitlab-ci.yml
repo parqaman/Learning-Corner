@@ -6,7 +6,7 @@ stages:
   - test
 
 variables:
-  CI: "false"
+  CI: "false" 
 
 install-frontend-job:
   stage: install
@@ -40,9 +40,8 @@ lint-frontend-job:
     - cd ./frontend
     - npm run lint
   cache:
-    key: $CI_COMMIT_REF_SLUG-frontend
     paths:
-      - .npm/
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -53,9 +52,8 @@ lint-backend-job:
     - cd ./backend
     - npm run lint
   cache:
-    key: $CI_COMMIT_REF_SLUG-backend
     paths:
-      - .npm/
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
@@ -66,9 +64,8 @@ build-frontend-job:
     - cd ./frontend
     - npm run build
   cache:
-    key: $CI_COMMIT_REF_SLUG-frontend
     paths:
-      - .npm/
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
@@ -79,9 +76,8 @@ build-backend-job:
     - cd ./backend
     - npm run build
   cache:
-    key: $CI_COMMIT_REF_SLUG-backend
     paths:
-      - .npm/
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
@@ -92,13 +88,11 @@ test-frontend-job:
     - cd ./frontend
     - npm run test:ci
   cache:
-    key: $CI_COMMIT_REF_SLUG-frontend
     paths:
-      - .npm/
+      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
-    
   artifacts:
     when: always
     reports:
@@ -111,9 +105,8 @@ test-backend-job:
     - cd ./backend
     - npm run test:ci
   cache:
-    key: $CI_COMMIT_REF_SLUG-backend
     paths:
-      - .npm/
+      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
