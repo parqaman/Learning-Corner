@@ -2,12 +2,12 @@ import { Box, Button, Flex, Heading, HStack, UnorderedList, ListItem, Text, Text
 import { GroupCard } from '../components/group_components/GroupCard'
 import { AppLayout } from '../layout/AppLayout'
 import { IoEnterOutline, IoExitOutline } from 'react-icons/io5'
-import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai'
+import { AiFillEdit, AiOutlineCheck, AiFillFile } from 'react-icons/ai'
 import { RxCross1 } from 'react-icons/rx'
 import React, { useState } from 'react'
 import { useApiClient } from '../adapter/api/useApiClient'
 import { Group, User } from '../adapter/api/__generated'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Course, Section } from '../adapter/api/__generated'
 import { useAuth } from '../providers/AuthProvider'
 import { GroupSectionList } from '../components/group_components/GroupSectionList'
@@ -353,9 +353,23 @@ export const GroupDetailPage = () => {
                     </UnorderedList>
                 </Box>
             </Box>
+            <Box mt={'2rem'}>
+                <Button variant={'link'} color='black' fontWeight={'medium'}>
+                    <Link target={'_blank'} to={'./text-editor'}>
+                        <Flex gap={'0.25rem'} alignItems='center'>
+                            <Text>
+                                <AiFillFile/>
+                            </Text>
+                            <Text>
+                                Open group document
+                            </Text>
+                        </Flex>
+                    </Link>
+                </Button>
+            </Box>
             {/** Section List  **/}
             { (joined) && 
-                <Box mt={'2rem'}>
+                <Box mt={'1rem'}>
                     <Text fontSize={'2xl'} fontWeight='normal'>
                         Sections
                     </Text>

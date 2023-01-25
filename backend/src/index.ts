@@ -101,7 +101,7 @@ export const initializeServer = async () => {
   io.use((socket, next) => {
     const token = socket.handshake.auth.token;
     const res = Auth.verifyToken(token);
-    console.log("Socket-Auth:", res);
+    // console.log("Socket-Auth:", res);
     if (!res) {
       const err = new Error("not authorized");
       next(err);
@@ -143,6 +143,21 @@ export const initializeServer = async () => {
         })
       );
     });
+
+    socket.on("get-document", (groupID) => {      
+      const data = "" // to be changed -> get data from DB
+      socket.join(groupID)
+      socket.emit("load-document", data)
+      socket.on("send-changes", (args) => {
+        socket.broadcast.to(groupID).emit("receive-changes", args)
+      })
+    })
+
+    socket.on("save-document", data => {
+      console.log("saving document", data);
+      
+      //save(update) document in DB
+    })
 
     socket.on("disconnect", (reason) => {
       console.log("disconnect: ", reason);
