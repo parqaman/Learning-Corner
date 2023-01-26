@@ -173,7 +173,6 @@ export const initializeServer = async () => {
       });
 
       socket.on("save-document", async (data) => {
-        console.log(document)
         if (document) {
           document.data = data;
           await em.persistAndFlush(document);
