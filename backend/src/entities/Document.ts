@@ -1,15 +1,20 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
-import { v4 } from "uuid";
+import {
+  Entity,
+  Property,
+  Unique,
+} from "@mikro-orm/core";
 
 @Entity()
 export class Document {
-    @PrimaryKey()
-  id: string = v4();
+  @Property()
+  @Unique()
+  id: string;
 
   @Property()
-  data: object;
+  data: string;
 
-  constructor(data: object) {
+  constructor(id: string, data: string) {
+    this.id = id;
     this.data = data;
   }
 }

@@ -8,6 +8,7 @@ import {
 } from "@mikro-orm/core";
 import {
   Course,
+  Document,
   File,
   Section,
   Group,
@@ -43,6 +44,22 @@ export const DI = {} as {
   learnerInGroupRepository: EntityRepository<LearnerInGroup>;
   messageRepository: EntityRepository<Message>;
   userRepository: EntityRepository<User>;
+  documentRepository: EntityRepository<Document>;
+};
+
+export const findOrCreateDocument = async (groupId: string, em: EntityManager) => {
+  if (groupId == null) return;
+
+  const group = await em.findOne(Group, groupId);
+  console.log(group);
+  if (!group) return;
+  var document = await em.findOne(Document, group.id);
+  if (!document) {
+    document = new Document(group.id, "");
+    await em.persistAndFlush(document);
+    return document;
+  }
+  return document;
 };
 
 export const initializeServer = async () => {
@@ -56,6 +73,7 @@ export const initializeServer = async () => {
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.messageRepository = DI.orm.em.getRepository(Message);
   DI.userRepository = DI.orm.em.getRepository(User);
+  DI.documentRepository = DI.orm.em.getRepository(Document);
 
   const numUser = await DI.userRepository.count();
   const numCourse = await DI.courseRepository.count();
@@ -129,7 +147,7 @@ export const initializeServer = async () => {
         message: args.message,
         sender: socket.handshake.auth.user,
         time: Date.now().toString(),
-        roomId: args.room
+        roomId: args.room,
       };
       io.in(args.room).emit("message", message);
       // save message to the database
@@ -144,20 +162,23 @@ export const initializeServer = async () => {
       );
     });
 
-    socket.on("get-document", (groupID) => {      
-      const data = "" // to be changed -> get data from DB
-      socket.join(groupID)
-      socket.emit("load-document", data)
-      socket.on("send-changes", (args) => {
-        socket.broadcast.to(groupID).emit("receive-changes", args)
-      })
-    })
+    socket.on("get-document", async (groupID) => {
+      const em = DI.orm.em.fork();
+      const document = await findOrCreateDocument(groupID, em);
+      socket.join(groupID);
+      if (document) socket.emit("load-document", document.data);
 
-    socket.on("save-document", data => {
-      console.log("saving document", data);
-      
-      //save(update) document in DB
-    })
+      socket.on("send-changes", (args) => {
+        socket.broadcast.to(groupID).emit("receive-changes", args);
+      });
+
+      socket.on("save-document", async (data) => {
+        if (document) {
+          document.data = data;
+          await em.persistAndFlush(document);
+        }
+      });
+    });
 
     socket.on("disconnect", (reason) => {
       console.log("disconnect: ", reason);
