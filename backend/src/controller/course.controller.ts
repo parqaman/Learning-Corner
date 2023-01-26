@@ -133,6 +133,9 @@ router.delete("/:courseId", async (req, res) => {
       }
     })
 
+    const messages = await DI.messageRepository.find({roomId: req.params.courseId});
+    if (messages) await DI.messageRepository.removeAndFlush(messages);
+
     await DI.courseRepository.removeAndFlush(course);
     return res.status(204).send({ message: "Course deleted" });
   } catch (e: any) {
