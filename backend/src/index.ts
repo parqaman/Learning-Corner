@@ -55,7 +55,7 @@ export const findOrCreateDocument = async (groupId: string, em: EntityManager) =
   if (!group) return;
   var document = await em.findOne(Document, group.id);
   if (!document) {
-    document = new Document(group.id, "");
+    document = new Document(group.id, {});
     await em.persistAndFlush(document);
     return document;
   }
@@ -173,6 +173,7 @@ export const initializeServer = async () => {
       });
 
       socket.on("save-document", async (data) => {
+        console.log(document)
         if (document) {
           document.data = data;
           await em.persistAndFlush(document);

@@ -1,19 +1,18 @@
 import {
   Entity,
+  PrimaryKey,
   Property,
-  Unique,
 } from "@mikro-orm/core";
 
 @Entity()
 export class Document {
-  @Property()
-  @Unique()
+  @PrimaryKey()
   id: string;
 
   @Property()
-  data: string;
+  data: object;
 
-  constructor(id: string, data: string) {
+  constructor(id: string, data: object) {
     this.id = id;
     this.data = data;
   }
