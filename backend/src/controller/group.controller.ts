@@ -144,6 +144,12 @@ router.delete("/:groupId", async (req, res) => {
       }
     });
 
+    const messages = await DI.messageRepository.find({roomId: req.params.groupId});
+    if (messages) await DI.messageRepository.removeAndFlush(messages);
+
+    const document = await DI.documentRepository.findOne({id: req.params.groupId});
+    if (document) await DI.documentRepository.removeAndFlush(document);
+
     await DI.groupRepository.removeAndFlush(group);
     return res.status(204).send({ message: "Group deleted" });
   } catch (e: any) {

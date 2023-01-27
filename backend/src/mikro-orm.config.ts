@@ -1,5 +1,6 @@
 import { Options } from "@mikro-orm/core";
 import { Course } from "./entities/Course";
+import { Document } from "./entities/Document";
 import { File } from "./entities/File";
 import { Section } from "./entities/Section";
 import { Group } from "./entities/Group";
@@ -18,6 +19,7 @@ const options: Options = {
   debug: true,
   entities: [
     Course,
+    Document,
     File,
     Section,
     Group,

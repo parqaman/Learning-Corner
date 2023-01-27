@@ -1,5 +1,6 @@
 export * from "./BaseEntity";
 export * from "./Course";
+export * from "./Document";
 export * from "./File";
 export * from "./Section";
 export * from "./Group";

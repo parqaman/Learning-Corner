@@ -33,10 +33,3 @@ export const mockup_section = new Section({
   description: "this is a mockup section",
   text: "section test",
 });
-
-export const mockup_message = new Message({
-  sender: mockup_user,
-  message: "Hello World",
-  time: Date.now.toString(),
-  roomId: "",
-});
