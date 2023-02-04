@@ -9,7 +9,7 @@
     "build": "tsc",
     "schema:fresh": "npx mikro-orm schema:fresh -r",
     "test": "mocha -r ts-node/register test/*.test.ts --reporter mochawesome --reporter-options reportDir=test/reports,reportFilename=test-results",
-    "test:ci": "mocha -r ts-node/register test/*.test.ts --reporter mocha-junit-reporter --reporter-options reportDir=test/reports2,reportFilename=test-results2",
+    "test:ci": "mocha -r ts-node/register test/*.test.ts --reporter mocha-junit-reporter --close",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
   },
