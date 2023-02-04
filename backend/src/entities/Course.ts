@@ -1,24 +1,15 @@
-import { object, string } from "yup";
-import {
-  Collection,
-  Entity,
-  ManyToOne,
-  ManyToMany,
-  OneToMany,
-  Property,
-  Unique,
-  Filter,
-} from "@mikro-orm/core";
-import { BaseEntity } from "./BaseEntity";
-import { User } from "./User";
-import { Section } from "./Section";
-import { Quiz } from "./Quiz";
-import { LearnerInCourse } from "./LearnerInCourse";
-import { Group } from "./Group";
+import { object, string } from 'yup';
+import { Collection, Entity, ManyToOne, ManyToMany, OneToMany, Property, Unique, Filter } from '@mikro-orm/core';
+import { BaseEntity } from './BaseEntity';
+import { User } from './User';
+import { Section } from './Section';
+import { Quiz } from './Quiz';
+import { LearnerInCourse } from './LearnerInCourse';
+import { Group } from './Group';
 
 @Entity()
 @Filter({
-  name: "name",
+  name: 'name',
   cond: (args) => ({ name: { $ilike: `%${args.name}%` } }),
 })
 export class Course extends BaseEntity {
@@ -29,7 +20,7 @@ export class Course extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToOne({entity: () => User, onDelete: "cascade"})
+  @ManyToOne({ entity: () => User, onDelete: 'cascade' })
   lecturer: User;
 
   @ManyToMany({

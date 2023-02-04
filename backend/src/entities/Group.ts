@@ -1,17 +1,10 @@
-import {
-  Collection,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  Property,
-} from "@mikro-orm/core";
-import { object, string } from "yup";
-import { BaseEntity } from "./BaseEntity";
-import { Course } from "./Course";
-import { LearnerInCourse } from "./LearnerInCourse";
-import { LearnerInGroup } from "./LearnerInGroup";
-import { Section } from "./Section";
+import { Collection, Entity, ManyToMany, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
+import { object, string } from 'yup';
+import { BaseEntity } from './BaseEntity';
+import { Course } from './Course';
+import { LearnerInCourse } from './LearnerInCourse';
+import { LearnerInGroup } from './LearnerInGroup';
+import { Section } from './Section';
 
 @Entity()
 export class Group extends BaseEntity {
@@ -21,7 +14,7 @@ export class Group extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToOne({ entity: () => Course, onDelete: "cascade" })
+  @ManyToOne({ entity: () => Course, onDelete: 'cascade' })
   course: Course;
 
   @ManyToMany({
