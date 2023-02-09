@@ -21,6 +21,8 @@ import { UploadController } from './controller/upload.controller';
 import * as path from 'path';
 import { TestSeeder } from './seeders/TestSeeder';
 import * as socketIo from 'socket.io';
+import nodemailer from 'nodemailer'
+
 const PORT = 4000;
 const app = express();
 
@@ -37,6 +39,14 @@ export const DI = {} as {
   messageRepository: EntityRepository<Message>;
   userRepository: EntityRepository<User>;
 };
+
+export const emailTransporter = nodemailer.createTransport({
+  service: 'Outlook365',
+  auth: {
+    user: "the-learning-corner@outlook.com",
+    pass: "the.learning.corner123"
+  }
+});
 
 export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
