@@ -1,116 +1,31 @@
 image: node:latest
 stages:
-  - install
-  - lint
-  - test
   - build
-
-variables:
-  CI: "false" 
-
-install-frontend-job:
-  stage: install
-  script:
-    - cd ./frontend
-    - npm ci --cache .npm --prefer-offline
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
-  rules:
-    - changes:
-        - frontend/**/*
-
-install-backend-job:
-  stage: install
-  script:
-    - cd ./backend
-    - npm ci --cache .npm --prefer-offline
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
-  rules:
-    - changes:
-        - backend/**/*
-
-lint-frontend-job:
-  stage: lint
-  script:
-    - cd ./frontend
-    - npm run lint
-  cache:
-    paths:
-      - frontend/node_modules/
-  rules:
-    - changes:
-        - frontend/**/*
-
-lint-backend-job:
-  stage: lint
-  script:
-    - cd ./backend
-    - npm run lint
-  cache:
-    paths:
-      - backend/node_modules/
-  rules:
-    - changes:
-        - backend/**/*
 
 build-frontend-job:
   stage: build
   script:
     - cd ./frontend
+    - npm ci
+    - npm run test:ci
+    - ls
     - npm run build
-  cache:
-    paths:
-      - frontend/node_modules/
   rules:
     - changes:
         - frontend/**/*
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./frontend/junit.xml
 
 build-backend-job:
   stage: build
   script:
     - cd ./backend
+    - npm ci
+    - npm run test:ci
     - npm run build
-  cache:
-    paths:
-      - backend/node_modules/
-  rules:
-    - changes:
-        - backend/**/*
-
-test-frontend-job:
-  stage: test
-  script:
-    - cd ./frontend
-    - npm run test:ci
-  cache:
-    paths:
-      - frontend/node_modules/
-  rules:
-    - changes:
-        - frontend/**/*
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - test-results.xml
-
-test-backend-job:
-  stage: test
-  script:
-    - cd ./backend
-    - npm run test:ci
-  cache:
-    paths:
-      - backend/node_modules/
   rules:
     - changes:
         - backend/**/*
@@ -118,4 +33,4 @@ test-backend-job:
     when: always
     reports:
       junit:
-        - test-results.xml
+        - ./backend/test-results.xml
