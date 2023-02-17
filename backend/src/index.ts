@@ -31,6 +31,8 @@ import { Socket } from "socket.io";
 const PORT = 4000;
 const app = express();
 
+const clientPath = path.join(__dirname, "../public");
+
 export const DI = {} as {
   server: http.Server;
   orm: MikroORM;
@@ -47,6 +49,7 @@ export const DI = {} as {
 
 export const initializeServer = async () => {
   DI.orm = await MikroORM.init();
+  await DI.orm.getSchemaGenerator().updateSchema();
   DI.em = DI.orm.em;
   DI.courseRepository = DI.orm.em.getRepository(Course);
   DI.fileRepository = DI.orm.em.getRepository(File);
@@ -70,8 +73,11 @@ export const initializeServer = async () => {
   app.use(Auth.prepareAuthentication);
 
   // routes
-
-  app.use("/upload/tmp", express.static(path.join(__dirname, "../upload/tmp")));
+  app.use(express.static(clientPath));
+  app.use(
+    "/upload/tmp",
+    express.static(path.join(__dirname, "../upload/tmp"))
+  );
   app.use(
     "/upload/profile",
     express.static(path.join(__dirname, "../upload/profile"))
@@ -84,11 +90,15 @@ export const initializeServer = async () => {
   app.get("/", (req, res) => {
     res.send("GET request to the homepage");
   });
-  app.use("/auth", AuthController);
-  app.use("/users", Auth.verifyAccess, UserController);
-  app.use("/courses", CourseController);
-  app.use("/groups", GroupController);
-  app.use("/sections", UploadController);
+  app.use("/api/auth", AuthController);
+  app.use("/api/users", Auth.verifyAccess, UserController);
+  app.use("/api/courses", CourseController);
+  app.use("/api/groups", GroupController);
+  app.use("/api/sections", UploadController);
+
+  app.get('(/*)?', async (req, res, next) => {
+    res.sendFile(path.join(clientPath, 'index.html'));
+  })
 
   const server = http.createServer(app);
   const io = new socketIo.Server(server, {
