@@ -38,6 +38,7 @@ export const SearchPage = () => {
               display={'flex'}
               flexDir={'column'}
               justifyContent={'flex-end'}
+              data-testid="searchInput"
             >
               {name}
             </Heading>
