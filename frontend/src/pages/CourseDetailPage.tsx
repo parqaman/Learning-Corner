@@ -423,7 +423,7 @@ export const CourseDetailPage = () => {
                     )}
                   </Flex>
                   <Text>
-                    {course?.lecturer.firstName} {course?.lecturer.lastName}
+                    {course?.lecturer?.firstName} {course?.lecturer?.lastName}
                   </Text>
                 </Box>
               )}

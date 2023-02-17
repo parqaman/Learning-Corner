@@ -3,7 +3,6 @@
       "tslint:latest",
       "tslint-etc",
       "tslint-react",
-      "tslint-config-airbnb",
       "tslint-plugin-prettier",
       "tslint-config-prettier"
     ],

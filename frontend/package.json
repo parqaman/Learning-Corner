@@ -37,6 +37,7 @@
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react": "^3.0.0",
+    "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.8.3",
     "ts-jest": "^29.0.5",
     "tslint": "^6.1.3",
