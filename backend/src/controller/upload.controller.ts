@@ -84,6 +84,18 @@ router.post('/:sectionId/file', uploadFile, async (req, res) => {
   }
   const files = req.files as Express.Multer.File[];
 
+  if (files && files.length === 1 && files[0].filename) {
+    const fileName = handleNewFile(section, files[0].filename, files[0].originalname);
+    const fDTO: CreateFileDTO = {
+      name: fileName,
+      section,
+    };
+    const newSectionFiles: OwnFile[] = [...section.files, new OwnFile(fDTO)];
+    wrap(section).assign({ files: newSectionFiles });
+  }
+  await DI.sectionRepository.flush();
+  res.status(200).send(section);
+
   if(section.course) {
     //find participants of course
     const learnerInCourseList = await DI.learnerInCourseRepository.find({ //returns an array of learner in course
@@ -103,18 +115,6 @@ router.post('/:sectionId/file', uploadFile, async (req, res) => {
       }
     }
   }
-
-  if (files && files.length === 1 && files[0].filename) {
-    const fileName = handleNewFile(section, files[0].filename, files[0].originalname);
-    const fDTO: CreateFileDTO = {
-      name: fileName,
-      section,
-    };
-    const newSectionFiles: OwnFile[] = [...section.files, new OwnFile(fDTO)];
-    wrap(section).assign({ files: newSectionFiles });
-  }
-  await DI.sectionRepository.flush();
-  res.status(200).send(section);
 });
 
 export const UploadController = router;
