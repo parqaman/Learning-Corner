@@ -1,4 +1,3 @@
-
 import { AppLayout } from '../layout/AppLayout';
 import { useToast, Heading, Box, Text, Button, Input, Textarea } from '@chakra-ui/react';
 import { useApiClient } from '../adapter/api/useApiClient';
@@ -65,7 +64,7 @@ export const NewCoursePage = () => {
     <AppLayout display={'flex'} flexDir="column" justifyContent={'center'} alignItems="center">
       <NewCourseCard>
         <Heading>Create a new course</Heading>
-        <form onSubmit={(e) => handleNewCourse(e)}>
+        <form onSubmit={(e) => handleNewCourse(e)} data-testid="newCourseForm">
           <Box width={'100%'} gap={'1em'} display="flex" flexDirection={'column'}>
             <Input
               value={course?.name}
@@ -81,6 +80,7 @@ export const NewCoursePage = () => {
               id="course-title"
               name="course-title"
               type="text"
+              data-testid="name"
             />
             <Textarea
               value={course?.description}
@@ -93,6 +93,7 @@ export const NewCoursePage = () => {
               borderColor={'rgba(0, 0, 0, 30%)'}
               id="course-desc"
               name="course-desc"
+              data-testid="description"
             />
             <Button
               variant={'unstyled'}
@@ -101,6 +102,7 @@ export const NewCoursePage = () => {
               bg={'black'}
               color={'white'}
               borderRadius={'2rem'}
+              data-testid="create-btn"
             >
               Create!
             </Button>

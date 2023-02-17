@@ -1,7 +1,6 @@
-import { render, fireEvent, waitFor, screen, within } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { AuthProvider } from '../providers/AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
-import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom/extend-expect';
 import { NewCoursePage } from './NewCoursePage';
 
