@@ -8,7 +8,7 @@ export class TestSeeder extends Seeder {
     const hashedPassword = await Auth.hashPassword('12345678');
     const user = em.create(User, {
       id: '1',
-      email: 'admin@learning-corner.com',
+      email: 'the-learning-corner@outlook.com',
       password: hashedPassword,
       firstName: 'Admin',
       lastName: '1',
