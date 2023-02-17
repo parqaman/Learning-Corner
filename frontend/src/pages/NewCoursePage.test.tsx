@@ -25,7 +25,7 @@ const testCourse = {
 
 test('successfully create a new course', async () => {
   // Render the page
-  const { getByTestId, getByText } = render(
+  const { getByTestId } = render(
     <BrowserRouter>
       <AuthProvider>
         <NewCoursePage />
@@ -33,7 +33,7 @@ test('successfully create a new course', async () => {
     </BrowserRouter>,
   );
 
-  const form = getByTestId('newCourseForm');
+  const form = getByTestId('form');
   form.onsubmit = createCourseMock;
 
   const nameInput = getByTestId('name');

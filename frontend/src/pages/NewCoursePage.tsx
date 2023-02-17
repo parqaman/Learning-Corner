@@ -64,7 +64,7 @@ export const NewCoursePage = () => {
     <AppLayout display={'flex'} flexDir="column" justifyContent={'center'} alignItems="center">
       <NewCourseCard>
         <Heading>Create a new course</Heading>
-        <form onSubmit={(e) => handleNewCourse(e)} data-testid="newCourseForm">
+        <form onSubmit={(e) => handleNewCourse(e)} data-testid="form">
           <Box width={'100%'} gap={'1em'} display="flex" flexDirection={'column'}>
             <Input
               value={course?.name}
