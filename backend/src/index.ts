@@ -3,6 +3,7 @@ import http from 'http';
 import { EntityManager, EntityRepository, MikroORM, RequestContext } from '@mikro-orm/core';
 import {
   Course,
+  Document,
   File,
   Section,
   Group,
@@ -38,6 +39,22 @@ export const DI = {} as {
   learnerInGroupRepository: EntityRepository<LearnerInGroup>;
   messageRepository: EntityRepository<Message>;
   userRepository: EntityRepository<User>;
+  documentRepository: EntityRepository<Document>;
+};
+
+export const findOrCreateDocument = async (groupId: string, em: EntityManager) => {
+  if (groupId == null) return;
+
+  const group = await em.findOne(Group, groupId);
+  console.log(group);
+  if (!group) return;
+  var document = await em.findOne(Document, group.id);
+  if (!document) {
+    document = new Document(group.id, {});
+    await em.persistAndFlush(document);
+    return document;
+  }
+  return document;
 };
 
 export const emailTransporter = nodemailer.createTransport({
@@ -59,6 +76,7 @@ export const initializeServer = async () => {
   DI.learnerInGroupRepository = DI.orm.em.getRepository(LearnerInGroup);
   DI.messageRepository = DI.orm.em.getRepository(Message);
   DI.userRepository = DI.orm.em.getRepository(User);
+  DI.documentRepository = DI.orm.em.getRepository(Document);
 
   const numUser = await DI.userRepository.count();
   const numCourse = await DI.courseRepository.count();
@@ -98,7 +116,7 @@ export const initializeServer = async () => {
   io.use((socket, next) => {
     const token = socket.handshake.auth.token;
     const res = Auth.verifyToken(token);
-    console.log('Socket-Auth:', res);
+    // console.log("Socket-Auth:", res);
     if (!res) {
       const err = new Error('not authorized');
       next(err);
@@ -139,6 +157,42 @@ export const initializeServer = async () => {
           roomId: args.room,
         }),
       );
+    });
+
+    socket.on("get-document", async (groupID) => {
+      const em = DI.orm.em.fork();
+      const document = await findOrCreateDocument(groupID, em);
+      socket.join(groupID);
+      if (document) socket.emit("load-document", document.data);
+
+      socket.on("send-changes", (args) => {
+        socket.broadcast.to(groupID).emit("receive-changes", args);
+      });
+
+      socket.on("save-document", async (data) => {
+        if (document) {
+          document.data = data;
+          await em.persistAndFlush(document);
+        }
+      });
+    });
+
+    socket.on("get-document", async (groupID) => {
+      const em = DI.orm.em.fork();
+      const document = await findOrCreateDocument(groupID, em);
+      socket.join(groupID);
+      if (document) socket.emit("load-document", document.data);
+
+      socket.on("send-changes", (args) => {
+        socket.broadcast.to(groupID).emit("receive-changes", args);
+      });
+
+      socket.on("save-document", async (data) => {
+        if (document) {
+          document.data = data;
+          await em.persistAndFlush(document);
+        }
+      });
     });
 
     socket.on('disconnect', (reason) => {

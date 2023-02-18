@@ -1,5 +1,6 @@
 import { Options } from '@mikro-orm/core';
 import { Course } from './entities/Course';
+import { Document } from "./entities/Document";
 import { File } from './entities/File';
 import { Section } from './entities/Section';
 import { Group } from './entities/Group';
@@ -16,7 +17,16 @@ const options: Options = {
   user: 'lcUser',
   password: 'lcfwe22',
   debug: true,
-  entities: [Course, File, Section, Group, LearnerInCourse, LearnerInGroup, Message, User],
+  entities: [
+    Course,
+    File,
+    Section,
+    Group,
+    LearnerInCourse,
+    LearnerInGroup,
+    Message,
+    User,
+  ],
 };
 
 export default options;

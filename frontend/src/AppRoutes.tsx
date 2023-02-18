@@ -16,6 +16,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { SearchPage } from "./pages/SearchPage";
+import { TextEditor } from "./pages/TextEditor";
 import { useAuth } from "./providers/AuthProvider";
   
 export type RouteConfig = RouteProps & { path: string; isPrivate?: boolean };
@@ -86,6 +87,11 @@ export const routes: RouteConfig[] = [
     path: "/courses/:courseID/groups/:groupID",
     isPrivate: true,
     element: <GroupDetailPage />,
+  },
+  {
+    path: "/courses/:courseID/groups/:groupID/text-editor",
+    isPrivate: true,
+    element: <TextEditor />,
   },
 ];
   

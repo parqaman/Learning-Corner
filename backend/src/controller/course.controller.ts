@@ -21,9 +21,9 @@ router.get('/', async (req, res) => {
         {},
         {
           filters: { name: { name: courseName } },
-          populate: ['sections', 'sections.files', 'participants', 'lecturer', 'groups'],
-        },
-      ),
+          populate: ["sections", "sections.files", "participants", "lecturer", 'groups'],
+        }
+      )
     );
   }
   return res.json(
@@ -125,7 +125,7 @@ router.delete('/:courseId', async (req, res) => {
         const files = section.files.getItems();
         deleteSectionFiles(files, section.id);
       }
-    });
+    })
 
     await DI.courseRepository.removeAndFlush(course);
     return res.status(204).send({ message: 'Course deleted' });
