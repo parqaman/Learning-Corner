@@ -41,7 +41,7 @@ test('my courses page contains courses the user joined successfully', async () =
   debug();
 
   act(() => {
-    const courseList = getByTestId('course-inner-list');
+    const courseList = getByTestId('courseListTest');
     expect(courseList.textContent).toBe('No courses found') //since user does not joined or have any single course
 })
 });

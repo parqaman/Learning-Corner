@@ -41,7 +41,7 @@ export const FavoriteCourseList = ({ courses }: { courses: Course[] | undefined 
   };
 
   return (
-    <Box w={'47rem'} flexDir={'column'} alignItems={'center'} mt="0.25rem" mb={'1.5rem'}>
+    <Box w={'47rem'} flexDir={'column'} alignItems={'center'} mt="0.25rem" mb={'1.5rem'} data-testid="favoriteCourseListTest">
       {shownCourses && shownCourses.length > 0 ? (
         <Flex width={'100%'} overflowX={'hidden'} gap="1rem">
           {shownCourses
