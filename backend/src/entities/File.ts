@@ -1,14 +1,14 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
-import { object, string } from "yup";
-import { BaseEntity } from "./BaseEntity";
-import { Section } from "./Section";
+import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { object, string } from 'yup';
+import { BaseEntity } from './BaseEntity';
+import { Section } from './Section';
 
 @Entity()
 export class File extends BaseEntity {
   @Property()
   name: string;
 
-  @ManyToOne({entity: () => Section, onDelete: "cascade"})
+  @ManyToOne({ entity: () => Section, onDelete: 'cascade' })
   section: Section;
 
   constructor({ name, section }: CreateFileDTO) {

@@ -1,17 +1,9 @@
-import {
-  Cascade,
-  Collection,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  Property,
-  Unique,
-} from "@mikro-orm/core";
-import { Course } from "./Course";
-import { Group } from "./Group";
-import { LearnerInGroup } from "./LearnerInGroup";
-import { User } from "./User";
-import { v4 } from "uuid";
+import { Collection, Entity, ManyToMany, ManyToOne, Property, Unique } from '@mikro-orm/core';
+import { Course } from './Course';
+import { Group } from './Group';
+import { LearnerInGroup } from './LearnerInGroup';
+import { User } from './User';
+import { v4 } from 'uuid';
 
 @Entity()
 export class LearnerInCourse {
@@ -19,10 +11,10 @@ export class LearnerInCourse {
   @Unique()
   id: string = v4();
 
-  @ManyToOne({ primary: true, entity: () => User, onDelete: 'cascade'})
+  @ManyToOne({ primary: true, entity: () => User, onDelete: 'cascade' })
   learner: User;
 
-  @ManyToOne({ primary: true, entity: () => Course, onDelete: 'cascade'})
+  @ManyToOne({ primary: true, entity: () => Course, onDelete: 'cascade' })
   course: Course;
 
   @Property()
