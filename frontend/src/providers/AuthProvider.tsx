@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { useToast, Text } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "../hooks/localStorage";
-import { User } from "../adapter/api/__generated/api";
+import React, { useContext } from 'react';
+import { useToast, Text } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from '../hooks/localStorage';
+import { User } from '../adapter/api/__generated/api';
 
 export type RegisterUserData = {
   firstName: string;
@@ -18,7 +18,7 @@ export type LoginData = {
 };
 
 export type AuthContext = {
-  accessToken: string;
+  accessToken: string | null;
   user: User | null;
   isLoggedIn: boolean;
   actions: {
@@ -28,49 +28,53 @@ export type AuthContext = {
   };
 };
 
-export const authContext = React.createContext<AuthContext | null>(null);
+export const initialAuthContext = {
+  accessToken: null,
+  user: null,
+  isLoggedIn: false,
+  actions: {
+    login: () => undefined,
+    register: () => undefined,
+    logout: () => undefined,
+  },
+};
+
+export const authContext = React.createContext<AuthContext | null>(initialAuthContext);
 
 export type AuthProviderProps = { children: React.ReactNode };
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [accessToken, setAccessToken] = useLocalStorage<string | null>(
-    "accessToken",
-    null
-  );
+  const [accessToken, setAccessToken] = useLocalStorage<string | null>('accessToken', null);
 
   const user = React.useMemo(
-    () =>
-      accessToken
-        ? (JSON.parse(atob(accessToken.split(".")[1])) as User)
-        : null,
-    [accessToken]
+    () => (accessToken ? (JSON.parse(atob(accessToken.split('.')[1])) as User) : null),
+    [accessToken],
   );
   const toast = useToast();
   const navigate = useNavigate();
 
   const onLogout = React.useCallback(() => {
     setAccessToken(null);
-    navigate("/");
+    navigate('/');
   }, []);
 
   const onLogin = React.useCallback(
     async (loginData: LoginData) => {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
         body: JSON.stringify(loginData),
-        headers: { "content-type": "application/json" },
+        headers: { 'content-type': 'application/json' },
       });
 
       const resBody = await res.json();
       if (res.status === 200) {
         setAccessToken(resBody.accessToken);
-        navigate("/", { replace: true });
-
+        navigate('/', { replace: true });
       } else {
-        if(!toast.isActive("error-password")){
+        if (!toast.isActive('error-password')) {
           toast({
-            id: "error-password",
-            title: "Error occured.",
-            
+            id: 'error-password',
+            title: 'Error occured.',
+
             description: (
               <>
                 {resBody.errors.map((e: string) => (
@@ -78,41 +82,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 ))}
               </>
             ),
-            status: "error",
+            status: 'error',
             duration: 9000,
             isClosable: true,
           });
         }
       }
     },
-    [toast]
+    [toast],
   );
 
   const onRegister = React.useCallback(
     async (userData: RegisterUserData) => {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
         body: JSON.stringify(userData),
-        headers: { "content-type": "application/json" },
+        headers: { 'content-type': 'application/json' },
       });
       if (res.status === 201) {
         toast({
-          title: "Account created.",
+          title: 'Account created.',
           description: "We've created your account for you.",
-          status: "success",
+          status: 'success',
           duration: 9000,
           isClosable: true,
         });
 
-        //automatically logged in after successful registration
+        // automatically logged in after successful registration
         onLogin({
           email: userData.email,
-          password: userData.password
-        })
+          password: userData.password,
+        });
       } else {
         const errorBody = await res.json();
         toast({
-          title: "Error occured.",
+          title: 'Error occured.',
           description: (
             <>
               {errorBody.errors.map((e: string) => (
@@ -120,13 +124,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               ))}
             </>
           ),
-          status: "error",
+          status: 'error',
           duration: 9000,
           isClosable: true,
         });
       }
     },
-    [toast]
+    [toast],
   );
 
   return (
@@ -150,8 +154,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 export const useAuth = () => {
   const contextValue = useContext(authContext);
   if (!contextValue) {
-    throw new Error("ensure to use useAuth within its provider");
+    throw new Error('ensure to use useAuth within its provider');
   }
-  contextValue.isLoggedIn = contextValue.accessToken ? (JSON.parse(atob(contextValue.accessToken.split(".")[1])).exp * 1000) > Date.now() : false;
+  contextValue.isLoggedIn = contextValue.accessToken
+    ? JSON.parse(atob(contextValue.accessToken.split('.')[1])).exp * 1000 > Date.now()
+    : false;
   return contextValue;
 };

@@ -26,6 +26,7 @@ const options: Options = {
     LearnerInGroup,
     Message,
     User,
+    Document
   ],
 };
 

@@ -177,24 +177,6 @@ export const initializeServer = async () => {
       });
     });
 
-    socket.on("get-document", async (groupID) => {
-      const em = DI.orm.em.fork();
-      const document = await findOrCreateDocument(groupID, em);
-      socket.join(groupID);
-      if (document) socket.emit("load-document", document.data);
-
-      socket.on("send-changes", (args) => {
-        socket.broadcast.to(groupID).emit("receive-changes", args);
-      });
-
-      socket.on("save-document", async (data) => {
-        if (document) {
-          document.data = data;
-          await em.persistAndFlush(document);
-        }
-      });
-    });
-
     socket.on('disconnect', (reason) => {
       console.log('disconnect: ', reason);
     });
