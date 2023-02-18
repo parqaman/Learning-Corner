@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
-    "test": "react-scripts test --watchAll",
+    "test": "react-scripts test --watchAll=false",
     "test:ci": "npm run test -- --testResultsProcessor=\"jest-junit\""
   },
   "dependencies": {

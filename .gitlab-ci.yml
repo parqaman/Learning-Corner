@@ -24,7 +24,7 @@ build-backend-job:
   script:
     - cd ./backend
     - npm ci
-    - npm run test:ci
+    - npm run test
     - npm run build
   rules:
     - changes:
@@ -33,4 +33,4 @@ build-backend-job:
     when: always
     reports:
       junit:
-        - ./backend/test-results.xml
+        - ./backend/test/reports/test-results.json
