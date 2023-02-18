@@ -51,7 +51,7 @@ export const NewCoursePage = () => {
         .catch((error) => {
           toast({
             title: 'Error occured.',
-            description: <Text>{error.response.data.errors}</Text>,
+            description: <Text>{error}</Text>,
             status: 'error',
             duration: 9000,
             isClosable: true,

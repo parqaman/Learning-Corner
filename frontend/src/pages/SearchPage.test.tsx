@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { AuthProvider } from '../providers/AuthProvider';
 import { MemoryRouter, Route, RouteProps, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
@@ -28,9 +28,6 @@ test('successfully show the search result', async () => {
     </MemoryRouter>,
   );
 
-  const searchInput = getByTestId('searchInput');
-  expect(searchInput.textContent).toContain(testSearchInput);
-
-  const results = getByText('No courses found');
-  expect(results).toBeInTheDocument();
+  expect(screen.getByTestId('searchInput')).toHaveTextContent(testSearchInput);
+  expect(screen.getByTestId('courseListTest')).toBeInTheDocument();
 });
