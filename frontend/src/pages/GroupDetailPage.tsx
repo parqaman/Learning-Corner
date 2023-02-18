@@ -18,19 +18,20 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '@chakra-ui/react';
-import { AppLayout } from '../layout/AppLayout';
-import { IoEnterOutline, IoExitOutline } from 'react-icons/io5';
-import { AiFillEdit, AiOutlineCheck } from 'react-icons/ai';
-import { RxCross1 } from 'react-icons/rx';
-import React, { useState } from 'react';
-import { useApiClient } from '../adapter/api/useApiClient';
-import { Group, User } from '../adapter/api/__generated';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Section } from '../adapter/api/__generated';
-import { useAuth } from '../providers/AuthProvider';
-import { GroupSectionList } from '../components/group_components/GroupSectionList';
-import { GroupDetailCard } from '../components/group_details_components/GroupDetailsCard';
+} from "@chakra-ui/react";
+import { AppLayout } from "../layout/AppLayout";
+import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
+import { AiFillEdit, AiOutlineCheck } from "react-icons/ai";
+import { HiOutlineDocumentDuplicate } from "react-icons/hi";
+import { RxCross1 } from "react-icons/rx";
+import React, { useState } from "react";
+import { useApiClient } from "../adapter/api/useApiClient";
+import { Group, User } from "../adapter/api/__generated";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Section } from "../adapter/api/__generated";
+import { useAuth } from "../providers/AuthProvider";
+import { GroupSectionList } from "../components/group_components/GroupSectionList";
+import { GroupDetailCard } from "../components/group_details_components/GroupDetailsCard";
 
 interface GroupDescProps {
   group: Group;
@@ -39,7 +40,12 @@ interface GroupDescProps {
   joined: boolean;
 }
 
-const GroupDescriptionSection = ({ group, updateGroup, updateHandler, joined }: GroupDescProps) => {
+const GroupDescriptionSection = ({
+  group,
+  updateGroup,
+  updateHandler,
+  joined,
+}: GroupDescProps) => {
   const [editMode, setEditMode] = useState(false);
 
   const handleEditSection = (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,64 +55,74 @@ const GroupDescriptionSection = ({ group, updateGroup, updateHandler, joined }: 
   };
 
   return (
-    <Box mt={'3rem'}>
+    <Box mt={"3rem"}>
       <Flex
-        borderBottom={'solid 0.075rem'}
-        borderBottomColor={'#0194F3'}
-        pl={'0.5rem'}
-        pr={'0.5rem'}
+        borderBottom={"solid 0.075rem"}
+        borderBottomColor={"#0194F3"}
+        pl={"0.5rem"}
+        pr={"0.5rem"}
         justifyContent="space-between"
       >
-        <Text fontSize={'2xl'} fontWeight="normal">
+        <Text fontSize={"2xl"} fontWeight="normal">
           Group Description
         </Text>
         {joined && !editMode && (
-          <Flex alignItems={'center'} fontSize="larger" cursor="pointer">
-            <AiFillEdit onClick={() => setEditMode(!editMode)} cursor="pointer" />
+          <Flex alignItems={"center"} fontSize="larger" cursor="pointer">
+            <AiFillEdit
+              onClick={() => setEditMode(!editMode)}
+              cursor="pointer"
+            />
           </Flex>
         )}
       </Flex>
       {editMode ? (
-        <form onSubmit={(e) => handleEditSection(e)} style={{ display: 'flex', gap: '0.75rem' }}>
+        <form
+          onSubmit={(e) => handleEditSection(e)}
+          style={{ display: "flex", gap: "0.75rem" }}
+        >
           <Textarea
             value={group.description}
             resize="none"
-            height={'10rem'}
+            height={"10rem"}
             onChange={(e) =>
               updateGroup((prev) => {
-                return { course: prev.course, name: prev.name, description: e.target.value };
+                return {
+                  course: prev.course,
+                  name: prev.name,
+                  description: e.target.value,
+                };
               })
             }
           />
-          <Box mt={'1rem'}>
+          <Box mt={"1rem"}>
             <Button
               type="submit"
-              variant={'solid'}
+              variant={"solid"}
               _hover={{}}
               _active={{}}
               size="xs"
-              bg={'black'}
+              bg={"black"}
               color="white"
-              fontWeight={'medium'}
+              fontWeight={"medium"}
             >
               <AiOutlineCheck />
             </Button>
             <Button
               onClick={() => setEditMode(false)}
-              variant={'solid'}
+              variant={"solid"}
               _hover={{}}
               _active={{}}
               size="xs"
-              bg={'gray'}
+              bg={"gray"}
               color="white"
-              fontWeight={'medium'}
+              fontWeight={"medium"}
             >
               <RxCross1 />
             </Button>
           </Box>
         </form>
       ) : (
-        <Box pl={'0.5rem'} pr={'0.5rem'} mt="0.5rem">
+        <Box pl={"0.5rem"} pr={"0.5rem"} mt="0.5rem">
           {group.description}
         </Box>
       )}
@@ -115,9 +131,9 @@ const GroupDescriptionSection = ({ group, updateGroup, updateHandler, joined }: 
 };
 
 const MemberList = ({ members }: { members: User[] }) => {
-  const name = new Array();
+  let name = new Array();
   members.forEach((i) => {
-    name.push(i.firstName + ' ' + i.lastName);
+    name.push(i.firstName + " " + i.lastName);
   });
   return (
     <>
@@ -135,13 +151,13 @@ export const GroupDetailPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [joined, setJoined] = useState(false);
   const [group, setGroup] = useState<Group>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
   });
   const [newSection, setNewSection] = useState<Section>({
-    heading: '',
-    description: '',
-    text: 'section text', // text von einem Section
+    heading: "",
+    description: "",
+    text: "section text", //text von einem Section
   });
   const [members, setMembers] = useState<User[]>();
   const [sections, setSections] = useState<Section[]>();
@@ -191,9 +207,9 @@ export const GroupDetailPage = () => {
           setOldGroup(group);
           setGroup(group);
           toast({
-            title: 'Updated',
+            title: "Updated",
             description: <Text>Group sucessfully updated</Text>,
-            status: 'success',
+            status: "success",
             duration: 5000,
             isClosable: true,
           });
@@ -201,9 +217,9 @@ export const GroupDetailPage = () => {
         .catch((error) => {
           setGroup(oldGroup);
           toast({
-            title: 'Error occured.',
+            title: "Error occured.",
             description: <Text>{error.response.data.errors}</Text>,
-            status: 'error',
+            status: "error",
             duration: 9000,
             isClosable: true,
           });
@@ -217,9 +233,9 @@ export const GroupDetailPage = () => {
         .deleteGroup(group.id!)
         .then(() => {
           toast({
-            title: 'Deleted',
+            title: "Deleted",
             description: <Text>Group sucessfully deleted</Text>,
-            status: 'success',
+            status: "success",
             duration: 5000,
             isClosable: true,
           });
@@ -227,9 +243,9 @@ export const GroupDetailPage = () => {
         })
         .catch((error) => {
           toast({
-            title: 'Error occured.',
+            title: "Error occured.",
             description: <Text>{error.response.data.errors}</Text>,
-            status: 'error',
+            status: "error",
             duration: 9000,
             isClosable: true,
           });
@@ -251,8 +267,8 @@ export const GroupDetailPage = () => {
           }
           newSectionDisclosure.onClose();
           setNewSection({
-            heading: '',
-            description: '',
+            heading: "",
+            description: "",
             text: newSection.text,
           });
         })
@@ -265,12 +281,16 @@ export const GroupDetailPage = () => {
   const joinGroup = async () => {
     if (group && currentUser) {
       await apiClient
-        .putUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+        .putUsersUseridCourseCourseidGroupGroupid(
+          currentUser.id,
+          group.course!.id!,
+          group.id!
+        )
         .then((res2) => {
           toast({
-            title: 'Joined',
+            title: "Joined",
             description: <Text>Group sucessfully joined</Text>,
-            status: 'success',
+            status: "success",
             duration: 5000,
             isClosable: true,
           });
@@ -286,9 +306,9 @@ export const GroupDetailPage = () => {
         })
         .catch((error) => {
           toast({
-            title: 'Error occured.',
+            title: "Error occured.",
             description: <Text>{error.response.data.errors}</Text>,
-            status: 'error',
+            status: "error",
             duration: 9000,
             isClosable: true,
           });
@@ -299,25 +319,31 @@ export const GroupDetailPage = () => {
   const leaveGroup = async () => {
     if (group && currentUser) {
       await apiClient
-        .deleteUsersUseridCourseCourseidGroupGroupid(currentUser.id, group.course!.id!, group.id!)
+        .deleteUsersUseridCourseCourseidGroupGroupid(
+          currentUser.id,
+          group.course!.id!,
+          group.id!
+        )
         .then(() => {
           toast({
-            title: 'Left',
+            title: "Left",
             description: <Text>Gruop sucessfully left</Text>,
-            status: 'success',
+            status: "success",
             duration: 5000,
             isClosable: true,
           });
           if (members) {
-            setMembers(members.filter((member) => member.id !== currentUser.id));
+            setMembers(
+              members.filter((member) => member.id !== currentUser.id)
+            );
           }
           setJoined(false);
         })
         .catch((error) => {
           toast({
-            title: 'Error occured.',
+            title: "Error occured.",
             description: <Text>{error.response.data.errors}</Text>,
-            status: 'error',
+            status: "error",
             duration: 9000,
             isClosable: true,
           });
@@ -326,41 +352,59 @@ export const GroupDetailPage = () => {
   };
 
   return (
-    <AppLayout display={'flex'} flexDir="column" alignItems="center" mt={'3rem'}>
+    <AppLayout
+      display={"flex"}
+      flexDir="column"
+      alignItems="center"
+      mt={"3rem"}
+    >
       <GroupDetailCard joined={joined} groupID={group.id!}>
-        <Flex id="group-heading" justifyContent={'space-between'}>
-          <Box display={'flex'} gap="1.5rem">
-            <Box id="group-info" maxW={'36rem'}>
+        <Flex id="group-heading" justifyContent={"space-between"}>
+          <Box display={"flex"} gap="1.5rem">
+            <Box id="group-info" maxW={"36rem"}>
               {editMode ? (
-                <form onSubmit={(e) => handleEditGroupInfo(e)} style={{ width: '100%' }}>
+                <form
+                  onSubmit={(e) => handleEditGroupInfo(e)}
+                  style={{ width: "100%" }}
+                >
                   <Textarea
-                    w={'100%'}
-                    resize={'none'}
+                    w={"100%"}
+                    resize={"none"}
                     value={group?.name}
-                    onChange={(e) => setGroup({ name: e.target.value, description: group?.description! })}
+                    onChange={(e) =>
+                      setGroup({
+                        name: e.target.value,
+                        description: group?.description!,
+                      })
+                    }
                   />
-                  <Flex alignItems={'center'} fontSize="medium" mt={'0.5rem'} gap={'0.25rem'}>
+                  <Flex
+                    alignItems={"center"}
+                    fontSize="medium"
+                    mt={"0.5rem"}
+                    gap={"0.25rem"}
+                  >
                     <Button
                       type="submit"
-                      variant={'solid'}
+                      variant={"solid"}
                       _hover={{}}
                       _active={{}}
                       size="xs"
-                      bg={'black'}
+                      bg={"black"}
                       color="white"
-                      fontWeight={'medium'}
+                      fontWeight={"medium"}
                     >
                       Done
                     </Button>
                     <Button
                       onClick={() => setEditMode(false)}
-                      variant={'solid'}
+                      variant={"solid"}
                       _hover={{}}
                       _active={{}}
                       size="xs"
-                      bg={'gray'}
+                      bg={"gray"}
                       color="white"
-                      fontWeight={'medium'}
+                      fontWeight={"medium"}
                     >
                       Cancel
                     </Button>
@@ -374,17 +418,25 @@ export const GroupDetailPage = () => {
               )}
             </Box>
             {joined && !editMode && (
-              <Flex alignItems={'center'} fontSize="larger">
-                <AiFillEdit onClick={() => setEditMode(!editMode)} cursor="pointer" />
+              <Flex alignItems={"center"} fontSize="larger">
+                <AiFillEdit
+                  onClick={() => setEditMode(!editMode)}
+                  cursor="pointer"
+                />
               </Flex>
             )}
           </Box>
-          <Flex gap={'1rem'} id="group-buttons" flexDir={'row'} alignItems="center">
+          <Flex
+            gap={"1rem"}
+            id="group-buttons"
+            flexDir={"row"}
+            alignItems="center"
+          >
             {!joined && (
               <button onClick={() => joinGroup()}>
                 <HStack>
                   <Text>Join group</Text>
-                  <Text color="green.400" cursor="pointer" fontSize={'3xl'}>
+                  <Text color="green.400" cursor="pointer" fontSize={"3xl"}>
                     <IoEnterOutline />
                   </Text>
                 </HStack>
@@ -394,7 +446,7 @@ export const GroupDetailPage = () => {
               <button onClick={() => leaveGroup()}>
                 <HStack>
                   <Text>Leave group</Text>
-                  <Text color="red.400" cursor="pointer" fontSize={'3xl'}>
+                  <Text color="red.400" cursor="pointer" fontSize={"3xl"}>
                     <IoExitOutline />
                   </Text>
                 </HStack>
@@ -403,7 +455,7 @@ export const GroupDetailPage = () => {
           </Flex>
         </Flex>
         {
-          // group description section
+          //group description section
           group ? (
             <GroupDescriptionSection
               group={group}
@@ -415,41 +467,59 @@ export const GroupDetailPage = () => {
             <Box>Group Desciption not available</Box>
           )
         }
-        <Box mt={'2rem'}>
+        <Box mt={"2rem"}>
           <Flex
-            borderBottom={'solid 0.075rem'}
-            borderBottomColor={'#0194F3'}
-            pl={'0.5rem'}
-            pr={'0.5rem'}
+            borderBottom={"solid 0.075rem"}
+            borderBottomColor={"#0194F3"}
+            pl={"0.5rem"}
+            pr={"0.5rem"}
             justifyContent="space-between"
           >
-            <Text fontSize={'2xl'} fontWeight="normal">
+            <Text fontSize={"2xl"} fontWeight="normal">
               Member list
             </Text>
           </Flex>
-          <Box pl={'0.5rem'} pr={'0.5rem'} mt="0.5rem">
+          <Box pl={"0.5rem"} pr={"0.5rem"} mt="0.5rem">
             <UnorderedList>
-              {members && members.length > 0 ? <MemberList members={members} /> : <Text>No members found</Text>}
+              {members && members.length > 0 ? (
+                <MemberList members={members} />
+              ) : (
+                <Text>No members found</Text>
+              )}
             </UnorderedList>
           </Box>
         </Box>
+        {joined && (
+          <Box mt={"2rem"}>
+            <Button variant={"link"} color="black" fontWeight={"medium"}>
+              <Link target={"_blank"} to={"./text-editor"}>
+                <Flex gap={"0.25rem"} alignItems="center">
+                  <Text>
+                    <HiOutlineDocumentDuplicate />
+                  </Text>
+                  <Text>Open group document</Text>
+                </Flex>
+              </Link>
+            </Button>
+          </Box>
+        )}
         {/** Section List  **/}
         {joined && (
-          <Box mt={'2rem'}>
-            <Text fontSize={'2xl'} fontWeight="normal">
+          <Box mt={"1rem"}>
+            <Text fontSize={"2xl"} fontWeight="normal">
               Sections
             </Text>
             {joined && (
-              <Box mb={'1rem'}>
+              <Box mb={"1rem"}>
                 <Button
                   onClick={newSectionDisclosure.onOpen}
-                  variant={'solid'}
+                  variant={"solid"}
                   _hover={{}}
                   _active={{}}
                   size="xs"
-                  bg={'black'}
+                  bg={"black"}
                   color="white"
-                  fontWeight={'medium'}
+                  fontWeight={"medium"}
                 >
                   Add new section
                 </Button>
@@ -463,8 +533,15 @@ export const GroupDetailPage = () => {
                     <ModalHeader>New Section</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                      <Flex mb={'0.5rem'}>
-                        <form style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+                      <Flex mb={"0.5rem"}>
+                        <form
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
+                            width: "100%",
+                          }}
+                        >
                           <Input
                             placeholder="Section title"
                             value={newSection?.heading}
@@ -491,10 +568,17 @@ export const GroupDetailPage = () => {
                       </Flex>
                     </ModalBody>
                     <ModalFooter>
-                      <Button colorScheme="blue" mr={3} onClick={() => handleNewSection()}>
+                      <Button
+                        colorScheme="blue"
+                        mr={3}
+                        onClick={() => handleNewSection()}
+                      >
                         Add
                       </Button>
-                      <Button variant="ghost" onClick={newSectionDisclosure.onClose}>
+                      <Button
+                        variant="ghost"
+                        onClick={newSectionDisclosure.onClose}
+                      >
                         Cancel
                       </Button>
                     </ModalFooter>
@@ -502,12 +586,25 @@ export const GroupDetailPage = () => {
                 </Modal>
               </Box>
             )}
-            {group && <GroupSectionList group={group} sections={sections} setSections={setSections} isOwner={joined} />}
+            {group && (
+              <GroupSectionList
+                group={group}
+                sections={sections}
+                setSections={setSections}
+                isOwner={joined}
+              />
+            )}
           </Box>
         )}
-        <Box display={'flex'} justifyContent="center" mt={'3rem'}>
+        <Box display={"flex"} justifyContent="center" mt={"3rem"}>
           {joined && (
-            <Button onClick={() => handleDeleteGroup()} variant={'link'} color="red" _active={{}} size={'sm'}>
+            <Button
+              onClick={() => handleDeleteGroup()}
+              variant={"link"}
+              color="red"
+              _active={{}}
+              size={"sm"}
+            >
               Delete group
             </Button>
           )}

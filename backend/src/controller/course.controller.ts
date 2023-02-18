@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { DI } from "../";
+import { Router } from 'express';
+import { DI } from '../';
 import {
   Course,
   CreateCourseDTO,
@@ -7,13 +7,13 @@ import {
   CreateSectionDTO,
   CreateSectionSchema,
   Section,
-} from "../entities";
-import { wrap } from "@mikro-orm/core";
+} from '../entities';
+import { wrap } from '@mikro-orm/core';
 import { deleteSectionFiles } from '../helpers/file.helper';
 
 const router = Router({ mergeParams: true });
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const courseName = req.query?.name as string;
   if (courseName) {
     return res.json(
@@ -28,28 +28,26 @@ router.get("/", async (req, res) => {
   }
   return res.json(
     await DI.courseRepository.findAll({
-      populate: ["sections", "sections.files", "participants", "lecturer", 'groups'],
-    })
+      populate: ['sections', 'sections.files', 'participants', 'lecturer', 'groups'],
+    }),
   );
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const course = await DI.courseRepository.findOne(
     { id: req.params.id },
     {
-      populate: ["sections", "sections.files", "participants", "lecturer", "groups", 'groups.members'],
-    }
+      populate: ['sections', 'sections.files', 'participants', 'lecturer', 'groups', 'groups.members'],
+    },
   );
-  if (!course) return res.status(404).send({ message: "Course not found" });
+  if (!course) return res.status(404).send({ message: 'Course not found' });
   return res.json(course);
 });
 
-router.post("/", async (req, res) => {
-  const validatedData = await CreateCourseSchema.validate(req.body).catch(
-    (e) => {
-      res.status(400).json({ errors: e.errors });
-    }
-  );
+router.post('/', async (req, res) => {
+  const validatedData = await CreateCourseSchema.validate(req.body).catch((e) => {
+    res.status(400).json({ errors: e.errors });
+  });
   if (!validatedData) {
     return;
   }
@@ -62,41 +60,37 @@ router.post("/", async (req, res) => {
   };
 
   const course = new Course(createCourseDTO);
-  const hasSections =
-    createCourseDTO.sections && createCourseDTO.sections.length > 0;
-  const hasParticipants =
-    createCourseDTO.participants && createCourseDTO.participants.length > 0;
+  const hasSections = createCourseDTO.sections && createCourseDTO.sections.length > 0;
+  const hasParticipants = createCourseDTO.participants && createCourseDTO.participants.length > 0;
 
   if (hasSections) wrap(course).assign({ sections: createCourseDTO.sections });
-  if (hasParticipants)
-    wrap(course).assign({ participants: createCourseDTO.participants });
+  if (hasParticipants) wrap(course).assign({ participants: createCourseDTO.participants });
 
   const existingCourse = await DI.courseRepository.findOne({
     name: course.name,
   });
 
   if (existingCourse) {
-    return res.status(409).send({ errors: "Course existed already" });
+    return res.status(409).send({ errors: 'Course existed already' });
   }
 
   await DI.courseRepository.persistAndFlush(course);
 
-  if (hasSections) await DI.courseRepository.populate(course, ["sections"]);
-  if (hasParticipants)
-    await DI.courseRepository.populate(course, ["participants"]);
+  if (hasSections) await DI.courseRepository.populate(course, ['sections']);
+  if (hasParticipants) await DI.courseRepository.populate(course, ['participants']);
 
   return res.status(201).send(course);
 });
 
 // Update a course
-router.put("/:courseId", async (req, res) => {
+router.put('/:courseId', async (req, res) => {
   try {
     const course = await DI.courseRepository.findOne(req.params.courseId);
     if (!course) {
-      return res.status(404).send({ message: "Course not found" });
+      return res.status(404).send({ message: 'Course not found' });
     }
     if (course.lecturer !== req.user) {
-      return res.status(401).send({ message: "User not authorized" });
+      return res.status(401).send({ message: 'User not authorized' });
     }
 
     const existingCourse = await DI.courseRepository.findOne({
@@ -104,7 +98,7 @@ router.put("/:courseId", async (req, res) => {
     });
 
     if (existingCourse && course !== existingCourse) {
-      return res.status(409).send({ errors: "Course existed already" });
+      return res.status(409).send({ errors: 'Course existed already' });
     }
 
     wrap(course).assign(req.body);
@@ -116,53 +110,51 @@ router.put("/:courseId", async (req, res) => {
 });
 
 // Delete a course
-router.delete("/:courseId", async (req, res) => {
+router.delete('/:courseId', async (req, res) => {
   try {
     const course = await DI.courseRepository.findOne(req.params.courseId, { populate: ['sections', 'sections.files'] });
     if (!course) {
-      return res.status(404).send({ message: "Course not found" });
+      return res.status(404).send({ message: 'Course not found' });
     }
     if (course.lecturer !== req.user) {
-      return res.status(401).send({ message: "User not authorized" });
+      return res.status(401).send({ message: 'User not authorized' });
     }
 
-    course.sections?.getItems().map(section => {
-      if(section.files.length > 0) {
-        const files = section.files.getItems()
+    course.sections?.getItems().map((section) => {
+      if (section.files.length > 0) {
+        const files = section.files.getItems();
         deleteSectionFiles(files, section.id);
       }
     })
 
     await DI.courseRepository.removeAndFlush(course);
-    return res.status(204).send({ message: "Course deleted" });
+    return res.status(204).send({ message: 'Course deleted' });
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
   }
 });
 
 // Create section in course
-router.post("/:courseId/section", async (req, res) => {
-  const validatedData = await CreateSectionSchema.validate(req.body).catch(
-    (e) => {
-      res.status(400).send({ errors: e.errors });
-    }
-  );
+router.post('/:courseId/section', async (req, res) => {
+  const validatedData = await CreateSectionSchema.validate(req.body).catch((e) => {
+    res.status(400).send({ errors: e.errors });
+  });
   if (!validatedData) {
     return;
   }
 
   const course = await DI.courseRepository.findOne(req.params.courseId);
   if (!course) {
-    return res.status(404).send({ message: "Course not found" });
+    return res.status(404).send({ message: 'Course not found' });
   }
 
   if (course.lecturer !== req.user) {
-    return res.status(401).send({ message: "User not authorized" });
+    return res.status(401).send({ message: 'User not authorized' });
   }
 
   const createSectionDTO: CreateSectionDTO = {
     ...validatedData,
-    course: course,
+    course,
   };
 
   const newSection = new Section(createSectionDTO);
@@ -172,24 +164,24 @@ router.post("/:courseId/section", async (req, res) => {
 });
 
 // Update section in course
-router.put("/:courseId/section/:sectionId", async (req, res) => {
+router.put('/:courseId/section/:sectionId', async (req, res) => {
   try {
     const course = await DI.courseRepository.findOne(req.params.courseId);
     if (!course) {
-      return res.status(404).send({ message: "Course not found" });
+      return res.status(404).send({ message: 'Course not found' });
     }
 
     if (course.lecturer !== req.user) {
-      return res.status(401).send({ message: "User not authorized" });
+      return res.status(401).send({ message: 'User not authorized' });
     }
 
     const section = await DI.sectionRepository.findOne(req.params.sectionId);
     if (!section) {
-      return res.status(404).send({ message: "Section not found" });
+      return res.status(404).send({ message: 'Section not found' });
     }
 
     if (section.course !== course) {
-      return res.status(400).send({ message: "Section is not in the course" });
+      return res.status(400).send({ message: 'Section is not in the course' });
     }
 
     wrap(section).assign(req.body);
@@ -201,56 +193,54 @@ router.put("/:courseId/section/:sectionId", async (req, res) => {
 });
 
 // Delete section in course
-router.delete("/:courseId/section/:sectionId", async (req, res) => {
+router.delete('/:courseId/section/:sectionId', async (req, res) => {
   try {
     const course = await DI.courseRepository.findOne(req.params.courseId);
     if (!course) {
-      return res.status(404).send({ message: "Course not found" });
+      return res.status(404).send({ message: 'Course not found' });
     }
 
     if (course.lecturer !== req.user) {
-      return res.status(401).send({ message: "User not authorized" });
+      return res.status(401).send({ message: 'User not authorized' });
     }
 
-    const section = await DI.sectionRepository.findOne(req.params.sectionId, {populate: ['files']});
+    const section = await DI.sectionRepository.findOne(req.params.sectionId, { populate: ['files'] });
     if (!section) {
-      return res.status(404).send({ message: "Section not found" });
+      return res.status(404).send({ message: 'Section not found' });
     }
 
     if (section.course !== course) {
-      return res.status(400).send({ message: "Section is not in the course" });
+      return res.status(400).send({ message: 'Section is not in the course' });
     }
 
-    if(section.files.length > 0) {
-      const files = section.files.getItems()
+    if (section.files.length > 0) {
+      const files = section.files.getItems();
       deleteSectionFiles(files, req.params.sectionId);
     }
 
     await DI.sectionRepository.removeAndFlush(section);
-    return res.status(204).send({ message: "Section deleted" });
+    return res.status(204).send({ message: 'Section deleted' });
   } catch (e: any) {
     return res.status(400).send({ errors: [e.message] });
   }
 });
 
 // Get messages
-router.get("/:courseId/message", async (req, res) => {
+router.get('/:courseId/message', async (req, res) => {
   const course = await DI.courseRepository.findOne({ id: req.params.courseId });
   if (!course) {
-    return res.status(404).send({ message: "Course not found" });
+    return res.status(404).send({ message: 'Course not found' });
   }
   const learnerInCourse = await DI.learnerInCourseRepository.findOne({
     learner: req.user,
-    course: course,
+    course,
   });
   if (!learnerInCourse) {
-    return res
-      .status(401)
-      .send({ message: "You are not the member of this course" });
+    return res.status(401).send({ message: 'You are not the member of this course' });
   }
   const messages = await DI.messageRepository.find(
     { roomId: course.id },
-    { populate: ["sender"], orderBy: {time: 'ASC'} },
+    { populate: ['sender'], orderBy: { time: 'ASC' } },
   );
   return res.status(200).send(messages);
 });

@@ -16,8 +16,9 @@
       "array-type": false,
       "import-name": false,
       "no-unused-declaration": true,
-      "object-literal-sort-keys": [true, "ignore-case", "locale-compare"],
+      "object-literal-sort-keys": false,
       "jsx-boolean-value": false,
-      "jsx-no-lambda": false
+      "jsx-no-lambda": false,
+      "no-object-literal-type-assertion": false
     }
   }

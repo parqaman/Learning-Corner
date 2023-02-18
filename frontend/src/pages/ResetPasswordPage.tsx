@@ -43,7 +43,7 @@ export const ResetPasswordPage = () => {
     <AppLayout display={'flex'} flexDir="column" justifyContent={'center'} alignItems="center">
       <AuthCard>
         <Heading>Reset password</Heading>
-        <form onSubmit={(e) => handleNewPassword(e)}>
+        <form onSubmit={(e) => handleNewPassword(e)} data-testid="form">
           <Box width={'100%'} gap={'1em'} display="flex" flexDirection={'column'}>
             <Input
               value={currentPassword}
@@ -59,6 +59,7 @@ export const ResetPasswordPage = () => {
               id="current-pass"
               name="current-pass"
               type="password"
+              data-testid="current"
             />
             <Input
               value={newPassword}
@@ -74,6 +75,7 @@ export const ResetPasswordPage = () => {
               id="new-pass"
               name="new-pass"
               type="password"
+              data-testid="new"
             />
             <Button
               variant={'unstyled'}
@@ -82,6 +84,7 @@ export const ResetPasswordPage = () => {
               bg={'black'}
               color={'white'}
               borderRadius={'2rem'}
+              data-testid="reset-btn"
             >
               Reset password
             </Button>

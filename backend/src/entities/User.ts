@@ -1,8 +1,8 @@
-import {object, string} from "yup";
-import {Cascade, Collection, Entity, ManyToMany, OneToMany, Property,} from "@mikro-orm/core";
-import {BaseEntity} from "./BaseEntity";
-import {Course} from "./Course";
-import {LearnerInCourse} from "./LearnerInCourse";
+import { object, string } from 'yup';
+import { Cascade, Collection, Entity, ManyToMany, OneToMany, Property } from '@mikro-orm/core';
+import { BaseEntity } from './BaseEntity';
+import { Course } from './Course';
+import { LearnerInCourse } from './LearnerInCourse';
 
 @Entity()
 export class User extends BaseEntity {
@@ -18,7 +18,7 @@ export class User extends BaseEntity {
   @Property()
   lastName: string;
 
-  @Property({length: 5242880}) //photo max 5 mb
+  @Property({ length: 5242880 }) // photo max 5 mb
   photo: string;
 
   @OneToMany({ entity: () => Course, mappedBy: (e) => e.lecturer, cascade: [Cascade.ALL] })
@@ -27,17 +27,11 @@ export class User extends BaseEntity {
   @ManyToMany({
     entity: () => Course,
     pivotEntity: () => LearnerInCourse,
-    inversedBy: (e) => e.participants
+    inversedBy: (e) => e.participants,
   })
   joinedCourses = new Collection<Course>(this);
 
-  constructor({
-    email,
-    password,
-    firstName,
-    lastName,
-    photo,
-  }: RegisterUserDTO) {
+  constructor({ email, password, firstName, lastName, photo }: RegisterUserDTO) {
     super();
     this.email = email;
     this.password = password;

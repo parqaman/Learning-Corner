@@ -22,6 +22,7 @@ export const CourseCard = ({
     >
       <Box
         id="course-card"
+        data-testid="course-detail"
         minW="500px"
         bg={'white'}
         color={'black'}

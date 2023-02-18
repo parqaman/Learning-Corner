@@ -203,7 +203,7 @@ export const ProfilePage = () => {
   };
 
   return (
-    <AppLayout display={'flex'} flexDir="column" alignItems="center" mt={'3rem'}>
+    <AppLayout display={'flex'} flexDir="column" alignItems="center" mt={'3rem'} data-testid="profilePage">
       <ProfileCard>
         <Heading fontSize={'5xl'}>My Profile</Heading>
         {
@@ -295,6 +295,7 @@ export const ProfilePage = () => {
               bg={'black'}
               color="white"
               fontWeight={'medium'}
+              data-testid='editButton'
             >
               Edit
             </Button>
