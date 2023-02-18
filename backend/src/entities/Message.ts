@@ -1,13 +1,13 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
-import { v4 } from "uuid";
-import { User } from "./User";
+import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { v4 } from 'uuid';
+import { User } from './User';
 
 @Entity()
 export class Message {
   @PrimaryKey()
   id: string = v4();
 
-  @ManyToOne({ entity: () => User, onDelete: "cascade" })
+  @ManyToOne({ entity: () => User, onDelete: 'cascade' })
   sender: User;
 
   @Property()
