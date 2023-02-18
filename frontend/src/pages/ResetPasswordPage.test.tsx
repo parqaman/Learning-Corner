@@ -1,8 +1,9 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { AuthProvider } from '../providers/AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { ResetPasswordPage } from './ResetPasswordPage';
+import { createMemoryHistory } from 'history';
 
 // useNavigate mock
 const mockedUsedNavigate = jest.fn();
@@ -46,7 +47,39 @@ test('successfully reset the password', async () => {
   const resetButton = getByTestId('reset-btn');
   fireEvent.click(resetButton);
 
-  expect(currentPasswordInput).toHaveValue(testPassword.current);
-  expect(newPasswordInput).toHaveValue(testPassword.new);
-  expect(resetPasswordMock).toHaveBeenCalledTimes(1);
+  await waitFor(() => {
+    expect(currentPasswordInput).toHaveValue(testPassword.current);
+    expect(newPasswordInput).toHaveValue(testPassword.new);
+    expect(resetPasswordMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+test('cannot reset the password if the input is empty', async () => {
+  const history = createMemoryHistory({ initialEntries: ['/profile/resetpassword'] });
+
+  // Render the page
+  const { getByTestId } = render(
+    <BrowserRouter>
+      <AuthProvider>
+        <ResetPasswordPage />
+      </AuthProvider>
+    </BrowserRouter>,
+  );
+
+  const form = getByTestId('form');
+  form.onsubmit = resetPasswordMock;
+
+  const currentPasswordInput = getByTestId('current');
+
+  const newPasswordInput = getByTestId('new');
+
+  // Simulate clicking the button
+  const resetButton = getByTestId('reset-btn');
+  fireEvent.click(resetButton);
+
+  await waitFor(() => {
+    expect(currentPasswordInput).toHaveValue('');
+    expect(newPasswordInput).toHaveValue('');
+    expect(history.location.pathname).toBe('/profile/resetpassword');
+  });
 });
