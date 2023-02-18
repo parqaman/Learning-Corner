@@ -30,7 +30,7 @@ const testUser = {
 
 test('my courses page contains courses the user joined successfully', async () => {
   // Render the login form
-  const { getByTestId, debug } = render(
+  const { getByTestId } = render(
     <BrowserRouter>
         <authContext.Provider value={{  ...initialAuthContext, user: {...testUser}}}>
             <MyCoursesPage />
@@ -38,7 +38,6 @@ test('my courses page contains courses the user joined successfully', async () =
     ,
     </BrowserRouter>
   );
-  debug();
 
   act(() => {
     const courseList = getByTestId('courseListTest');
