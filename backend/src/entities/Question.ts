@@ -1,14 +1,8 @@
-import { object, string } from "yup";
-import {
-  Collection,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  Property,
-} from "@mikro-orm/core";
-import { BaseEntity } from "./BaseEntity";
-import { Answer } from "./Answer";
-import { Quiz } from "./Quiz";
+import { object, string } from 'yup';
+import { Collection, Entity, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
+import { BaseEntity } from './BaseEntity';
+import { Answer } from './Answer';
+import { Quiz } from './Quiz';
 
 @Entity()
 export class Question extends BaseEntity {

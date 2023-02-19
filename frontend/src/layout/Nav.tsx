@@ -1,27 +1,27 @@
-import { Box, chakra, HTMLChakraProps, List, ListItem, Button } from "@chakra-ui/react";
+import { Box, chakra, HTMLChakraProps, List, ListItem, Button } from '@chakra-ui/react';
 
-export const Nav = (props: HTMLChakraProps<"ul">) => {
-    return <List {...props} display="flex" justifyContent={'center'}/>;
+export const Nav = (props: HTMLChakraProps<'ul'>) => {
+  return <List {...props} display="flex" justifyContent={'center'} />;
 };
 
-export const NavItem = (props: HTMLChakraProps<"li">) => {
-    return <ListItem {...props} listStyleType={"none"} p={'0.25em'} m={'0.1em'}></ListItem>
+export const NavItem = (props: HTMLChakraProps<'li'>) => {
+  return <ListItem {...props} listStyleType={'none'} p={'0.25em'} m={'0.1em'} />;
 };
 
-export interface NavButtonProps extends HTMLChakraProps<"button"> {
-    icon?: React.ReactNode;
-};
+export interface NavButtonProps extends HTMLChakraProps<'button'> {
+  icon?: React.ReactNode;
+}
 
 export const NavButton = ({ icon, children, ...props }: NavButtonProps) => {
-    return (
-        <Button {...props}>
-            {icon}
-            {children}
-        </Button>
-    );
+  return (
+    <Button {...props}>
+      {icon}
+      {children}
+    </Button>
+  );
 };
 
-export interface NavLinkProps extends HTMLChakraProps<"a"> {}
+export interface NavLinkProps extends HTMLChakraProps<'a'> {}
 
 export const NavLink = ({ children, ...linkProps }: NavLinkProps) => {
   return (

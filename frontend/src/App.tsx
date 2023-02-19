@@ -1,6 +1,6 @@
-import { AppRoutes } from './AppRoutes'
-import { ChakraProvider } from '@chakra-ui/react'
-import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from './AppRoutes';
+import { ChakraProvider } from '@chakra-ui/react';
+import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider';
 
 function App() {
@@ -8,11 +8,11 @@ function App() {
     <ChakraProvider>
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes/>
+          <AppRoutes />
         </AuthProvider>
       </BrowserRouter>
     </ChakraProvider>
-  )
+  );
 }
 
-export default App
+export default App;

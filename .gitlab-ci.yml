@@ -1,0 +1,44 @@
+image: node:latest
+
+stages:
+  - build
+
+build-frontend-job:
+  stage: build
+  script:
+    - cd ./frontend
+    - npm ci
+    - npm run test:ci
+    - npm run build
+  rules:
+    - changes:
+        - frontend/**/*
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./frontend/junit.xml
+
+build-backend-job:
+  stage: build
+  services:
+    - postgres:15.2-alpine
+  variables:
+    DB_HOST: postgres
+    POSTGRES_DB: $POSTGRES_DB
+    POSTGRES_USER: $POSTGRES_USER
+    POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    POSTGRES_HOST_AUTH_METHOD: trust
+  script:
+    - cd ./backend
+    - npm ci
+    - npm run build
+    - npm run test:ci
+  rules:
+    - changes:
+        - backend/**/*
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./backend/test-results.xml

@@ -1,5 +1,4 @@
 version: '3.1'
-
 services:
   db:
     container_name: learning-corner-db
@@ -8,12 +7,21 @@ services:
     environment:
       POSTGRES_DB: learningCornerDB
       POSTGRES_USER: lcUser
-      POSTGRES_PASSWORD: lcfwe22
+      POSTGRES_PASSWORD: lcfwe22xcgbng
     ports:
       - 5433:5432
     volumes:
-      - db-data:/var/lib/postgresql/data
-
+      - lc-db-data:/var/lib/postgresql/data
+  learning-corner:
+    container_name: learning-corner
+    build:
+      context: .
+    environment:
+      DB_HOST: db
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
 volumes:
-  db-data:
+  lc-db-data:
     driver: local
