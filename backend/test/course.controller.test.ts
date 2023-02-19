@@ -21,7 +21,7 @@ describe("Course Controller Test", () => {
   before((done) => {
     //create user 1 acc
     Request("localhost:4000")
-      .post("/api/auth/register")
+      .post("/auth/register")
       .send(mockup_user)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
@@ -31,7 +31,7 @@ describe("Course Controller Test", () => {
 
         //create user 2 acc
         Request("localhost:4000")
-          .post("/api/auth/register")
+          .post("/auth/register")
           .send(mockup_user_2)
           .set("Accept", "application/json")
           .set("Content-Type", "application/json")
@@ -41,7 +41,7 @@ describe("Course Controller Test", () => {
 
             //login user 1
             Request("localhost:4000")
-              .post("/api/auth/login")
+              .post("/auth/login")
               .send({
                 email: mockup_user.email,
                 password: mockup_user.password,
@@ -54,7 +54,7 @@ describe("Course Controller Test", () => {
 
                 //login user 2
                 Request("localhost:4000")
-                  .post("/api/auth/login")
+                  .post("/auth/login")
                   .send({
                     email: mockup_user_2.email,
                     password: mockup_user_2.password,
@@ -385,7 +385,7 @@ describe("Course Controller Test", () => {
   describe("Chat messages in a course test", () => {
     before((done) => {
       Request("localhost:4000")
-        .put(`/api/users/${userID}/course/${localCourse.id}`)
+        .put(`/users/${userID}/course/${localCourse.id}`)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
         .set("Authorization", token)

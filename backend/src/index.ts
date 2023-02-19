@@ -22,7 +22,7 @@ import { UploadController } from './controller/upload.controller';
 import * as path from 'path';
 import { TestSeeder } from './seeders/TestSeeder';
 import * as socketIo from 'socket.io';
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
 
 const PORT = 4000;
 const app = express();
@@ -173,6 +173,10 @@ export const initializeServer = async () => {
           roomId: args.room,
         }),
       );
+    });
+
+    socket.on('helloTextEditor', (args) => {
+      socket.join(args.room);
     });
 
     socket.on("get-document", async (groupID) => {
