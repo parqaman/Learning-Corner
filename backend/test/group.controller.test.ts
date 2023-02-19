@@ -10,7 +10,7 @@ import { Course, Group, Section } from "../src/entities";
 import {describe} from 'mocha'
 
 describe("Group Controller Test", () => {
-  const baseurl = "localhost:4000/groups";
+  const baseurl = "localhost:4000/api/groups";
   var userId: string;
   var token: string;
   var course: Course;
@@ -21,7 +21,7 @@ describe("Group Controller Test", () => {
 
   // Create user1 and course
   before((done) => {
-    Request("localhost:4000")
+    Request("localhost:4000/api")
       .post("/auth/register")
       .send(mockup_user)
       .set("Accept", "application/json")
@@ -29,7 +29,7 @@ describe("Group Controller Test", () => {
       .then((res) => {
         userId = res.body.id;
 
-        Request("localhost:4000")
+        Request("localhost:4000/api")
           .post("/auth/login")
           .send({
             email: mockup_user.email,
@@ -40,7 +40,7 @@ describe("Group Controller Test", () => {
           .end((err, res) => {
             token = res.body.accessToken;
 
-            Request("localhost:4000")
+            Request("localhost:4000/api")
               .post("/courses")
               .send(mockup_course)
               .set("Accept", "application/json")
@@ -48,7 +48,7 @@ describe("Group Controller Test", () => {
               .set("Authorization", token)
               .end((err, res) => {
                 course = res.body;
-                Request("localhost:4000")
+                Request("localhost:4000/api")
                   .put(`/users/${userId}/course/${course.id}`)
                   .set("Accept", "application/json")
                   .set("Content-Type", "application/json")
@@ -66,7 +66,7 @@ describe("Group Controller Test", () => {
 
   // Create user2
   before((done) => {
-    Request("localhost:4000")
+    Request("localhost:4000/api")
       .post("/auth/register")
       .send({ ...mockup_user, email: "test@mail.com" })
       .set("Accept", "application/json")
@@ -74,7 +74,7 @@ describe("Group Controller Test", () => {
       .end((err, res) => {
         falseUserId = res.body.id;
 
-        Request("localhost:4000")
+        Request("localhost:4000/api")
           .post("/auth/login")
           .send({
             email: "test@mail.com",
@@ -92,7 +92,7 @@ describe("Group Controller Test", () => {
 
   // Delete user1
   after((done) => {
-    Request("localhost:4000/users")
+    Request("localhost:4000/api/users")
       .delete("/" + userId)
       .set("Authorization", token)
       .end((err, res) => {
@@ -103,7 +103,7 @@ describe("Group Controller Test", () => {
 
   // Delete user2
   after((done) => {
-    Request("localhost:4000/users")
+    Request("localhost:4000/api/users")
       .delete("/" + falseUserId)
       .set("Authorization", falseToken)
       .end((err, res) => {
@@ -264,7 +264,7 @@ describe("Group Controller Test", () => {
   describe("Create a section in a group", () => {
     // Join group
     before((done) => {
-      Request("localhost:4000")
+      Request("localhost:4000/api")
         .put(`/users/${userId}/course/${course.id}/group/${group.id}`)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")

@@ -10,7 +10,7 @@ import { Course, Section } from "../src/entities";
 import {describe} from 'mocha'
 
 describe("Course Controller Test", () => {
-  const rootURL = "localhost:4000/courses";
+  const rootURL = "localhost:4000/api/courses";
   var userID = "";
   var userID_2 = "";
   var localCourse: Course;
@@ -20,7 +20,7 @@ describe("Course Controller Test", () => {
 
   before((done) => {
     //create user 1 acc
-    Request("localhost:4000")
+    Request("localhost:4000/api")
       .post("/auth/register")
       .send(mockup_user)
       .set("Accept", "application/json")
@@ -30,7 +30,7 @@ describe("Course Controller Test", () => {
         userID = res.body.id;
 
         //create user 2 acc
-        Request("localhost:4000")
+        Request("localhost:4000/api")
           .post("/auth/register")
           .send(mockup_user_2)
           .set("Accept", "application/json")
@@ -40,7 +40,7 @@ describe("Course Controller Test", () => {
             userID_2 = res2.body.id;
 
             //login user 1
-            Request("localhost:4000")
+            Request("localhost:4000/api")
               .post("/auth/login")
               .send({
                 email: mockup_user.email,
@@ -53,7 +53,7 @@ describe("Course Controller Test", () => {
                 token = res3.body.accessToken;
 
                 //login user 2
-                Request("localhost:4000")
+                Request("localhost:4000/api")
                   .post("/auth/login")
                   .send({
                     email: mockup_user_2.email,
@@ -78,11 +78,11 @@ describe("Course Controller Test", () => {
   });
 
   after((done) => {
-    Request("localhost:4000/users")
+    Request("localhost:4000/api/users")
       .delete("/" + userID)
       .set("Authorization", token)
       .then((res) => {
-        Request("localhost:4000/users")
+        Request("localhost:4000/api/users")
           .delete("/" + userID_2)
           .set("Authorization", token_2)
           .end((err, res) => {
@@ -384,7 +384,7 @@ describe("Course Controller Test", () => {
   //Read operation test for chat messages in a course
   describe("Chat messages in a course test", () => {
     before((done) => {
-      Request("localhost:4000")
+      Request("localhost:4000/api")
         .put(`/users/${userID}/course/${localCourse.id}`)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
