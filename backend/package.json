@@ -10,7 +10,7 @@
     "build": "tsc",
     "schema:fresh": "npx mikro-orm schema:fresh -r",
     "test": "mocha -r ts-node/register test/*.test.ts --reporter mochawesome --reporter-options reportDir=test/reports,reportFilename=test-results",
-    "test:ci": "concurrently --kill-others \"npm run start:ci\" \"npm run test:junit\"",
+    "test:ci": "concurrently --kill-others --success=first \"npm run start:ci\" \"npm run test:junit\"",
     "test:junit": "mocha -r ts-node/register test/*.test.ts --reporter mocha-junit-reporter --close",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
