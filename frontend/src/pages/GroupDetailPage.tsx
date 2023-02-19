@@ -494,7 +494,7 @@ export const GroupDetailPage = () => {
         {joined && (
           <Box mt={"2rem"}>
             <Button variant={"link"} color="black" fontWeight={"medium"}>
-              <Link target={"_blank"} to={"./text-editor"}>
+              <Link to={"./text-editor"}>
                 <Flex gap={"0.25rem"} alignItems="center">
                   <Text>
                     <HiOutlineDocumentDuplicate />

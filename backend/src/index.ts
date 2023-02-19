@@ -23,9 +23,6 @@ import * as path from 'path';
 import { TestSeeder } from './seeders/TestSeeder';
 import * as socketIo from 'socket.io';
 import nodemailer from 'nodemailer';
-import cluster from 'cluster';
-import { setupMaster, setupWorker } from "@socket.io/sticky";
-import { createAdapter, setupPrimary } from "@socket.io/cluster-adapter";
 
 const PORT = 4000;
 const app = express();
@@ -124,99 +121,90 @@ export const initializeServer = async () => {
     res.sendFile(path.join(clientPath, 'index.html'));
   })
 
-  if(cluster.isPrimary) {
-    const server = http.createServer(app);
-  
-    setupMaster(server, {
-      loadBalancingMethod: "least-connection",
-    });
-    setupPrimary();
+  const server = http.createServer(app);
+  const io = new socketIo.Server(server, {
+    cors: {
+      origin: 'http://localhost:3000',
+      methods: ['GET', 'POST'],
+    },
+  });
 
-    DI.server = server.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
-    });
-
-    for (let i = 0; i < 4; i++) {
-      cluster.fork();
+  io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    const res = Auth.verifyToken(token);
+    // console.log("Socket-Auth:", res);
+    if (!res) {
+      const err = new Error('not authorized');
+      next(err);
     }
-  
-    cluster.on("exit", (worker) => {
-      console.log(`Worker ${worker.process.pid} died`);
-      cluster.fork();
-    });
-  } else {
-    const server = http.createServer(app);
-    const io = new socketIo.Server(server, {
-      cors: {
-        origin: 'http://localhost:3000',
-        methods: ['GET', 'POST'],
-      },
-    });
-    // use the cluster adapter
-    io.adapter(createAdapter());
+    next();
+  });
 
-    // setup connection with the primary process
-    setupWorker(io);
-
-    io.use((socket, next) => {
-      const token = socket.handshake.auth.token;
-      const res = Auth.verifyToken(token);
-      // console.log("Socket-Auth:", res);
-      if (!res) {
-        const err = new Error('not authorized');
-        next(err);
-      }
-      next();
+  io.on('connection', async (socket: socketIo.Socket) => {
+    // console.log("Connection: ", socket);
+    socket.on('helloRoom', (args) => {
+      socket.join(args.room);
+      // console.log("helloRoom: ", args);
+      // const message: ChatMessage = {
+      //   message:
+      //     args.user.firstName + " " + args.user.lastName + " joined the room!",
+      //   sender: socket.handshake.auth.user,
+      //   time: Date.now(),
+      // };
+      // socket.in(args.room).emit("message", message);
     });
 
-    io.on('connection', async (socket: socketIo.Socket) => {
-      socket.on('helloRoom', (args) => {
-        socket.join(args.room);
-      });
-
-      socket.on('message', (args) => {
-        const message: CreateMessageDTO = {
-          message: args.message,
-          sender: socket.handshake.auth.user,
-          time: Date.now().toString(),
+    socket.on('message', (args) => {
+      console.log('message: ', args);
+      const message: CreateMessageDTO = {
+        message: args.message,
+        sender: socket.handshake.auth.user,
+        time: Date.now().toString(),
+        roomId: args.room,
+      };
+      io.in(args.room).emit('message', message);
+      // save message to the database
+      const em = DI.orm.em.fork();
+      em.persistAndFlush(
+        new Message({
+          message: message.message,
+          sender: message.sender,
+          time: message.time,
           roomId: args.room,
-        };
-        io.in(args.room).emit('message', message);
-        // save message to the database
-        const em = DI.orm.em.fork();
-        em.persistAndFlush(
-          new Message({
-            message: message.message,
-            sender: message.sender,
-            time: message.time,
-            roomId: args.room,
-          }),
-        );
+        }),
+      );
+    });
+
+    socket.on('helloTextEditor', (args) => {
+      socket.join(args.room);
+    });
+
+    socket.on("get-document", async (groupID) => {
+      const em = DI.orm.em.fork();
+      const document = await findOrCreateDocument(groupID, em);
+      socket.join(groupID);
+      if (document) socket.emit("load-document", document.data);
+
+      socket.on("send-changes", (args) => {
+        socket.broadcast.to(groupID).emit("receive-changes", args);
       });
 
-      socket.on("get-document", async (groupID) => {
-        const em = DI.orm.em.fork();
-        const document = await findOrCreateDocument(groupID, em);
-        socket.join(groupID);
-        if (document) socket.emit("load-document", document.data);
-
-        socket.on("send-changes", (args) => {
-          socket.broadcast.to(groupID).emit("receive-changes", args);
-        });
-
-        socket.on("save-document", async (data) => {
-          if (document) {
-            document.data = data;
-            await em.persistAndFlush(document);
-          }
-        });
-      });
-
-      socket.on('disconnect', (reason) => {
-        console.log('disconnect: ', reason);
+      socket.on("save-document", async (data) => {
+        if (document) {
+          document.data = data;
+          await em.persistAndFlush(document);
+        }
       });
     });
-  }
+
+    socket.on('disconnect', (reason) => {
+      console.log('disconnect: ', reason);
+    });
+  });
+
+  DI.server = server.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+  });
 };
 
 initializeServer();
