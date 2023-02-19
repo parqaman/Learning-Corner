@@ -46,3 +46,6 @@ Befinden wir uns im Root Verzeichnis des Repositories können wir mit folgenden 
 
 ### Frontend
 ```cd frontend && npm run test```
+
+### CI Pipeline
+Der Pipeline könnte manchmal wegen Cache-Konflikt beim Shared Runner fehlschlagen.
