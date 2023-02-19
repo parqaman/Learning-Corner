@@ -49,9 +49,10 @@ export const NewCoursePage = () => {
           }
         })
         .catch((error) => {
+          console.log(error)
           toast({
             title: 'Error occured.',
-            description: <Text>{error}</Text>,
+            description: <Text>Course already existed</Text>,
             status: 'error',
             duration: 9000,
             isClosable: true,
