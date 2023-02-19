@@ -5,7 +5,7 @@ import { Course } from "../src/entities";
 import {describe} from 'mocha'
 
 describe("User Controller Test", () => {
-  const baseurl = "localhost:4000/users";
+  const baseurl = "localhost:4000/api/users";
   var userId: string;
   var token: string;
   var course: Course;
@@ -15,7 +15,7 @@ describe("User Controller Test", () => {
   // create user, course and group
   before((done) => {
     Request("localhost:4000")
-      .post("/auth/register")
+      .post("/api/auth/register")
       .send(mockup_user)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
@@ -23,7 +23,7 @@ describe("User Controller Test", () => {
         userId = res.body.id;
 
         Request("localhost:4000")
-          .post("/auth/login")
+          .post("/api/auth/login")
           .send({
             email: mockup_user.email,
             password: mockup_user.password,
@@ -34,7 +34,7 @@ describe("User Controller Test", () => {
             token = res.body.accessToken;
 
             Request("localhost:4000")
-              .post("/courses")
+              .post("/api/courses")
               .send(mockup_course)
               .set("Accept", "application/json")
               .set("Content-Type", "application/json")
@@ -43,13 +43,13 @@ describe("User Controller Test", () => {
                 course = res.body;
                 courseId = res.body.id;
                 Request("localhost:4000")
-                  .put(`/users/${userId}/course/${courseId}`)
+                  .put(`/api/users/${userId}/course/${courseId}`)
                   .set("Accept", "application/json")
                   .set("Content-Type", "application/json")
                   .set("Authorization", token)
                   .end((err, res) => {
                     Request("localhost:4000")
-                      .post("/groups")
+                      .post("/api/groups")
                       .set("Accept", "application/json")
                       .set("Content-Type", "application/json")
                       .set("Authorization", token)
@@ -172,7 +172,7 @@ describe("User Controller Test", () => {
     // Create user
     before((done) => {
       Request("localhost:4000")
-        .post("/auth/register")
+        .post("/api/auth/register")
         .send({ ...mockup_user, email: "test@mail.com" })
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
@@ -180,7 +180,7 @@ describe("User Controller Test", () => {
           userId2 = res.body.id;
 
           Request("localhost:4000")
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send({
               email: "test@mail.com",
               password: mockup_user.password,
