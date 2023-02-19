@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: learningCornerDB
       POSTGRES_USER: lcUser
-      POSTGRES_PASSWORD: lcfwe22
+      POSTGRES_PASSWORD: lcfwe22xcgbng
     ports:
       - 5433:5432
     volumes:
@@ -18,9 +18,6 @@ services:
       context: .
     environment:
       DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: lcUser
-      DB_PASSWORD: lcfwe22
     ports:
       - 4000:4000
     depends_on:

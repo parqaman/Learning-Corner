@@ -74,7 +74,7 @@ const CourseDescriptionSection = ({ course, updateCourse, updateHandler, isOwner
             height={'10rem'}
             onChange={(e) =>
               updateCourse((prev) => {
-                return { ...prev, description: e.target.value };
+                return { id: prev.id, name: prev.name, description: e.target.value, lecturer: prev.lecturer};
               })
             }
           />
@@ -371,11 +371,13 @@ export const CourseDetailPage = () => {
                     resize={'none'}
                     value={course?.name}
                     onChange={(e) =>
-                      setCourse({
-                        name: e.target.value,
-                        lecturer: course?.lecturer!,
-                        description: course?.description!,
-                      })
+                      setCourse((prev) => {
+                        return {
+                          id: prev.id,
+                          name: e.target.value,
+                          lecturer: prev.lecturer,
+                          description: prev.description,
+                      }})
                     }
                   />
                   <Flex alignItems={'center'} fontSize="medium" mt={'0.5rem'} gap={'0.25rem'}>

@@ -10,12 +10,12 @@ import { Message } from './entities/Message';
 import { User } from './entities/User';
 
 const options: Options = {
-  type: "postgresql",
-  host: process.env.DB_HOST || "localhost",
-  port: parseInt(process.env.DB_PORT!) || 5433,
-  dbName: process.env.DB_NAME || "learningCornerDB",
-  user: process.env.DB_USER || "lcUser",
-  password: process.env.DB_PASSWORD || "lcfwe22",
+  type: 'postgresql',
+  host: process.env.DB_HOST || 'localhost',
+  port: 5432,
+  dbName: 'learningCornerDB',
+  user: 'lcUser',
+  password: 'lcfwe22xcgbng',
   debug: true,
   entities: [
     Course,

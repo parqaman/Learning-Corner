@@ -4,13 +4,13 @@ import { mockup_user } from "./mockupData";
 import {describe} from 'mocha'
 
 describe("Auth Controller Test", () => {
-  const baseurl = "localhost:4000/auth";
+  const baseurl = "localhost:4000/api/auth";
   var userId: string;
   var token: string;
 
   // Delete user
   after((done) => {
-    Request("localhost:4000/users")
+    Request("localhost:4000/api/users")
       .delete("/" + userId)
       .set("Authorization", token)
       .end((err, res) => {

@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 COPY ./backend/package*.json ./
 COPY --from=install-backend /usr/src/app/node_modules ./node_modules
 COPY ./backend .
-RUN npm run compile
+RUN npm run build
 
 FROM node:lts-alpine
 WORKDIR /usr/src/app

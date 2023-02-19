@@ -68,10 +68,11 @@ const sendEmail = (participantsEmail: string[], section: any, files: Express.Mul
   }
 
   emailTransporter.sendMail(emailOptions, (err, info) => {
-    if (err) {
+    try {
+      console.log(info.response);
+    } catch (error) {
       console.log(err);
     }
-    console.log(info.response);
   })
 }
 
