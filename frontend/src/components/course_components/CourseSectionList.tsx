@@ -207,7 +207,7 @@ export const CourseSectionList = ({ course, sections, setSections, isOwner }: Se
     e.preventDefault();
     if (course && course.id && section.id) {
       await apiClient
-        .putSectionCourse(course.id, section.id)
+        .putSectionCourse(course.id, section.id, section)
         .then(() => {
           setEditMode(false);
         })

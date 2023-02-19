@@ -18,6 +18,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  color,
 } from "@chakra-ui/react";
 import { AppLayout } from "../layout/AppLayout";
 import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
@@ -412,7 +413,8 @@ export const GroupDetailPage = () => {
                 </form>
               ) : (
                 <>
-                  <Text>Course: {group?.course?.name}</Text>
+                
+                  <Flex gap="0.5rem">Course: <Text color="#0194F3"> <Link to={`/courses/${param.courseID}`}>{group?.course?.name}</Link> </Text></Flex>
                   <Heading>{group?.name}</Heading>
                 </>
               )}
