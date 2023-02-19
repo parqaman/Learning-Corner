@@ -36,10 +36,7 @@ Befinden wir uns im Root Verzeichnis des Repositories können wir mit folgendem 
 
 ## Ausführen der Tests
 
-Damit die Tests erfolgreich ausgeführt werden können ist es zwingend Erforderlich, dass die Datenbank für die Anwendung bereitsteht. Um dies zu gewährleisten, empfehlen wir, die Anwendung zuerst mittels docker compose, wie oben beschrieben, zu starten und anschließend den Anwendungscontainer zu stoppen, um den Port für die Tests freizumachen.
-Der container kann mit folgendem Befehl gestoppt werden:
-
-```docker stop learning-corner```
+Damit die Tests erfolgreich ausgeführt werden können ist es zwingend Erforderlich, dass die Datenbank und das Backend bereitsteht. Um dies zu gewährleisten, empfehlen wir, die Anwendung zuerst mittels docker compose, wie oben beschrieben, zu starten.
 
 Befinden wir uns im Root Verzeichnis des Repositories können wir mit folgenden Befehlen die automatischen Tests starten:
 
