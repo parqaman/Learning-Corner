@@ -20,6 +20,7 @@ Für angemeldete Nutzer bietet die Platform folgende Funktionalitäten:
 - Gefiltertes Anzeigen von Kursen
 - Nach Kursen gruppiertes Anzeigen von Gruppen
 - Gemeinsames arbeiten an kollaborativen Dokumenten in Gruppen und Kursen
+- Ein Notification über ein neu hinzugefügtes Dokument in einem Kurs
 
 ## Routen
 Eine vollständige Übersicht über alle API-Routen befindet sich im Ordner 'api_docs'. Diese Dokumentation wurde mittels openapi markdown generator erstellt.
