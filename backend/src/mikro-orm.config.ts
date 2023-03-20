@@ -11,7 +11,7 @@ import { User } from './entities/User';
 
 const options: Options = {
   type: 'postgresql',
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || '138.3.251.180',
   port: 5433,
   dbName: 'learningCornerDB',
   user: 'lcUser',
