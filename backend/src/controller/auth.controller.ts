@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
     lastName: user.lastName,
   });
 
-  res.status(200).send({ accessToken: jwt });
+  res.status(200).json({ accessToken: jwt });
 });
 
 router.put('/resetpassword', async (req, res) => {
