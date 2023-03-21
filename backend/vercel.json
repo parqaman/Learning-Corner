@@ -2,7 +2,11 @@
     "version": 2,
     "routes": [
         {
-            "src": "^(?!\/api).*",
+            "src": "/api/courses",
+            "dest": "/api/courses/"
+        },
+        {
+            "src": "/[^.]+",
             "dest": "/"
         }
     ]  
