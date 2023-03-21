@@ -23,7 +23,6 @@ import * as path from 'path';
 import { TestSeeder } from './seeders/TestSeeder';
 import * as socketIo from 'socket.io';
 import nodemailer from 'nodemailer';
-import cors from 'cors';
 
 const PORT = 4000;
 const app = express();
@@ -93,10 +92,6 @@ export const initializeServer = async () => {
   app.use(express.json({ limit: '5mb' }));
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
   app.use(Auth.prepareAuthentication);
-  app.use(cors({
-    origin: '*',
-    credentials: true,
-  }))
 
   // routes
   app.use(express.static(clientPath));
@@ -122,9 +117,9 @@ export const initializeServer = async () => {
   app.use("/api/groups", GroupController);
   app.use("/api/sections", UploadController);
 
-  // app.get('(/*)?', async (req, res, next) => {
-  //   res.sendFile(path.join(clientPath, 'index.html'));
-  // })
+  app.get('(/*)?', async (req, res, next) => {
+    res.sendFile(path.join(clientPath, 'index.html'));
+  })
 
   const server = http.createServer(app);
   const io = new socketIo.Server(server, {

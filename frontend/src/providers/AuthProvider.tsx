@@ -59,39 +59,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const onLogin = React.useCallback(
     async (loginData: LoginData) => {
-      const res = await fetch('https://farouq-abdurrahman.com/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify(loginData),
         headers: { 'content-type': 'application/json' },
-      })
-      .then(async (rez) => {
-        const resBody = await rez.json();
-        if (rez.status === 200) {
-          setAccessToken(resBody.accessToken);
-          navigate('/', { replace: true });
-        } else {
-          if (!toast.isActive('error-password')) {
-            toast({
-              id: 'error-password',
-              title: 'Error occured.',
-
-              description: (
-                <>
-                  {resBody.errors.map((e: string) => (
-                    <Text key={e}>{e}</Text>
-                  ))}
-                </>
-              ),
-              status: 'error',
-              duration: 9000,
-              isClosable: true,
-            });
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
       });
+
+      const resBody = await res.json();
+      if (res.status === 200) {
+        setAccessToken(resBody.accessToken);
+        navigate('/', { replace: true });
+      } else {
+        if (!toast.isActive('error-password')) {
+          toast({
+            id: 'error-password',
+            title: 'Error occured.',
+
+            description: (
+              <>
+                {resBody.errors.map((e: string) => (
+                  <Text key={e}>{e}</Text>
+                ))}
+              </>
+            ),
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+      }
     },
     [toast],
   );
