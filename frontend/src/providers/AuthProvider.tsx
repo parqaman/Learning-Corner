@@ -64,9 +64,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: JSON.stringify(loginData),
         headers: { 'content-type': 'application/json' },
       })
-      .then(async () => {
-        const resBody = await res.json();
-        if (res.status === 200) {
+      .then(async (rez) => {
+        const resBody = await rez.json();
+        if (rez.status === 200) {
           setAccessToken(resBody.accessToken);
           navigate('/', { replace: true });
         } else {
