@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const onLogin = React.useCallback(
     async (loginData: LoginData) => {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('https://farouq-abdurrahman.com/api/auth/login', {
         method: 'POST',
         body: JSON.stringify(loginData),
         headers: { 'content-type': 'application/json' },
