@@ -23,6 +23,7 @@ import * as path from 'path';
 import { TestSeeder } from './seeders/TestSeeder';
 import * as socketIo from 'socket.io';
 import nodemailer from 'nodemailer';
+import cors from 'cors';
 
 const PORT = 4000;
 const app = express();
@@ -92,6 +93,7 @@ export const initializeServer = async () => {
   app.use(express.json({ limit: '5mb' }));
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
   app.use(Auth.prepareAuthentication);
+  app.use(cors())
 
   // routes
   app.use(express.static(clientPath));
