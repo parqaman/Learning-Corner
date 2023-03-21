@@ -1,13 +1,3 @@
 {
-    "version": 2,
-    "routes": [
-        {
-            "src": "/api/courses",
-            "dest": "/api/courses/"
-        },
-        {
-            "src": "/[^.]+",
-            "dest": "/"
-        }
-    ]  
+    "version": 2
 }
