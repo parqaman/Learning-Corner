@@ -63,31 +63,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: 'POST',
         body: JSON.stringify(loginData),
         headers: { 'content-type': 'application/json' },
-      });
+      })
+      .then(async () => {
+        const resBody = await res.json();
+        if (res.status === 200) {
+          setAccessToken(resBody.accessToken);
+          navigate('/', { replace: true });
+        } else {
+          if (!toast.isActive('error-password')) {
+            toast({
+              id: 'error-password',
+              title: 'Error occured.',
 
-      const resBody = await res.json();
-      if (res.status === 200) {
-        setAccessToken(resBody.accessToken);
-        navigate('/', { replace: true });
-      } else {
-        if (!toast.isActive('error-password')) {
-          toast({
-            id: 'error-password',
-            title: 'Error occured.',
-
-            description: (
-              <>
-                {resBody.errors.map((e: string) => (
-                  <Text key={e}>{e}</Text>
-                ))}
-              </>
-            ),
-            status: 'error',
-            duration: 9000,
-            isClosable: true,
-          });
+              description: (
+                <>
+                  {resBody.errors.map((e: string) => (
+                    <Text key={e}>{e}</Text>
+                  ))}
+                </>
+              ),
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          }
         }
-      }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     },
     [toast],
   );
