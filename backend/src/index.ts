@@ -122,9 +122,9 @@ export const initializeServer = async () => {
   app.use("/api/groups", GroupController);
   app.use("/api/sections", UploadController);
 
-  app.get('(/*)?', async (req, res, next) => {
-    res.sendFile(path.join(clientPath, 'index.html'));
-  })
+  // app.get('(/*)?', async (req, res, next) => {
+  //   res.sendFile(path.join(clientPath, 'index.html'));
+  // })
 
   const server = http.createServer(app);
   const io = new socketIo.Server(server, {
